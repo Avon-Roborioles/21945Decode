@@ -22,9 +22,10 @@ import dev.nextftc.hardware.impl.ServoEx;
 import dev.nextftc.hardware.positionable.SetPosition;
 @Configurable
 public class Launcher implements Subsystem {
-    
+
     public static final Launcher INSTANCE = new Launcher();
     private Launcher (){}
+
     public double speed = 0;
     private Limelight3A limelight;
     private int redPipeline = 0;
