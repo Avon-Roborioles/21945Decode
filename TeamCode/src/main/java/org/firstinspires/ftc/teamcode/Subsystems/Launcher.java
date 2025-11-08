@@ -24,7 +24,7 @@ import dev.nextftc.hardware.positionable.SetPosition;
 public class Launcher implements Subsystem {
 
     public static final Launcher INSTANCE = new Launcher();
-    private Launcher (){}
+    public Launcher(){}
 
     public double speed = 0;
     private Limelight3A limelight;
