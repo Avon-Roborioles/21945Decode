@@ -1,12 +1,17 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.bylazar.configurables.annotations.Configurable;
+import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.hardware.controllable.RunToPosition;
@@ -17,27 +22,28 @@ import dev.nextftc.hardware.positionable.SetPosition;
 
 @Configurable
 public class NewLauncher implements Subsystem {
-    public static final Launcher INSTANCE = new Launcher();
-
+    public static final NewLauncher INSTANCE = new NewLauncher();
     private NewLauncher (){}
+    //Turret Yaw Proportional gain
+    private double tKP = 500/90;
 
-    public double speed = 0;
-    private Limelight3A limelight;
+    private int maxTurret = 600;
+
     private int redPipeline = 0;
     private int bluePipeline = 1;
-    private int maxTurret = 1600;
-    private int turretPos = 0;
-private LLResult result;
-private final int startingPipeline = 0;
+    private final int startingPipeline = 0;
 
-public MotorEx launcherMotor = new MotorEx("NewLauncherMotor");
-public MotorEx rotateMotor = new MotorEx("NewRotateMotor");
-public ServoEx hoodServo = new ServoEx("NewHoodServo");
+    private Limelight3A limelight;
+    public MotorEx launcherMotor = new MotorEx("LauncherMotor");
+    public MotorEx turretMotor = new MotorEx("TurretMotor");
+    public ServoEx hoodServo = new ServoEx("HoodServo");
 
+    // Passes through Hardware map
     public void build(HardwareMap hardwareMap){
         limelight = hardwareMap.get(Limelight3A.class, "Limelight");
         limelight.pipelineSwitch(startingPipeline);
         limelight.start();
+        turretMotor.getMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
     public void build(HardwareMap hardwareMap, boolean RedAlliance){
         limelight = hardwareMap.get(Limelight3A.class, "Limelight");
@@ -46,42 +52,46 @@ public ServoEx hoodServo = new ServoEx("NewHoodServo");
         }else{
             limelight.pipelineSwitch(bluePipeline);
         }
-
         limelight.start();
+        turretMotor.getMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
     }
-    private ControlSystem newLauncherControlSystem = ControlSystem.builder()
+
+    //Control Systems
+    private ControlSystem launcherControlSystem = ControlSystem.builder()
             .velPid(0.02, 0,0.02)
             .basicFF(0.00025, 0.001, 0.0015)
             .build();
-    private ControlSystem newLauncherControlSystemRotate = ControlSystem.builder()
-            .posPid(0.001, 0,0.001)
+    private ControlSystem turretControlSystem = ControlSystem.builder()
+            .posPid(0.005, 0,0.0)
             .build();
 
-    public Command Speed(double speed) {
-        return new RunToVelocity(newLauncherControlSystem, speed, 20).endAfter(1).requires(this);
+    // Internal running commands
+    private Command SpinUpToSpeed(double speed) {
+        return new RunToVelocity(launcherControlSystem, speed, 20).endAfter(1);
     }
 
-    public Command rotate(double pos) {
-        return new RunToPosition(newLauncherControlSystemRotate, pos, 20).endAfter(1).requires(this);
-
+    private Command rotateToPos(double pos) {
+        return new RunToPosition(turretControlSystem, pos, 1);
     }
 
-    public Command HoodDown(){ return new SetPosition(hoodServo, 0.00).requires(this);}
+    //Hood Commands
+    public Command HoodDown(){
+        return new SetPosition(hoodServo, 0.00).requires(this);
+    }
     public Command HoodUp(){
         return new SetPosition(hoodServo, angleToServo(50)).requires(this);
+    }
+    public Command HoodToAngle(double angle){
+        return new SetPosition(hoodServo, angleToServo(angle));
     }
 
 
     public Command stop(){
-        return new LambdaCommand()
-                .setUpdate(() -> {
-                    speed =0;
-                    // Runs on update
-                })
-                .setIsDone(() -> true) // Returns if the command has finished
-                .requires(/* subsystems the command implements */)
-                .setInterruptible(true);
+        return SpinUpToSpeed(0);
     }
+
+    // Return functions
     public double getServoAngle(){
         return (hoodServo.getPosition()/0.187)*55;
     }
@@ -89,8 +99,10 @@ public ServoEx hoodServo = new ServoEx("NewHoodServo");
         return launcherMotor.getVelocity();
     }
     public double getRotatePositionRaw(){
-        return rotateMotor.getCurrentPosition();
+
+        return turretMotor.getCurrentPosition();
     }
+    //Math Functions
     private double angleToServo(double angle){  //from telemetry functions
         if(angle > 50){
             angle = 50;
@@ -100,5 +112,113 @@ public ServoEx hoodServo = new ServoEx("NewHoodServo");
         }
         angle = angle/55;
         return angle*0.187;
+    }
+
+    private double yawToRotatePos(double yaw){
+        double pos = turretMotor.getCurrentPosition()+ yaw*tKP;
+        if (pos> maxTurret){
+            pos = maxTurret;
+        }
+        if (pos< -maxTurret){
+            pos = -maxTurret;
+        }
+        return pos;
+    }
+
+    private double distanceToSpeed(double distance){
+        return  ((distance * 6) + 775);
+    }
+
+    private double distanceToHoodAngle(double distance){
+        return (-0.0034 * distance * distance + 0.8903 * distance - 6.8119);
+    }
+
+
+
+    //LimeLight functions
+    private LLResult readAprilTag(){
+        return limelight.getLatestResult();
+    }
+
+    public void setPipeline(int pipeline){
+        limelight.stop();
+        limelight.pipelineSwitch(pipeline);
+        limelight.start();
+    }
+
+    public double getDistance(LLResult result){
+
+        double limelightMountAngleDegrees = 25.0;// how many degrees back is your limelight rotated from perfectly vertical?
+        double limelightLensHeightInches = 14.370079;// distance from the center of the Limelight lens to the floor
+
+        double angleToGoalDegrees = limelightMountAngleDegrees + result.getTy();
+        double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+
+        //calculate distance
+        return (29.5 - limelightLensHeightInches) / Math.tan(angleToGoalRadians);
+    }
+
+    public double getYawToGoal(LLResult result){
+        return result.getTx();
+    }
+
+
+
+    //Telemetry
+    public void getLauncherTelemetry(Telemetry telemetry){
+        telemetry.addData("Launcher Speed:", launcherMotor.getVelocity());
+        telemetry.addData("Hood Angle", (hoodServo.getPosition()/0.187)*55);
+        telemetry.addData("Rotate Position Raw", turretMotor.getCurrentPosition());
+        LLResult result = readAprilTag();
+        if (result != null) {
+            if (result.isValid()) {
+                telemetry.addData("Yaw to Goal", result.getTx());
+                telemetry.addData("Pitch to Goal", result.getTy());
+                telemetry.addData("distance", getDistance(result));
+            }
+        }
+    }
+    public void getLauncherTelemetry(TelemetryManager telemetry){
+        telemetry.addData("Launcher Speed:", launcherMotor.getVelocity());
+        telemetry.addData("Hood Angle", (hoodServo.getPosition()/0.187)*55);
+        telemetry.addData("Rotate Position Raw", turretMotor.getCurrentPosition());
+        LLResult result = readAprilTag();
+        if (result != null) {
+            if (result.isValid()) {
+                telemetry.addData("Yaw to Goal", result.getTx());
+                telemetry.addData("Pitch to Goal", result.getTy());
+                telemetry.addData("distance", getDistance(result));
+            }
+        }
+    }
+    public Command runLauncherFromAprilTag(){
+        LLResult result = limelight.getLatestResult();
+        if (result != null) {
+            if (result.isValid()) {
+                double distance = getDistance(result);
+                double yaw = getYawToGoal(result);
+                return new ParallelGroup(
+                        SpinUpToSpeed(distanceToSpeed(distance)),
+                        rotateToPos(yawToRotatePos(yaw)),
+                        HoodToAngle(angleToServo(distanceToHoodAngle(distance)))
+                );
+            }else{
+                return stop();
+            }
+        }else{
+            return stop();
+        }
+
+    }
+    @Override
+    public void initialize() {
+
+    }
+
+    @Override
+    public void periodic() {
+//        launcherMotor.setPower(launcherControlSystem.calculate(launcherMotor.getState()));
+        turretMotor.setPower(1*turretControlSystem.calculate(turretMotor.getState()));
+
     }
 }
