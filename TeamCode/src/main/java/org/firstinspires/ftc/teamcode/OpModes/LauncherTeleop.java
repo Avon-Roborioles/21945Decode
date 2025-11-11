@@ -24,8 +24,7 @@ import dev.nextftc.hardware.driving.DriverControlledCommand;
 @TeleOp
 public class LauncherTeleop extends NextFTCOpMode {
 
-    private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-
+    private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry(); 
 
     public LauncherTeleop() {
 
