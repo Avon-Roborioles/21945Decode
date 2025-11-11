@@ -13,6 +13,7 @@ import dev.nextftc.control.ControlSystem;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.utility.LambdaCommand;
+import dev.nextftc.core.commands.utility.NullCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.hardware.controllable.RunToPosition;
 import dev.nextftc.hardware.controllable.RunToVelocity;
@@ -83,7 +84,9 @@ public class NewLauncher implements Subsystem {
         return new SetPosition(hoodServo, angleToServo(50)).requires(this);
     }
     public Command HoodToAngle(double angle){
-        return new SetPosition(hoodServo, angleToServo(angle));
+        hoodServo.setPosition(angleToServo(angle));
+        return new NullCommand();
+//        return new SetPosition(hoodServo, angleToServo(angle)).endAfter(1);
     }
 
 
@@ -200,13 +203,13 @@ public class NewLauncher implements Subsystem {
                 return new ParallelGroup(
                         SpinUpToSpeed(distanceToSpeed(distance)),
                         rotateToPos(yawToRotatePos(yaw)),
-                        HoodToAngle(angleToServo(distanceToHoodAngle(distance)))
+                        HoodToAngle(distanceToHoodAngle(distance))
                 );
             }else{
-                return stop();
+                return new NullCommand();
             }
         }else{
-            return stop();
+            return new NullCommand();
         }
 
     }
@@ -217,8 +220,8 @@ public class NewLauncher implements Subsystem {
 
     @Override
     public void periodic() {
-//        launcherMotor.setPower(launcherControlSystem.calculate(launcherMotor.getState()));
-        turretMotor.setPower(1*turretControlSystem.calculate(turretMotor.getState()));
+        launcherMotor.setPower(launcherControlSystem.calculate(launcherMotor.getState()));
+        turretMotor.setPower(turretControlSystem.calculate(turretMotor.getState()));
 
     }
 }
