@@ -26,7 +26,7 @@ public class NewLauncher implements Subsystem {
     public static final NewLauncher INSTANCE = new NewLauncher();
     private NewLauncher (){}
     //Turret Yaw Proportional gain
-    private double tKP = 500/90;
+    private double tKP = 2.5;
 
     private int maxTurret = 600;
 
@@ -64,7 +64,7 @@ public class NewLauncher implements Subsystem {
             .basicFF(0.00025, 0.001, 0.0015)
             .build();
     private ControlSystem turretControlSystem = ControlSystem.builder()
-            .posPid(0.005, 0,0.0)
+            .posPid(0.03, 0,0.005)
             .build();
 
     // Internal running commands
@@ -220,7 +220,7 @@ public class NewLauncher implements Subsystem {
 
     @Override
     public void periodic() {
-        launcherMotor.setPower(launcherControlSystem.calculate(launcherMotor.getState()));
+//        launcherMotor.setPower(launcherControlSystem.calculate(launcherMotor.getState()));
         turretMotor.setPower(turretControlSystem.calculate(turretMotor.getState()));
 
     }
