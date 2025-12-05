@@ -148,6 +148,7 @@ public class NewLauncher implements Subsystem {
         limelight.pipelineSwitch(pipeline);
         limelight.start();
     }
+    
 
     public double getDistance(LLResult result){
 
@@ -220,8 +221,8 @@ public class NewLauncher implements Subsystem {
 
     @Override
     public void periodic() {
-//        launcherMotor.setPower(launcherControlSystem.calculate(launcherMotor.getState()));
-        turretMotor.setPower(turretControlSystem.calculate(turretMotor.getState()));
+        launcherMotor.setPower(launcherControlSystem.calculate(launcherMotor.getState()));
+//        turretMotor.setPower(turretControlSystem.calculate(turretMotor.getState()));
 
     }
 }
