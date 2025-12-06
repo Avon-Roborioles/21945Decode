@@ -4,6 +4,7 @@ import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Subsystems.NewLauncher;
 import org.firstinspires.ftc.teamcode.Subsystems.TempIntake;
@@ -22,33 +23,32 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 public class ZeroTeleOp extends NextFTCOpMode {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-
+    private Servo servo;
     public ZeroTeleOp() {
 
-        addComponents(
-                new SubsystemComponent(NewLauncher.INSTANCE),
-                BulkReadComponent.INSTANCE,
-                BindingsComponent.INSTANCE,
-                new SubsystemComponent(TempIntake.INSTANCE),
-                BulkReadComponent.INSTANCE,
-                BindingsComponent.INSTANCE,
-                new PedroComponent(Constants::createFollower)
-        );
+//        addComponents(
+//                new SubsystemComponent(NewLauncher.INSTANCE),
+//                BulkReadComponent.INSTANCE,
+//                BindingsComponent.INSTANCE,
+//                new SubsystemComponent(TempIntake.INSTANCE),
+//                BulkReadComponent.INSTANCE,
+//                BindingsComponent.INSTANCE,
+//                new PedroComponent(Constants::createFollower)
+//        );
     }
     @Override
     public void onInit(){
-        NewLauncher.INSTANCE.build(hardwareMap, true);
+//        NewLauncher.INSTANCE.build(hardwareMap, true);
+        servo = hardwareMap.get(Servo.class, "servo");
     }
     @Override
     public void onStartButtonPressed() {
 
+//        Gamepads.gamepad2().b().toggleOnBecomesTrue()
+//                .whenTrue(TempIntake.INSTANCE.outtake())
+//                .whenFalse(TempIntake.INSTANCE.stop());
+//
 
-        Gamepads.gamepad1().a()
-                .whenTrue(TempIntake.INSTANCE.intake());
-        Gamepads.gamepad1().b()
-                .whenTrue(TempIntake.INSTANCE.outtake());
-        Gamepads.gamepad1().x()
-                .whenTrue(TempIntake.INSTANCE.stop());
 
 
 
@@ -58,8 +58,13 @@ public class ZeroTeleOp extends NextFTCOpMode {
     @Override
     public void onUpdate() {
 
-
-        panelsTelemetry.update(telemetry);
+        if(gamepad1.a){
+            servo.setPosition(0);
+        }else if(gamepad1.b){
+            servo.setPosition(0.4);
+        }
+//        panelsTelemetry.update(telemetry);
 
     }
+
 }
