@@ -28,16 +28,17 @@ public class SorterSubsystem extends SubsystemGroup {
         servoTwo = new ServoEx("SorterServoTwo");
         servoThree = new ServoEx("SorterServoThree");
 
-        // servo1 commands
-        servoOneOpen = new SetPosition(servoOne, 0.1).requires(this);
-        servoOneClose = new SetPosition(servoOne, 0.2).requires(this);
+
+        // servo1 commands (this has reverse positions)
+        servoOneOpen = new SetPosition(servoOne, 0.0).requires(this);
+        servoOneClose = new SetPosition(servoOne, 0.45).requires(this);
 
         // servo2 commands
-        servoTwoOpen = new SetPosition(servoTwo, 0.1).requires(this);
-        servoTwoClose = new SetPosition(servoTwo, 0.2).requires(this);
+        servoTwoOpen = new SetPosition(servoTwo, 0.45).requires(this);
+        servoTwoClose = new SetPosition(servoTwo, 0).requires(this);
 
         // severo3 commands
-        servoThreeOpen = new SetPosition(servoThree, 0.1).requires(this);
-        servoThreeClose = new SetPosition(servoThree, 0.2).requires(this);
+        servoThreeOpen = new SetPosition(servoThree, 0.45).requires(this);
+        servoThreeClose = new SetPosition(servoThree, 0).requires(this);
     }
 }
