@@ -4,17 +4,18 @@ import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import dev.nextftc.control.ControlSystem;
+import dev.nextftc.control.KineticState;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.commands.utility.NullCommand;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.hardware.controllable.MotorGroup;
 import dev.nextftc.hardware.controllable.RunToPosition;
 import dev.nextftc.hardware.controllable.RunToVelocity;
 import dev.nextftc.hardware.impl.MotorEx;
@@ -34,34 +35,39 @@ public class NewLauncher implements Subsystem {
     private int bluePipeline = 1;
     private final int startingPipeline = 0;
 
+    double speedTarget = 0;
+    double hoodAngleTarget = 0;
     private Limelight3A limelight;
-    public MotorEx launcherMotor = new MotorEx("LauncherMotor");
+    MotorGroup launcherMotorGroup = new MotorGroup(
+            new MotorEx("LauncherMotor1"),
+            new MotorEx("LauncherMotor2")
+    );
+
     public MotorEx turretMotor = new MotorEx("TurretMotor");
     public ServoEx hoodServo = new ServoEx("HoodServo");
 
     // Passes through Hardware map
     public void build(HardwareMap hardwareMap){
-        limelight = hardwareMap.get(Limelight3A.class, "Limelight");
-        limelight.pipelineSwitch(startingPipeline);
-        limelight.start();
-        turretMotor.getMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        limelight = hardwareMap.get(Limelight3A.class, "Limelight");
+//        limelight.pipelineSwitch(startingPipeline);
+//        limelight.start();
+//        turretMotor.getMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
     public void build(HardwareMap hardwareMap, boolean RedAlliance){
-        limelight = hardwareMap.get(Limelight3A.class, "Limelight");
-        if (RedAlliance){
-            limelight.pipelineSwitch(redPipeline);
-        }else{
-            limelight.pipelineSwitch(bluePipeline);
-        }
-        limelight.start();
-        turretMotor.getMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        limelight = hardwareMap.get(Limelight3A.class, "Limelight");
+//        if (RedAlliance){
+//            limelight.pipelineSwitch(redPipeline);
+//        }else{
+//            limelight.pipelineSwitch(bluePipeline);
+//        }
+//        limelight.start();
+//        turretMotor.getMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
     }
 
     //Control Systems
     private ControlSystem launcherControlSystem = ControlSystem.builder()
-            .velPid(0.02, 0,0.02)
-            .basicFF(0.00025, 0.001, 0.0015)
+            .velPid(0.02, 0,0.0)
             .build();
     private ControlSystem turretControlSystem = ControlSystem.builder()
             .posPid(0.03, 0,0.005)
@@ -88,7 +94,9 @@ public class NewLauncher implements Subsystem {
         return new NullCommand();
 //        return new SetPosition(hoodServo, angleToServo(angle)).endAfter(1);
     }
-
+    public void setHoodToAngle(double angle){
+        hoodServo.setPosition(angleToServo(angle));
+    }
 
     public Command stop(){
         return SpinUpToSpeed(0);
@@ -99,7 +107,7 @@ public class NewLauncher implements Subsystem {
         return (hoodServo.getPosition()/0.187)*55;
     }
     public double getMotorSpeed(){
-        return launcherMotor.getVelocity();
+        return launcherMotorGroup.getVelocity();
     }
     public double getRotatePositionRaw(){
 
@@ -148,6 +156,70 @@ public class NewLauncher implements Subsystem {
         limelight.pipelineSwitch(pipeline);
         limelight.start();
     }
+    public double getTargetSpeed(){
+        return speedTarget;
+    }
+    public void setTargetSpeed(double speed){
+        this.speedTarget = speed;
+    }
+    public Command speedUp = new LambdaCommand()
+            .setStart(() -> {
+                // Runs on start
+                speedTarget = speedTarget + 50;
+            })
+            .setUpdate(() -> {
+                // Runs on update
+            })
+            .setStop(interrupted -> {
+                // Runs on stop
+            })
+            .setIsDone(() -> true) // Returns if the command has finished
+            .requires(this)
+            .setInterruptible(true);
+    public Command speedDown = new LambdaCommand()
+            .setStart(() -> {
+                // Runs on start
+                speedTarget = speedTarget - 50;
+            })
+            .setUpdate(() -> {
+                // Runs on update
+            })
+            .setStop(interrupted -> {
+                // Runs on stop
+            })
+            .setIsDone(() -> true) // Returns if the command has finished
+            .requires(this)
+            .setInterruptible(true);
+    public Command hoodPlus = new LambdaCommand()
+            .setStart(() -> {
+                // Runs on start
+                hoodAngleTarget = hoodAngleTarget + 5;
+            })
+            .setUpdate(() -> {
+                // Runs on update
+            })
+            .setStop(interrupted -> {
+                // Runs on stop
+            })
+            .setIsDone(() -> true) // Returns if the command has finished
+            .requires(this)
+            .setInterruptible(true);
+    public Command hoodMinus = new LambdaCommand()
+            .setStart(() -> {
+                // Runs on start
+                hoodAngleTarget = hoodAngleTarget - 5;
+            })
+            .setUpdate(() -> {
+                // Runs on update
+            })
+            .setStop(interrupted -> {
+                // Runs on stop
+            })
+            .setIsDone(() -> true) // Returns if the command has finished
+            .requires(this)
+            .setInterruptible(true);
+
+
 
     public double getDistance(LLResult result){
 
@@ -169,30 +241,31 @@ public class NewLauncher implements Subsystem {
 
     //Telemetry
     public void getLauncherTelemetry(Telemetry telemetry){
-        telemetry.addData("Launcher Speed:", launcherMotor.getVelocity());
+        telemetry.addData("Launcher Speed:", launcherMotorGroup.getVelocity());
         telemetry.addData("Hood Angle", (hoodServo.getPosition()/0.187)*55);
-        telemetry.addData("Rotate Position Raw", turretMotor.getCurrentPosition());
-        LLResult result = readAprilTag();
-        if (result != null) {
-            if (result.isValid()) {
-                telemetry.addData("Yaw to Goal", result.getTx());
-                telemetry.addData("Pitch to Goal", result.getTy());
-                telemetry.addData("distance", getDistance(result));
-            }
-        }
+//        telemetry.addData("Rotate Position Raw", turretMotor.getCurrentPosition());
+//        LLResult result = readAprilTag();
+//        if (result != null) {
+//            if (result.isValid()) {
+//                telemetry.addData("Yaw to Goal", result.getTx());
+//                telemetry.addData("Pitch to Goal", result.getTy());
+//                telemetry.addData("distance", getDistance(result));
+//            }
+//        }
     }
     public void getLauncherTelemetry(TelemetryManager telemetry){
-        telemetry.addData("Launcher Speed:", launcherMotor.getVelocity());
+
+        telemetry.addData("Launcher Speed", (double) launcherMotorGroup.getLeader().getVelocity());
         telemetry.addData("Hood Angle", (hoodServo.getPosition()/0.187)*55);
-        telemetry.addData("Rotate Position Raw", turretMotor.getCurrentPosition());
-        LLResult result = readAprilTag();
-        if (result != null) {
-            if (result.isValid()) {
-                telemetry.addData("Yaw to Goal", result.getTx());
-                telemetry.addData("Pitch to Goal", result.getTy());
-                telemetry.addData("distance", getDistance(result));
-            }
-        }
+//        telemetry.addData("Rotate Position Raw", turretMotor.getCurrentPosition());
+//        LLResult result = readAprilTag();
+//        if (result != null) {
+//            if (result.isValid()) {
+//                telemetry.addData("Yaw to Goal", result.getTx());
+//                telemetry.addData("Pitch to Goal", result.getTy());
+//                telemetry.addData("distance", getDistance(result));
+//            }
+//        }
     }
     public Command runLauncherFromAprilTag(){
         LLResult result = limelight.getLatestResult();
@@ -215,13 +288,17 @@ public class NewLauncher implements Subsystem {
     }
     @Override
     public void initialize() {
-
+        launcherControlSystem.setGoal(new KineticState(0,0));
+        speedTarget = 0;
+        hoodAngleTarget = 0;
     }
 
     @Override
     public void periodic() {
-//        launcherMotor.setPower(launcherControlSystem.calculate(launcherMotor.getState()));
-        turretMotor.setPower(turretControlSystem.calculate(turretMotor.getState()));
+        launcherControlSystem.setGoal(new KineticState(0, speedTarget));
+        launcherMotorGroup.setPower(launcherControlSystem.calculate(launcherMotorGroup.getState()));
+        hoodServo.setPosition(angleToServo(hoodAngleTarget));
+//        turretMotor.setPower(turretControlSystem.calculate(turretMotor.getState()));
 
     }
 }
