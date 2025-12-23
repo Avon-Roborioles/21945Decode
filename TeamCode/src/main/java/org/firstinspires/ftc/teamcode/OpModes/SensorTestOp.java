@@ -14,7 +14,6 @@ public class SensorTestOp extends LinearOpMode {
     private double angleOffset = 206;
     private final OctoQuadFWv3.EncoderDataBlock data = new OctoQuadFWv3.EncoderDataBlock();
     private AnalogInput floodgate;
-    private DcMotor intakeMotor;
     @Override
     public void runOpMode() throws InterruptedException {
         OctoQuadFWv3 Octo = hardwareMap.get(OctoQuadFWv3.class, "OctoQuad");
@@ -25,13 +24,11 @@ public class SensorTestOp extends LinearOpMode {
         Octo.setSingleChannelPulseWidthTracksWrap(0, true);
         Octo.saveParametersToFlash();
         floodgate = hardwareMap.get(AnalogInput.class, "FloodGate");
-        intakeMotor = hardwareMap.get(DcMotor.class, "Intake Motor");
 
 
         waitForStart();
         while (opModeIsActive()&& !isStopRequested()) {
             Octo.readAllEncoderData(data);
-            intakeMotor.setPower(-1);
             turretPos = ((data.positions[0] * DEGREES_PER_US) - angleOffset);
             telemetry.addData("Floodgate Output Raw", floodgate.getVoltage());
             telemetry.addData("Current", (floodgate.getVoltage()/3.3)*80);

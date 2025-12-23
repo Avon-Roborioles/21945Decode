@@ -36,7 +36,7 @@ public class LauncherTeleop extends NextFTCOpMode {
                 new SubsystemComponent(NewLauncher.INSTANCE,SorterSubsystem.INSTANCE),
 
 
-//                new PedroComponent(Constants::createFollower),
+                new PedroComponent(Constants::createFollower),
 //                new SubsystemComponent(TempIntake.INSTANCE),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
@@ -44,7 +44,6 @@ public class LauncherTeleop extends NextFTCOpMode {
     }
     @Override
     public void onInit(){
-        NewLauncher.INSTANCE.build(hardwareMap, true);
         NewLauncher.INSTANCE.initialize();
         SorterSubsystem.INSTANCE.initialize();
 
@@ -52,23 +51,19 @@ public class LauncherTeleop extends NextFTCOpMode {
     }
     @Override
     public void onStartButtonPressed() {
-//        DriverControlledCommand driverControlled = new PedroDriverControlled(
-//                Gamepads.gamepad1().leftStickY().negate(),
-//                Gamepads.gamepad1().leftStickX().negate(),
-//                Gamepads.gamepad1().rightStickX().negate(),
-//                false
-//        );
-//        driverControlled.schedule();
+        DriverControlledCommand driverControlled = new PedroDriverControlled(
+                Gamepads.gamepad1().leftStickY().negate(),
+                Gamepads.gamepad1().leftStickX().negate(),
+                Gamepads.gamepad1().rightStickX().negate(),
+                false
+        );
+        driverControlled.schedule();
+
         Gamepads.gamepad2().a().whenBecomesTrue(new SequentialGroup( SorterSubsystem.INSTANCE.ejectOne.setRequirements(SorterSubsystem.INSTANCE), SorterSubsystem.INSTANCE.resetSorter.setRequirements(SorterSubsystem.INSTANCE)));
         Gamepads.gamepad2().x().whenBecomesTrue(new SequentialGroup( SorterSubsystem.INSTANCE.ejectTwo.setRequirements(SorterSubsystem.INSTANCE), SorterSubsystem.INSTANCE.resetSorter.setRequirements(SorterSubsystem.INSTANCE)));
         Gamepads.gamepad2().y().whenBecomesTrue(new SequentialGroup( SorterSubsystem.INSTANCE.ejectThree.setRequirements(SorterSubsystem.INSTANCE), SorterSubsystem.INSTANCE.resetSorter.setRequirements(SorterSubsystem.INSTANCE)));
         Gamepads.gamepad2().b().whenBecomesTrue(new SequentialGroup( SorterSubsystem.INSTANCE.ejectOne, SorterSubsystem.INSTANCE.resetSorter,SorterSubsystem.INSTANCE.ejectTwo, SorterSubsystem.INSTANCE.resetSorter,SorterSubsystem.INSTANCE.ejectThree, SorterSubsystem.INSTANCE.resetSorter));
-        Gamepads.gamepad2().dpadUp().whenBecomesTrue(NewLauncher.INSTANCE.hoodPlus);
-        Gamepads.gamepad2().dpadDown().whenBecomesTrue(NewLauncher.INSTANCE.hoodMinus);
-        Gamepads.gamepad2().leftBumper().whenBecomesTrue(NewLauncher.INSTANCE.speedUp);
-        Gamepads.gamepad2().rightBumper().whenBecomesTrue(NewLauncher.INSTANCE.speedDown);
-        Gamepads.gamepad2().back().toggleOnBecomesTrue()
-                .whenTrue(NewLauncher.INSTANCE.stop());
+
 
 
     }
@@ -77,8 +72,6 @@ public class LauncherTeleop extends NextFTCOpMode {
 
 
 
-        NewLauncher.INSTANCE.getLauncherTelemetry(telemetry);
-        NewLauncher.INSTANCE.getLauncherTelemetry(panelsTelemetry);
         telemetry.update();
         panelsTelemetry.update(telemetry);
 
