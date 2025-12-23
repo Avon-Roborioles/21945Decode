@@ -19,9 +19,9 @@ public class SorterSubsystem implements Subsystem {
     private SorterSubsystem (){    }
     Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
     Timing.Timer reset = new Timing.Timer(150, TimeUnit.MILLISECONDS);
-    public ServoEx servoOne = new ServoEx("servo1");
-    public ServoEx servoTwo = new ServoEx("servo2");
-    public ServoEx servoThree = new ServoEx("servo3");
+    public ServoEx servoOne = new ServoEx("Sort L");
+    public ServoEx servoTwo = new ServoEx("Sort C");
+    public ServoEx servoThree = new ServoEx("Sort R");
 
 
     public Command ejectOne = new LambdaCommand()
@@ -46,14 +46,14 @@ public class SorterSubsystem implements Subsystem {
             new LambdaCommand()
             .setStart(() -> {
                 // Runs on start
-                servoTwo.setPosition(0.45);
+                servoTwo.setPosition(0);
                 wait.start();
             })
             .setUpdate(() -> {
                 // Runs on update
             })
             .setStop(interrupted -> {
-                servoTwo.setPosition(0);
+                servoTwo.setPosition(0.45);
                 // Runs on stop
             })
             .setIsDone(() -> wait.done()) // Returns if the command has finished
@@ -64,14 +64,14 @@ public class SorterSubsystem implements Subsystem {
             .setStart(() -> {
                 // Runs on start
 
-                servoThree.setPosition(0);
+                servoThree.setPosition(0.45);
                 wait.start();
             })
             .setUpdate(() -> {
                 // Runs on update
             })
             .setStop(interrupted -> {
-                servoThree.setPosition(0.45);
+                servoThree.setPosition(0);
                 // Runs on stop
             })
             .setIsDone(() -> wait.done()) // Returns if the command has finished

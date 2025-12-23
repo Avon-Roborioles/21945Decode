@@ -39,12 +39,12 @@ public class NewLauncher implements Subsystem {
     double hoodAngleTarget = 0;
     private Limelight3A limelight;
     MotorGroup launcherMotorGroup = new MotorGroup(
-            new MotorEx("LauncherMotor1"),
-            new MotorEx("LauncherMotor2")
+            new MotorEx("Launch Motor 1"),
+            new MotorEx("Launch Motor 2")
     );
 
-    public MotorEx turretMotor = new MotorEx("TurretMotor");
-    public ServoEx hoodServo = new ServoEx("HoodServo");
+    public MotorEx turretMotor = new MotorEx("Turret Motor");
+    public ServoEx hoodServo = new ServoEx("Hood");
 
     // Passes through Hardware map
     public void build(HardwareMap hardwareMap){

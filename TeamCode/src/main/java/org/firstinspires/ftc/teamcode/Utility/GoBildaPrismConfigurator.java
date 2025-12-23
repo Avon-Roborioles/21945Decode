@@ -172,7 +172,7 @@ public class GoBildaPrismConfigurator extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        prism = hardwareMap.get(GoBildaPrismDriver.class,"prism");
+        prism = hardwareMap.get(GoBildaPrismDriver.class,"Prism");
 
         telemetry.addLine("Welcome to the Prism Configurator, enjoy these fun stats " +
                 "and click the 'Play' button to continue");

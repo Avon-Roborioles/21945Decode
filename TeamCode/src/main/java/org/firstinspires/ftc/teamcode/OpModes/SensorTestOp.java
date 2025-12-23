@@ -31,6 +31,7 @@ public class SensorTestOp extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()&& !isStopRequested()) {
             Octo.readAllEncoderData(data);
+            intakeMotor.setPower(-1);
             turretPos = ((data.positions[0] * DEGREES_PER_US) - angleOffset);
             telemetry.addData("Floodgate Output Raw", floodgate.getVoltage());
             telemetry.addData("Current", (floodgate.getVoltage()/3.3)*80);

@@ -74,13 +74,13 @@ public class GoBildaPrismExample extends LinearOpMode {
          * Initialize the hardware variables. Note that the strings used here must correspond
          * to the names assigned during the robot configuration step on the driver's station.
          */
-        prism = hardwareMap.get(GoBildaPrismDriver.class,"prism");
+        prism = hardwareMap.get(GoBildaPrismDriver.class,"Prism");
 
         /*
          * Set the number of LEDs (starting at 0) that are in your strip. This can be longer
          * than the actual length of the strip, but some animations won't look quite right.
          */
-        prism.setStripLength(32);
+        prism.setStripLength(36);
 
         /*
          * Here you can customize the specifics of different animations. Each animation has it's

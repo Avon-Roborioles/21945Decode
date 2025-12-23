@@ -58,7 +58,7 @@ public class GoBildaPrismArtboardExample extends LinearOpMode {
          * Initialize the hardware variables. Note that the strings used here must correspond
          * to the names assigned during the robot configuration step on the driver's station.
          */
-        prism = hardwareMap.get(GoBildaPrismDriver.class, "prism");
+        prism = hardwareMap.get(GoBildaPrismDriver.class, "Prism");
 
         telemetry.addData("Device ID: ", prism.getDeviceID());
         telemetry.addData("Firmware Version: ", prism.getFirmwareVersionString());
