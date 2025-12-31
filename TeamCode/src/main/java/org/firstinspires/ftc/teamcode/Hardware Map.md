@@ -53,6 +53,7 @@ M2: "Turret Motor"
 M3: "Intake Motor"
 
 Servos:
+S4: "LL Tilt"
 S5: "Beacon"
 
 Uart:

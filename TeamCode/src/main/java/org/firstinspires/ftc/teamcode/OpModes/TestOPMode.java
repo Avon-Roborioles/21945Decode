@@ -4,12 +4,17 @@ package org.firstinspires.ftc.teamcode.OpModes;
 
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Subsystems.CompIntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompLauncherSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompPTOSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompSorterSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.CompTurretSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.CompVisionSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
@@ -28,9 +33,10 @@ public class TestOPMode extends NextFTCOpMode {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
+
     {
         addComponents(
-                new SubsystemComponent(CompLauncherSubsystem.INSTANCE, CompIntakeSubsystem.INSTANCE, CompSorterSubsystem.INSTANCE, CompPTOSubsystem.INSTANCE),
+                new SubsystemComponent(CompLauncherSubsystem.INSTANCE, CompIntakeSubsystem.INSTANCE, CompSorterSubsystem.INSTANCE, CompPTOSubsystem.INSTANCE, CompTurretSubsystem.INSTANCE, CompVisionSubsystem.INSTANCE),
                 new PedroComponent(Constants::createFollower),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
@@ -39,18 +45,22 @@ public class TestOPMode extends NextFTCOpMode {
 
     @Override
     public void onInit() {
+        PedroComponent.follower().setPose(new Pose(72,72,270));
+
     }
 
     @Override
     public void onWaitForStart() {
+        panelsTelemetry.update(telemetry);
 
     }
 
     @Override
     public void onStartButtonPressed() {
+
         DriverControlledCommand driverControlled = new PedroDriverControlled(
-                Gamepads.gamepad1().leftStickY().negate(),
-                Gamepads.gamepad1().leftStickX().negate(),
+                Gamepads.gamepad1().leftStickY(),
+                Gamepads.gamepad1().leftStickX(),
                 Gamepads.gamepad1().rightStickX().negate(),
                 false
         );
@@ -82,10 +92,10 @@ public class TestOPMode extends NextFTCOpMode {
         Gamepads.gamepad2().cross();
         Gamepads.gamepad2().dpadUp().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.SpeedUp);
         Gamepads.gamepad2().dpadDown().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.SpeedDown);
-        Gamepads.gamepad2().dpadLeft();
-        Gamepads.gamepad2().dpadRight();
-        Gamepads.gamepad2().leftStickX().atLeast(0.75);
-        Gamepads.gamepad2().leftStickX().lessThan(-0.75);
+        Gamepads.gamepad2().dpadLeft().whenBecomesTrue(CompVisionSubsystem.INSTANCE.up);
+        Gamepads.gamepad2().dpadRight().whenBecomesTrue(CompVisionSubsystem.INSTANCE.down);
+        Gamepads.gamepad2().leftStickX().atLeast(0.75).whenTrue(CompTurretSubsystem.INSTANCE.turretLeft);
+        Gamepads.gamepad2().leftStickX().lessThan(-0.75).whenTrue(CompTurretSubsystem.INSTANCE.turretRight);;
         Gamepads.gamepad2().leftStickY().lessThan(-0.75).whenBecomesTrue(CompLauncherSubsystem.INSTANCE.HoodPlus);
         Gamepads.gamepad2().leftStickY().atLeast(0.75).whenBecomesTrue(CompLauncherSubsystem.INSTANCE.HoodMinus);
         Gamepads.gamepad2().leftStickButton().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.HoodDown());
@@ -107,8 +117,15 @@ public class TestOPMode extends NextFTCOpMode {
     @Override
     public void onUpdate() {
         CompLauncherSubsystem.INSTANCE.getLauncherTelemetry(panelsTelemetry);
-        telemetry.update();
+
+
+        telemetry.addData("x", PedroComponent.follower().getPose().getX());
+        telemetry.addData("y", PedroComponent.follower().getPose().getY());
+        telemetry.addData("heading", PedroComponent.follower().getPose().getHeading());
+        telemetry.addData("Distance to Goal", Math.hypot((0-PedroComponent.follower().getPose().getX()), (144-PedroComponent.follower().getPose().getY())));
+
         panelsTelemetry.update(telemetry);
+
     }
 
     @Override

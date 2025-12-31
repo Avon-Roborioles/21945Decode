@@ -25,7 +25,7 @@ public class CompLauncherSubsystem implements Subsystem {
     public ServoEx hoodServo = new ServoEx("Hood");
 
     private ControlSystem launcherControlSystem = ControlSystem.builder()
-            .velPid(0.02, 0,0.0)
+            .velPid(0.01, 0,0.0001)
             .build();
 
     // Variables
@@ -33,7 +33,7 @@ public class CompLauncherSubsystem implements Subsystem {
     double hoodAngleTarget = 0;
     double maxHoodAngle = 45;
     double maxHoodPWM = 0.97;
-    double maxSpeed = 1600;
+    double maxSpeed = 1700;
 
 
 
@@ -223,6 +223,7 @@ public class CompLauncherSubsystem implements Subsystem {
         }
 
         hoodServo.setPosition(angleToServo(hoodAngleTarget));
+        launcherControlSystem.isWithinTolerance(new KineticState(0,20));
     }
 
 

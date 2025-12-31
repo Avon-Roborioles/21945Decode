@@ -10,7 +10,7 @@ public class CompIntakeSubsystem implements Subsystem {
     private CompIntakeSubsystem() {}
 
     //Variables
-    private double intakeSpeed = 1;
+    private double intakeSpeed = -1;
 
     // put hardware, commands, etc here
     public MotorEx intakeMotor = new MotorEx("Intake Motor");
