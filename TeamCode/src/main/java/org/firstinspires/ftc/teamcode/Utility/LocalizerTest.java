@@ -21,6 +21,7 @@
 
 package org.firstinspires.ftc.teamcode.Utility;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.MovingStatistics;
@@ -33,6 +34,7 @@ import org.firstinspires.ftc.teamcode.Utility.OctoQuadFWv3;
  * localizer feature, located here:
  */
 @TeleOp
+@Disabled
 public class LocalizerTest extends LinearOpMode
 {
     // #####################################################################################

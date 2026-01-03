@@ -52,7 +52,7 @@ public class CompTurretSubsystem implements Subsystem {
     public Command turretLeft = new LambdaCommand()
             .setStart(() -> {
                 // Runs on start
-                turretTargetPos = turretTargetPos - 1;
+                turretTargetPos -= 5;
             })
             .setUpdate(() -> {
                 // Runs on update
@@ -67,7 +67,7 @@ public class CompTurretSubsystem implements Subsystem {
     public Command turretRight = new LambdaCommand()
             .setStart(() -> {
                 // Runs on start
-                turretTargetPos = turretTargetPos + 1;
+                turretTargetPos += 5;
             })
             .setUpdate(() -> {
                 // Runs on update
@@ -124,13 +124,17 @@ public class CompTurretSubsystem implements Subsystem {
                 }
             }else {
                 turretControlSystem.setGoal(new KineticState(turretTargetPos));
-//                turretMotor.setPower(turretControlSystem.calculate(new KineticState(calculatePos(), (data.velocities[0]) * DEGREES_PER_US)));
+                turretMotor.setPower(turretControlSystem.calculate(new KineticState(calculatePos(), (data.velocities[0]) * DEGREES_PER_US)));
             }
         }
+        getTurretTelemetryAdv();
+        // periodic logic (runs every loop)
+    }
+    public void getTurretTelemetryAdv(){
+        ActiveOpMode.telemetry().addLine("-------------- Turret Telemetry Adv: --------------");
         ActiveOpMode.telemetry().addData("Turret Homed", homed);
         ActiveOpMode.telemetry().addData("Turret Position", calculatePos());
         ActiveOpMode.telemetry().addData("Turret Velo", data.velocities[0]);
         ActiveOpMode.telemetry().addData("Turret Target", turretTargetPos);
-        // periodic logic (runs every loop)
     }
 }

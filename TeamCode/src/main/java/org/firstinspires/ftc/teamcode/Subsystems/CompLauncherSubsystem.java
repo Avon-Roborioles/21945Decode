@@ -7,6 +7,7 @@ import dev.nextftc.control.KineticState;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.controllable.MotorGroup;
 import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.impl.ServoEx;
@@ -93,7 +94,7 @@ public class CompLauncherSubsystem implements Subsystem {
     public Command SpeedUp = new LambdaCommand()
             .setStart(() -> {
                 // Runs on start
-                speedTarget = speedTarget + 50;
+                speedTarget += 50;
             })
             .setUpdate(() -> {
                 // Runs on update
@@ -108,7 +109,7 @@ public class CompLauncherSubsystem implements Subsystem {
     public Command SpeedDown = new LambdaCommand()
             .setStart(() -> {
                 // Runs on start
-                speedTarget = speedTarget - 50;
+                speedTarget -= 50;
             })
             .setUpdate(() -> {
                 // Runs on update
@@ -139,7 +140,7 @@ public class CompLauncherSubsystem implements Subsystem {
     public Command HoodPlus = new LambdaCommand()
             .setStart(() -> {
                 // Runs on start
-                hoodAngleTarget = hoodAngleTarget + 1;
+                hoodAngleTarget += 5;
             })
             .setUpdate(() -> {
                 // Runs on update
@@ -154,7 +155,7 @@ public class CompLauncherSubsystem implements Subsystem {
     public Command HoodMinus = new LambdaCommand()
             .setStart(() -> {
                 // Runs on start
-                hoodAngleTarget = hoodAngleTarget - 1;
+                hoodAngleTarget -= 5;
             })
             .setUpdate(() -> {
                 // Runs on update
@@ -183,15 +184,6 @@ public class CompLauncherSubsystem implements Subsystem {
         return distance;
     }
 
-    //Telemetry
-    public void getLauncherTelemetry(TelemetryManager telemetry){
-        telemetry.addData("Launcher Speed", getMotorSpeed());
-        telemetry.addData("Launcher Speed Target", getTargetSpeed());
-        telemetry.addData("Hood Angle", getServoAngle());
-        telemetry.addData("Hood Angle Target", hoodAngleTarget);
-        telemetry.addData("Hood PWM", hoodServo.getPosition());
-
-    }
 
 
     @Override
@@ -215,15 +207,28 @@ public class CompLauncherSubsystem implements Subsystem {
         }else if (hoodAngleTarget<0){
             hoodAngleTarget = 0;
         }
-        if (!(speedTarget<250)){
-            launcherControlSystem.setGoal(new KineticState(0, speedTarget));
-            launcherMotorGroup.setPower(launcherControlSystem.calculate(launcherMotorGroup.getState()));
-        }else {
-            launcherMotorGroup.setPower(0);
-        }
+        if (ActiveOpMode.isStarted()) {
+            if (!(speedTarget < 250)) {
+                launcherControlSystem.setGoal(new KineticState(0, speedTarget));
+                launcherMotorGroup.setPower(launcherControlSystem.calculate(launcherMotorGroup.getState()));
+            } else {
+                launcherMotorGroup.setPower(0);
+            }
 
-        hoodServo.setPosition(angleToServo(hoodAngleTarget));
-        launcherControlSystem.isWithinTolerance(new KineticState(0,20));
+            hoodServo.setPosition(angleToServo(hoodAngleTarget));
+            launcherControlSystem.isWithinTolerance(new KineticState(0, 20));
+        }
+        getLauncherTelemetryAdv();
+    }
+    //Telemetry
+    public void getLauncherTelemetryAdv(){
+        ActiveOpMode.telemetry().addLine("-------------- Launcher Telemetry Adv: --------------");
+        ActiveOpMode.telemetry().addData("Launcher Speed", getMotorSpeed());
+        ActiveOpMode.telemetry().addData("Launcher Speed Target", getTargetSpeed());
+        ActiveOpMode.telemetry().addData("Hood Angle", getServoAngle());
+        ActiveOpMode.telemetry().addData("Hood Angle Target", hoodAngleTarget);
+        ActiveOpMode.telemetry().addData("Hood PWM", hoodServo.getPosition());
+
     }
 
 

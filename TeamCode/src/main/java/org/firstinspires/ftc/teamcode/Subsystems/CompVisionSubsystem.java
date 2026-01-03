@@ -1,26 +1,158 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+
 import dev.nextftc.core.commands.Command;
-import dev.nextftc.core.commands.groups.ParallelGroup;
+import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.impl.ServoEx;
 import dev.nextftc.hardware.positionable.SetPosition;
 
 public class CompVisionSubsystem implements Subsystem {
     public static final CompVisionSubsystem INSTANCE = new CompVisionSubsystem();
     private CompVisionSubsystem() {}
+
     public ServoEx LLTilt = new ServoEx("LL Tilt");
+    private Limelight3A limelight;
+
+    private int redPipeline = 0;
+    private int bluePipeline = 1;
+    private final int startingPipeline = 0;
+    private double maxLLAngle = 90;
+    private double minLLAngle = -40;
+    private double maxLLPWM = 1;
+    private double minLLPWM = 0;
+    private LLResult latestResult;
+    private double lLTiltAngle = 0;
+
     // put hardware, commands, etc here
     public Command down = new SetPosition(LLTilt, 0);
     public Command up = new SetPosition(LLTilt, 1);
+    public Command tiltPlus = new LambdaCommand()
+            .setStart(() -> {
+                // Runs on start
+                lLTiltAngle += 5;
+            })
+            .setUpdate(() -> {
+                // Runs on update
+            })
+            .setStop(interrupted -> {
+                // Runs on stop
+            })
+            .setIsDone(() -> true) // Returns if the command has finished
+            .requires(this)
+            .setInterruptible(true);
+    public Command tiltMinus = new LambdaCommand()
+            .setStart(() -> {
+                // Runs on start
+                lLTiltAngle -= 5;
+            })
+            .setUpdate(() -> {
+                // Runs on update
+            })
+            .setStop(interrupted -> {
+                // Runs on stop
+            })
+            .setIsDone(() -> true) // Returns if the command has finished
+            .requires(this)
+            .setInterruptible(true);
+    public void llTiltToAngle (double angle){
+        //clamp it
+        if (angle > maxLLAngle) {
+            angle = maxLLAngle;
+        }else if (angle < minLLAngle ){
+            angle = minLLAngle;
+        }
+        //find fraction of total Range
+        angle = angle - minLLAngle;// make it positive
+        angle = angle/(maxLLAngle-minLLAngle);
+
+
+        LLTilt.setPosition((angle*(maxLLPWM-minLLPWM))+minLLPWM);
+
+    }
+
+    public void setLLToRedGoal(){
+        limelight.stop();
+        limelight.pipelineSwitch(redPipeline);
+        limelight.start();
+    }
+    public void setLLToBlue(){
+        limelight.stop();
+        limelight.pipelineSwitch(bluePipeline);
+        limelight.start();
+    }
+    private void stopLL(){
+        limelight.stop();
+    }
+    private void startLL(){
+        limelight.start();
+    }
+    public void captureSnap(){
+        limelight.captureSnapshot("snap "+ ActiveOpMode.getRuntime());
+    }
+    private LLResult readAprilTag(){
+        return limelight.getLatestResult();
+    }
+    private LLResult update(){
+        latestResult = limelight.getLatestResult();
+        return latestResult;
+    }
+    public double getDistanceToGoal(LLResult result){
+
+        double limelightMountAngleDegrees = 25.0;// how many degrees back is your limelight rotated from perfectly vertical?
+        double limelightLensHeightInches = 14.370079;// distance from the center of the Limelight lens to the floor
+
+        double angleToGoalDegrees = limelightMountAngleDegrees + result.getTy();
+        double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+
+        //calculate distance
+        return (29.5 - limelightLensHeightInches) / Math.tan(angleToGoalRadians);
+    }
+
+    public double getYawToGoal(LLResult result){
+        return result.getTx();
+    }
 
     @Override
     public void initialize() {
         // initialization logic (runs on init)
+        limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "LimeLight");
+        lLTiltAngle = 0;
+
     }
+
+
 
     @Override
     public void periodic() {
         // periodic logic (runs every loop)
+        getLLTelemetryAdv();
+        getLLTiltTelemetryAdv();
+        if(ActiveOpMode.isStarted()){
+            llTiltToAngle(lLTiltAngle);
+        }
+    }
+    public void getLLTelemetryAdv(){
+        update();
+        ActiveOpMode.telemetry().addLine("-------------- LimeLight Telemetry Adv: --------------");
+        if (latestResult != null) {
+            ActiveOpMode.telemetry().addData("Target Visible", latestResult.isValid());
+            if (latestResult.isValid()) {
+
+
+                ActiveOpMode.telemetry().addData("Yaw to Goal", latestResult.getTx());
+                ActiveOpMode.telemetry().addData("Pitch to Goal", latestResult.getTy());
+                ActiveOpMode.telemetry().addData("distance", getDistanceToGoal(latestResult));
+            }
+        }
+    }
+    public void getLLTiltTelemetryAdv(){
+        ActiveOpMode.telemetry().addLine("-------------- LimeLight Tilt Telemetry Adv: --------------");
+        ActiveOpMode.telemetry().addData("LL Tilt Target Angle", lLTiltAngle );
+        ActiveOpMode.telemetry().addData("LL Tilt Current PWM", LLTilt.getPosition());
+
     }
 }

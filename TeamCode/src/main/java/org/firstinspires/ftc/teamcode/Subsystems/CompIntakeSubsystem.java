@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.powerable.SetPower;
 
@@ -30,5 +31,10 @@ public class CompIntakeSubsystem implements Subsystem {
     @Override
     public void periodic() {
         // periodic logic (runs every loop)
+        getIntakeTelemetryAdv();
+    }
+    public void getIntakeTelemetryAdv(){
+        ActiveOpMode.telemetry().addLine("-------------- Intake Telemetry Adv: --------------");
+
     }
 }
