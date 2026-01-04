@@ -23,10 +23,14 @@ public class CompSorterSubsystem implements Subsystem {
     private double cDown = 0.035;
     private double rUp = 0.535;
     private double rDown = 0.035;
+    private double cWake = cDown +0.005;
+    private double lWake = lDown +0.025;
+    private double rWake = rDown +0.005;
     private boolean busy = false;
 
     Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
     Timing.Timer reset = new Timing.Timer(200, TimeUnit.MILLISECONDS);
+    Timing.Timer wakeT = new Timing.Timer(50, TimeUnit.MILLISECONDS);
 
     public ServoEx sortL = new ServoEx("Sort L");
     public ServoEx sortC = new ServoEx("Sort C");
@@ -34,6 +38,35 @@ public class CompSorterSubsystem implements Subsystem {
     public RevColorSensorV3 sortCSL;
     public RevColorSensorV3 sortCSR;
     public RevColorSensorV3 sortCSC;
+
+    public enum SlotDetection {
+        EMPTY,
+        PURPLE,
+        GREEN,
+        UNKNOWN
+    }
+
+    public Command wake = new LambdaCommand()
+            .setStart(() -> {
+                // Runs on start
+                busy = true;
+                sortL.setPosition(lWake);
+                sortC.setPosition(cWake);
+                sortR.setPosition(rWake);
+                wakeT.start();
+            })
+            .setUpdate(() -> {
+                // Runs on update
+            })
+            .setStop(interrupted -> {
+                sortL.setPosition(lDown);
+                sortC.setPosition(cDown);
+                sortR.setPosition(rDown);
+                // Runs on stop
+            })
+            .setIsDone(() -> wakeT.done()) // Returns if the command has finished
+            .requires()
+            .setInterruptible(false);
 
 
 
@@ -97,9 +130,14 @@ public class CompSorterSubsystem implements Subsystem {
     public Command resetSorter = new LambdaCommand()
             .setStart(() -> {
                 // Runs on start
+                busy = true;
+
                 reset.start();
             })
             .setUpdate(() -> {
+                sortL.setPosition(lDown);
+                sortC.setPosition(cDown);
+                sortR.setPosition(rDown);
                 // Runs on update
             })
             .setStop(interrupted -> {
@@ -110,15 +148,51 @@ public class CompSorterSubsystem implements Subsystem {
             .requires()
             .setInterruptible(false);
     // put hardware, commands, etc here
-    private boolean centerDetected(){
-        return (sortCSC.getDistance(DistanceUnit.MM)<41.5);
-    }
     private boolean leftDetected(){
-        return (sortCSL.getDistance(DistanceUnit.MM)<43.75);
+        return (sortCSL.getDistance(DistanceUnit.MM)<75);
+    }
+    private boolean centerDetected(){
+        return (sortCSC.getDistance(DistanceUnit.MM)<80);
     }
     private boolean rightDetected(){
-        return (sortCSR.getDistance(DistanceUnit.MM)<90);
+        return (sortCSR.getDistance(DistanceUnit.MM)<44);
     }
+
+    private SlotDetection left(){
+        if(leftDetected()){
+            if(sortCSL.red()>50 && sortCSL.green()<=100) {
+                return SlotDetection.PURPLE;
+            }else if (sortCSL.green()>= 39){
+                return SlotDetection.GREEN;
+            }else return SlotDetection.UNKNOWN;
+        }else {
+            return SlotDetection.EMPTY;
+        }
+    }
+    private SlotDetection center(){
+        if(centerDetected()){
+            if(sortCSC.red()>50 && sortCSC.green()<115 && sortCSC.blue()>125) {
+                return SlotDetection.PURPLE;
+            }else if (sortCSC.green()> 116){
+                return SlotDetection.GREEN;
+            }else return SlotDetection.UNKNOWN;
+        }else {
+            return SlotDetection.EMPTY;
+        }
+    }
+    private SlotDetection right(){
+        if(rightDetected()){
+            if(sortCSR.red()>20 && sortCSR.green()<37.5) {
+                return SlotDetection.PURPLE;
+            }else if ( sortCSR.blue()<25){
+                return SlotDetection.GREEN;
+            }else return SlotDetection.UNKNOWN;
+        }else {
+            return SlotDetection.EMPTY;
+        }
+    }
+
+
 
 
     @Override
@@ -127,9 +201,6 @@ public class CompSorterSubsystem implements Subsystem {
         sortCSL = ActiveOpMode.hardwareMap().get(RevColorSensorV3.class, "Sort CS L");
         sortCSC = ActiveOpMode.hardwareMap().get(RevColorSensorV3.class, "Sort CS C");
         sortCSR = ActiveOpMode.hardwareMap().get(RevColorSensorV3.class, "Sort CS R");
-        sortCSL.setGain(10);
-        sortCSC.setGain(100);
-        sortCSR.setGain(1);
         busy= false;
     }
 
@@ -144,13 +215,15 @@ public class CompSorterSubsystem implements Subsystem {
         ActiveOpMode.telemetry().addData("Sort CS L Distance MM:", sortCSL.getDistance(DistanceUnit.MM));
         ActiveOpMode.telemetry().addData("Sort CS C Distance MM:", sortCSC.getDistance(DistanceUnit.MM));
         ActiveOpMode.telemetry().addData("Sort CS R Distance MM:", sortCSR.getDistance(DistanceUnit.MM));
-        ActiveOpMode.telemetry().addData("Sort L Detected", leftDetected());
-        ActiveOpMode.telemetry().addData("Sort C Detected", centerDetected());
-        ActiveOpMode.telemetry().addData("Sort R Detected", rightDetected());
-        ActiveOpMode.telemetry().addData("Sort CS L [R,G,B]", "" + sortCSL.red() + ", " + sortCSL.green() + ", " + sortCSL.blue());
-        ActiveOpMode.telemetry().addData("Sort CS C [R,G,B]", "" + sortCSC.red() + ", " + sortCSC.green() + ", " + sortCSC.blue());
-        ActiveOpMode.telemetry().addData("Sort CS R [R,G,B]", "" + sortCSR.red() + ", " + sortCSR.green() + ", " + sortCSR.blue());
-
+        ActiveOpMode.telemetry().addData("Left Slot:", left());
+        ActiveOpMode.telemetry().addData("Center Slot:", center());
+        ActiveOpMode.telemetry().addData("Right Slot:", right());
+//        ActiveOpMode.telemetry().addData("Sort L Detected", leftDetected());
+//        ActiveOpMode.telemetry().addData("Sort C Detected", centerDetected());
+//        ActiveOpMode.telemetry().addData("Sort R Detected", rightDetected());
+        ActiveOpMode.telemetry().addData("Sort CS L [A,R,G,B]","" + sortCSL.alpha() + ", " + sortCSL.red() + ", " + sortCSL.green() + ", " + sortCSL.blue());
+        ActiveOpMode.telemetry().addData("Sort CS C [A,R,G,B]","" + sortCSC.alpha() + ", " + sortCSC.red() + ", " + sortCSC.green() + ", " + sortCSC.blue());
+        ActiveOpMode.telemetry().addData("Sort CS R [A,R,G,B]","" + sortCSR.alpha() + ", " + sortCSR.red() + ", " + sortCSR.green() + ", " + sortCSR.blue());
 
 
     }

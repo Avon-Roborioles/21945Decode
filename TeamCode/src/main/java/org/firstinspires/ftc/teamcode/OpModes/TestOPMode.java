@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.CompTurretSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompVisionSubsystem;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
+import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
@@ -56,6 +57,7 @@ public class TestOPMode extends NextFTCOpMode {
 
     @Override
     public void onStartButtonPressed() {
+
 
         DriverControlledCommand driverControlled = new PedroDriverControlled(
                 Gamepads.gamepad1().leftStickY(),
@@ -111,6 +113,9 @@ public class TestOPMode extends NextFTCOpMode {
         Gamepads.gamepad2().share().toggleOnBecomesTrue().whenTrue(CompIntakeSubsystem.INSTANCE.outtake).whenBecomesFalse(CompIntakeSubsystem.INSTANCE.stop);
         Gamepads.gamepad2().ps();
         Gamepads.gamepad2().touchpad().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.StopLauncher);
+        Command start = new SequentialGroup(CompSorterSubsystem.INSTANCE.wake, CompSorterSubsystem.INSTANCE.resetSorter);
+        start.schedule();
+
     }
 
     @Override

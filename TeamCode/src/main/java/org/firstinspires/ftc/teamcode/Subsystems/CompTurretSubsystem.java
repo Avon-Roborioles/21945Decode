@@ -25,6 +25,7 @@ public class CompTurretSubsystem implements Subsystem {
     private double turretTargetPos =0;
     private final OctoQuadFWv3.EncoderDataBlock data = new OctoQuadFWv3.EncoderDataBlock();
     boolean homed = false;
+    double maxPower = 1;
     private CompTurretSubsystem() {}
 
     // put hardware, commands, etc here
@@ -117,14 +118,14 @@ public class CompTurretSubsystem implements Subsystem {
             }
             if(!homed){
                 turretControlSystem.setGoal(new KineticState(turretTargetPos));
-                turretMotor.setPower(turretControlSystem.calculate(new KineticState(calculatePos(), (data.velocities[0]) * DEGREES_PER_US))*0.5);
+                turretMotor.setPower(turretControlSystem.calculate(new KineticState(calculatePos(), (data.velocities[0]) * DEGREES_PER_US))*0.5 * maxPower);
                 if(Math.abs(turretPos-turretTargetPos)<4){
                     turretMotor.setPower(0);
                     homed = true;
                 }
             }else {
                 turretControlSystem.setGoal(new KineticState(turretTargetPos));
-                turretMotor.setPower(turretControlSystem.calculate(new KineticState(calculatePos(), (data.velocities[0]) * DEGREES_PER_US)));
+                turretMotor.setPower(turretControlSystem.calculate(new KineticState(calculatePos(), (data.velocities[0]) * DEGREES_PER_US * maxPower)));
             }
         }
         getTurretTelemetryAdv();
