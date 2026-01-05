@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 
 import dev.nextftc.control.ControlSystem;
@@ -26,7 +27,7 @@ public class CompLauncherSubsystem implements Subsystem {
     public ServoEx hoodServo = new ServoEx("Hood");
 
     private ControlSystem launcherControlSystem = ControlSystem.builder()
-            .velPid(0.01, 0,0.000)
+            .velPid(0.0035, 0,0.000)
             .build();
 
     // Variables
@@ -216,12 +217,15 @@ public class CompLauncherSubsystem implements Subsystem {
             }
 
             hoodServo.setPosition(angleToServo(hoodAngleTarget));
-            launcherControlSystem.isWithinTolerance(new KineticState(0, 20));
+            launcherControlSystem.isWithinTolerance(new KineticState(0, 5));
         }
         getLauncherTelemetryAdv();
     }
     //Telemetry
     public void getLauncherTelemetryAdv(){
+        PanelsTelemetry.INSTANCE.getTelemetry().addData("Launcher Speed", getMotorSpeed());
+        PanelsTelemetry.INSTANCE.getTelemetry().addData("Launcher Speed Target", getTargetSpeed());
+
         ActiveOpMode.telemetry().addLine("-------------- Launcher Telemetry Adv: --------------");
         ActiveOpMode.telemetry().addData("Launcher Speed", getMotorSpeed());
         ActiveOpMode.telemetry().addData("Launcher Speed Target", getTargetSpeed());
@@ -230,6 +234,7 @@ public class CompLauncherSubsystem implements Subsystem {
         ActiveOpMode.telemetry().addData("Hood PWM", hoodServo.getPosition());
 
     }
+
 
 
 }

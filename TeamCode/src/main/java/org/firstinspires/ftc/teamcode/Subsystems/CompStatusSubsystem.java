@@ -20,6 +20,8 @@ public class CompStatusSubsystem implements Subsystem {
     public static final CompStatusSubsystem INSTANCE = new CompStatusSubsystem();
     private CompStatusSubsystem() {}
 
+    int brightness = 10 ;
+
     // put hardware, commands, etc here
     private AnalogInput floodgate ;
     private ServoImplEx beacon;
@@ -60,49 +62,49 @@ public class CompStatusSubsystem implements Subsystem {
 
 
         //Purple Left
-        purpleLeft.setBrightness(50);
+        purpleLeft.setBrightness(brightness);
         purpleLeft.setPrimaryColor(162,0,225);
         purpleLeft.setStartIndex(0);
         purpleLeft.setStopIndex(11);
 
         //Purple Middle Back
-        purpleMiddleBack.setBrightness(50);
+        purpleMiddleBack.setBrightness(brightness);
         purpleMiddleBack.setPrimaryColor(162,0,225);
         purpleMiddleBack.setStartIndex(12);
         purpleMiddleBack.setStopIndex(17);
 
         //Purple Right
-        purpleRight.setBrightness(50);
+        purpleRight.setBrightness(brightness);
         purpleRight.setPrimaryColor(162,0,225);
         purpleRight.setStartIndex(18);
         purpleRight.setStopIndex(29);
 
         //Purple Middle Front
-        purpleMiddleFront.setBrightness(50);
+        purpleMiddleFront.setBrightness(brightness);
         purpleMiddleFront.setPrimaryColor(162,0,225);
         purpleMiddleFront.setStartIndex(30);
         purpleMiddleFront.setStopIndex(36);
 
         //Green Left
-        greenLeft.setBrightness(50);
+        greenLeft.setBrightness(brightness);
         greenLeft.setPrimaryColor(0,255,0);
         greenLeft.setStartIndex(0);
         greenLeft.setStopIndex(11);
 
         //Green Middle Back
-        greenMiddleBack.setBrightness(50);
+        greenMiddleBack.setBrightness(brightness);
         greenMiddleBack.setPrimaryColor(0,255,0);
         greenMiddleBack.setStartIndex(12);
         greenMiddleBack.setStopIndex(17);
 
         //Green Right
-        greenRight.setBrightness(50);
+        greenRight.setBrightness(brightness);
         greenRight.setPrimaryColor(0,255,0);
         greenRight.setStartIndex(18);
         greenRight.setStopIndex(29);
 
         //Green Middle Front
-        greenMiddleFront.setBrightness(50);
+        greenMiddleFront.setBrightness(brightness);
         greenMiddleFront.setPrimaryColor(0,255,0);
         greenMiddleFront.setStartIndex(30);
         greenMiddleFront.setStopIndex(36);
@@ -132,25 +134,25 @@ public class CompStatusSubsystem implements Subsystem {
         offMiddleFront.setStopIndex(36);
 
         //Error Left
-        errorLeft.setBrightness(50);
+        errorLeft.setBrightness(brightness);
         errorLeft.setPrimaryColor(255,128,0);
         errorLeft.setStartIndex(0);
         errorLeft.setStopIndex(11);
 
         //Error Middle Back
-        errorMiddleBack.setBrightness(50);
+        errorMiddleBack.setBrightness(brightness);
         errorMiddleBack.setPrimaryColor(255,128,0);
         errorMiddleBack.setStartIndex(12);
         errorMiddleBack.setStopIndex(17);
 
         //Error Right
-        errorRight.setBrightness(50);
+        errorRight.setBrightness(brightness);
         errorRight.setPrimaryColor(255,128,0);
         errorRight.setStartIndex(18);
         errorRight.setStopIndex(29);
 
         //Error Middle Front
-        errorMiddleFront.setBrightness(50);
+        errorMiddleFront.setBrightness(brightness);
         errorMiddleFront.setPrimaryColor(255,128,0);
         errorMiddleFront.setStartIndex(30);
         errorMiddleFront.setStopIndex(36);
