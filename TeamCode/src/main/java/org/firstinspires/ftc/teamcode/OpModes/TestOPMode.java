@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.CompSorterSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompStatusSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompTurretSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompVisionSubsystem;
+import org.firstinspires.ftc.teamcode.Utility.Prism.GoBildaPrismDriver;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import dev.nextftc.core.commands.Command;
@@ -46,12 +47,17 @@ public class TestOPMode extends NextFTCOpMode {
     @Override
     public void onInit() {
         PedroComponent.follower().setPose(new Pose(72,72,270));
+        CompStatusSubsystem.INSTANCE.prism.clearAllAnimations();
+        CompStatusSubsystem.INSTANCE.prism.loadAnimationsFromArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_0);
+        CompStatusSubsystem.INSTANCE.prism.updateAllAnimations();
+
 
     }
 
     @Override
     public void onWaitForStart() {
         panelsTelemetry.update(telemetry);
+
 
     }
 
@@ -116,6 +122,7 @@ public class TestOPMode extends NextFTCOpMode {
         Command start = new SequentialGroup(CompSorterSubsystem.INSTANCE.wake, CompSorterSubsystem.INSTANCE.resetSorter);
         start.schedule();
 
+
     }
 
     @Override
@@ -129,10 +136,16 @@ public class TestOPMode extends NextFTCOpMode {
         telemetry.addData("Distance to Goal", Math.hypot((0-PedroComponent.follower().getPose().getX()), (144-PedroComponent.follower().getPose().getY())));
 
         panelsTelemetry.update(telemetry);
+        CompStatusSubsystem.INSTANCE.sorterLight.schedule();
 
     }
 
     @Override
     public void onStop() {
+        CompStatusSubsystem.INSTANCE.returnToDefault();
+        CompStatusSubsystem.INSTANCE.prism.clearAllAnimations();
+        CompStatusSubsystem.INSTANCE.prism.loadAnimationsFromArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_0);
+        CompStatusSubsystem.INSTANCE.prism.updateAllAnimations();
+
     }
 }

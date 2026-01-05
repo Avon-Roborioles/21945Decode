@@ -149,16 +149,16 @@ public class CompSorterSubsystem implements Subsystem {
             .setInterruptible(false);
     // put hardware, commands, etc here
     private boolean leftDetected(){
-        return (sortCSL.getDistance(DistanceUnit.MM)<75);
+        return (sortCSL.getDistance(DistanceUnit.MM)<75 && sortCSL.getDistance(DistanceUnit.MM)>38);
     }
     private boolean centerDetected(){
-        return (sortCSC.getDistance(DistanceUnit.MM)<80);
+        return (sortCSC.getDistance(DistanceUnit.MM)<80 && sortCSC.getDistance(DistanceUnit.MM)>38);
     }
     private boolean rightDetected(){
-        return (sortCSR.getDistance(DistanceUnit.MM)<44);
+        return (sortCSR.getDistance(DistanceUnit.MM)<44 && sortCSR.getDistance(DistanceUnit.MM)>38);
     }
 
-    private SlotDetection left(){
+    public SlotDetection leftSlot(){
         if(leftDetected()){
             if(sortCSL.red()>50 && sortCSL.green()<=100) {
                 return SlotDetection.PURPLE;
@@ -169,7 +169,7 @@ public class CompSorterSubsystem implements Subsystem {
             return SlotDetection.EMPTY;
         }
     }
-    private SlotDetection center(){
+    public SlotDetection centerSlot(){
         if(centerDetected()){
             if(sortCSC.red()>50 && sortCSC.green()<115 && sortCSC.blue()>125) {
                 return SlotDetection.PURPLE;
@@ -180,7 +180,7 @@ public class CompSorterSubsystem implements Subsystem {
             return SlotDetection.EMPTY;
         }
     }
-    private SlotDetection right(){
+    public SlotDetection rightSlot(){
         if(rightDetected()){
             if(sortCSR.red()>20 && sortCSR.green()<37.5) {
                 return SlotDetection.PURPLE;
@@ -215,9 +215,9 @@ public class CompSorterSubsystem implements Subsystem {
         ActiveOpMode.telemetry().addData("Sort CS L Distance MM:", sortCSL.getDistance(DistanceUnit.MM));
         ActiveOpMode.telemetry().addData("Sort CS C Distance MM:", sortCSC.getDistance(DistanceUnit.MM));
         ActiveOpMode.telemetry().addData("Sort CS R Distance MM:", sortCSR.getDistance(DistanceUnit.MM));
-        ActiveOpMode.telemetry().addData("Left Slot:", left());
-        ActiveOpMode.telemetry().addData("Center Slot:", center());
-        ActiveOpMode.telemetry().addData("Right Slot:", right());
+        ActiveOpMode.telemetry().addData("Left Slot:", leftSlot());
+        ActiveOpMode.telemetry().addData("Center Slot:", centerSlot());
+        ActiveOpMode.telemetry().addData("Right Slot:", rightSlot());
 //        ActiveOpMode.telemetry().addData("Sort L Detected", leftDetected());
 //        ActiveOpMode.telemetry().addData("Sort C Detected", centerDetected());
 //        ActiveOpMode.telemetry().addData("Sort R Detected", rightDetected());

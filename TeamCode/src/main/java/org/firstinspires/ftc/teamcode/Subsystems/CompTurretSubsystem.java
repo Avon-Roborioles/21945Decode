@@ -25,7 +25,7 @@ public class CompTurretSubsystem implements Subsystem {
     private double turretTargetPos =0;
     private final OctoQuadFWv3.EncoderDataBlock data = new OctoQuadFWv3.EncoderDataBlock();
     boolean homed = false;
-    double maxPower = 1;
+    double maxPower = 0;
     private CompTurretSubsystem() {}
 
     // put hardware, commands, etc here
