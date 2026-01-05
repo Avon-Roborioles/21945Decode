@@ -20,9 +20,9 @@ public class CompVisionSubsystem implements Subsystem {
     private int redPipeline = 0;
     private int bluePipeline = 1;
     private final int startingPipeline = 0;
-    private double maxLLAngle = 90;
+    private double maxLLAngle = 49;
     private double minLLAngle = -40;
-    private double maxLLPWM = 1;
+    private double maxLLPWM = 0.76;
     private double minLLPWM = 0;
     private LLResult latestResult;
     private double lLTiltAngle = 0;

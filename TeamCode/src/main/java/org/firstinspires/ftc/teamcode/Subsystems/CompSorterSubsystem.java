@@ -87,6 +87,20 @@ public class CompSorterSubsystem implements Subsystem {
             .setIsDone(() -> wait.done()) // Returns if the command has finished
             .requires()
             .setInterruptible(false);
+    public void sendLeft() {
+        sortL.setPosition(lUp);
+    }
+    public void sendCenter() {
+        sortC.setPosition(cUp);
+    }
+    public void sendRight() {
+        sortR.setPosition(rUp);
+    }
+    public void resetSorter(){
+        sortL.setPosition(lDown);
+        sortC.setPosition(cDown);
+        sortR.setPosition(rDown);
+    }
 
     public Command ejectC =
 
@@ -190,6 +204,12 @@ public class CompSorterSubsystem implements Subsystem {
         }else {
             return SlotDetection.EMPTY;
         }
+    }
+    public boolean sorterFull(){
+        return leftDetected() && centerDetected() && rightDetected();
+    }
+    public boolean sorterEmpty(){
+        return !leftDetected() && !centerDetected() && !rightDetected();
     }
 
 

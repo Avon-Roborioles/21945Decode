@@ -57,12 +57,7 @@ public class CompStatusSubsystem implements Subsystem {
 
 
     private void buildAnimations(){
-        //Purple Snakes
-        purpleSnakes.setBrightness(5);
-        purpleSnakes.setSnakeLength(10);
-        purpleSnakes.setColors(new Color(160,32,225));
-        purpleSnakes.setSpeed(0.1F);
-        purpleSnakes.setDirection(Direction.Forward);
+
 
         //Purple Left
         purpleLeft.setBrightness(50);
@@ -173,6 +168,11 @@ public class CompStatusSubsystem implements Subsystem {
         prism.enableDefaultBootArtboard(true);
         prism.setDefaultBootArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_0);
         prism.clearAllAnimations();
+        purpleSnakes.setBrightness(5);
+        purpleSnakes.setSnakeLength(10);
+        purpleSnakes.setColors(new Color(160,32,225));
+        purpleSnakes.setSpeed(0.1F);
+        purpleSnakes.setDirection(Direction.Forward);
         prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,purpleSnakes);
         prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_0);
 

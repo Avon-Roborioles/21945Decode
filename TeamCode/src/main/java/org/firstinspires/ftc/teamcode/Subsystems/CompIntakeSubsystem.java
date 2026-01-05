@@ -16,9 +16,20 @@ public class CompIntakeSubsystem implements Subsystem {
     // put hardware, commands, etc here
     public MotorEx intakeMotor = new MotorEx("Intake Motor");
 
-    public Command intake = new SetPower(intakeMotor, intakeSpeed);
-    public Command outtake = new SetPower(intakeMotor, -intakeSpeed);
-    public Command stop = new SetPower(intakeMotor, 0);
+    public Command Intake = new SetPower(intakeMotor, intakeSpeed);
+    public Command Outtake = new SetPower(intakeMotor, -intakeSpeed);
+    public Command StopIntake = new SetPower(intakeMotor, 0);
+
+    public void intake(){
+        intakeMotor.setPower(intakeSpeed);
+    }
+    public void outtake(){
+        intakeMotor.setPower(-intakeSpeed);
+    }
+    public void stopIntake(){
+        intakeMotor.setPower(0);
+    }
+
 
 
     @Override

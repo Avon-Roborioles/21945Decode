@@ -26,7 +26,7 @@ public class CompLauncherSubsystem implements Subsystem {
     public ServoEx hoodServo = new ServoEx("Hood");
 
     private ControlSystem launcherControlSystem = ControlSystem.builder()
-            .velPid(0.01, 0,0.0001)
+            .velPid(0.01, 0,0.000)
             .build();
 
     // Variables
