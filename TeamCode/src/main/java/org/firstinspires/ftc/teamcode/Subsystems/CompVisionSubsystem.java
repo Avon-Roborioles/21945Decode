@@ -129,8 +129,8 @@ public class CompVisionSubsystem implements Subsystem {
     @Override
     public void periodic() {
         // periodic logic (runs every loop)
-        getLLTelemetryAdv();
-        getLLTiltTelemetryAdv();
+//        getLLTelemetryAdv();
+//        getLLTiltTelemetryAdv();
         if(ActiveOpMode.isStarted()){
             llTiltToAngle(lLTiltAngle);
         }

@@ -227,7 +227,7 @@ public class CompSorterSubsystem implements Subsystem {
     @Override
     public void periodic() {
         // periodic logic (runs every loop)
-        getSorterTelemetryAdv();
+//        getSorterTelemetryAdv();
     }
     public void getSorterTelemetryAdv(){
         ActiveOpMode.telemetry().addLine("-------------- Sorter Telemetry Adv: --------------");

@@ -128,7 +128,7 @@ public class CompTurretSubsystem implements Subsystem {
                 turretMotor.setPower(turretControlSystem.calculate(new KineticState(calculatePos(), (data.velocities[0]) * DEGREES_PER_US * maxPower)));
             }
         }
-        getTurretTelemetryAdv();
+//        getTurretTelemetryAdv();
         // periodic logic (runs every loop)
     }
     public void getTurretTelemetryAdv(){

@@ -208,6 +208,7 @@ public class CompLauncherSubsystem implements Subsystem {
         }else if (hoodAngleTarget<0){
             hoodAngleTarget = 0;
         }
+        //Needs Some Work for Loop Times Replace With Command
         if (ActiveOpMode.isStarted()) {
             if (!(speedTarget < 250)) {
                 launcherControlSystem.setGoal(new KineticState(0, speedTarget));
@@ -219,7 +220,7 @@ public class CompLauncherSubsystem implements Subsystem {
             hoodServo.setPosition(angleToServo(hoodAngleTarget));
             launcherControlSystem.isWithinTolerance(new KineticState(0, 5));
         }
-        getLauncherTelemetryAdv();
+
     }
     //Telemetry
     public void getLauncherTelemetryAdv(){

@@ -21,7 +21,6 @@ import org.firstinspires.ftc.teamcode.Utility.Prism.GoBildaPrismDriver;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import dev.nextftc.core.commands.Command;
-import dev.nextftc.core.commands.groups.CommandGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
@@ -33,18 +32,18 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 import dev.nextftc.hardware.driving.DriverControlledCommand;
 
 @TeleOp
-public class CompIshOPMode extends NextFTCOpMode {
+public class LoopTimeTestOPMode extends NextFTCOpMode {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
     long prevTime = 0;
     MovingStatistics statistics = new MovingStatistics(200);
+    //With nothing loop times around 150 Hz
 
     {
         addComponents(
                 new SubsystemComponent(CompLauncherSubsystem.INSTANCE, CompIntakeSubsystem.INSTANCE, CompSorterSubsystem.INSTANCE, CompPTOSubsystem.INSTANCE, CompTurretSubsystem.INSTANCE, CompVisionSubsystem.INSTANCE, CompStatusSubsystem.INSTANCE, LauncherSubsystemGroup.INSTANCE),
                 new PedroComponent(Constants::createFollower),
-                BulkR
-                eadComponent.INSTANCE,
+                BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
     }
@@ -148,15 +147,14 @@ public class CompIshOPMode extends NextFTCOpMode {
         prevTime = curTime;
 
 //        CompStatusSubsystem.INSTANCE.sorterLight.schedule();
-
+        /*------------The Problem^
+        *
+         */
     }
 
     @Override
     public void onStop() {
-        CompStatusSubsystem.INSTANCE.returnToDefault();
-        CompStatusSubsystem.INSTANCE.prism.clearAllAnimations();
-        CompStatusSubsystem.INSTANCE.prism.loadAnimationsFromArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_0);
-        telemetry.addLine("Done");
+
 
 
     }
