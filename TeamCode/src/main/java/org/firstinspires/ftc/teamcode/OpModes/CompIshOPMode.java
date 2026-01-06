@@ -43,8 +43,7 @@ public class CompIshOPMode extends NextFTCOpMode {
         addComponents(
                 new SubsystemComponent(CompLauncherSubsystem.INSTANCE, CompIntakeSubsystem.INSTANCE, CompSorterSubsystem.INSTANCE, CompPTOSubsystem.INSTANCE, CompTurretSubsystem.INSTANCE, CompVisionSubsystem.INSTANCE, CompStatusSubsystem.INSTANCE, LauncherSubsystemGroup.INSTANCE),
                 new PedroComponent(Constants::createFollower),
-                BulkR
-                eadComponent.INSTANCE,
+                BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
     }

@@ -175,38 +175,56 @@ public class CompSorterSubsystem implements Subsystem {
     public SlotDetection leftSlot(){
         if(leftDetected()){
             if(sortCSL.red()>50 && sortCSL.green()<=100) {
+                CompStatusSubsystem.INSTANCE.setLeftPurple();
                 return SlotDetection.PURPLE;
             }else if (sortCSL.green()>= 39){
+                CompStatusSubsystem.INSTANCE.setLeftGreen();
                 return SlotDetection.GREEN;
-            }else return SlotDetection.UNKNOWN;
+            }else {
+                CompStatusSubsystem.INSTANCE.setLeftError();
+                return SlotDetection.UNKNOWN;
+            }
         }else {
+            CompStatusSubsystem.INSTANCE.setLeftOff();
             return SlotDetection.EMPTY;
         }
     }
     public SlotDetection centerSlot(){
         if(centerDetected()){
             if(sortCSC.red()>50 && sortCSC.green()<115 && sortCSC.blue()>125) {
+                CompStatusSubsystem.INSTANCE.setCenterPurple();
                 return SlotDetection.PURPLE;
             }else if (sortCSC.green()> 116){
+                CompStatusSubsystem.INSTANCE.setCenterGreen();
                 return SlotDetection.GREEN;
-            }else return SlotDetection.UNKNOWN;
+            }else {
+                CompStatusSubsystem.INSTANCE.setCenterError();
+                return SlotDetection.UNKNOWN;
+            }
         }else {
+            CompStatusSubsystem.INSTANCE.setCenterOff();
             return SlotDetection.EMPTY;
         }
     }
     public SlotDetection rightSlot(){
         if(rightDetected()){
             if(sortCSR.red()>20 && sortCSR.green()<37.5) {
+                CompStatusSubsystem.INSTANCE.setRightPurple();
                 return SlotDetection.PURPLE;
             }else if ( sortCSR.blue()<25){
+                CompStatusSubsystem.INSTANCE.setRightGreen();
                 return SlotDetection.GREEN;
-            }else return SlotDetection.UNKNOWN;
+            }else {
+                CompStatusSubsystem.INSTANCE.setRightError();
+                return SlotDetection.UNKNOWN;
+            }
         }else {
+            CompStatusSubsystem.INSTANCE.setRightOff();
             return SlotDetection.EMPTY;
         }
     }
     public boolean sorterFull(){
-        return leftDetected() && centerDetected() && rightDetected();
+        return !(leftSlot() == SlotDetection.EMPTY) && !(centerSlot() == SlotDetection.EMPTY) && !(rightSlot() == SlotDetection.EMPTY);
     }
     public boolean sorterEmpty(){
         return !leftDetected() && !centerDetected() && !rightDetected();
