@@ -18,6 +18,7 @@ public class CompLauncherSubsystem implements Subsystem {
     public static final CompLauncherSubsystem INSTANCE = new CompLauncherSubsystem();
     private CompLauncherSubsystem() {}
 
+
     // Hardware
     public MotorGroup launcherMotorGroup = new MotorGroup(
             new MotorEx("Launch Motor 1"),
@@ -27,7 +28,8 @@ public class CompLauncherSubsystem implements Subsystem {
     public ServoEx hoodServo = new ServoEx("Hood");
 
     private ControlSystem launcherControlSystem = ControlSystem.builder()
-            .velPid(0.015, 0.0000000000,1000)
+            .basicFF(0.00047,0,0)
+            .velPid(0.0025, 0.0000000000,0)
             .build();
 
     // Variables
@@ -219,7 +221,7 @@ public class CompLauncherSubsystem implements Subsystem {
             }
 
             hoodServo.setPosition(angleToServo(hoodAngleTarget));
-
+//            launcherControlSystem.isWithinTolerance(new KineticState(0, 10));
 
         }
         getLauncherTelemetryAdv();
