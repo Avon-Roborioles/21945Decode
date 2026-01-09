@@ -187,6 +187,11 @@ public class CompLauncherSubsystem implements Subsystem {
         return distance;
     }
 
+    public void RunLauncherFromDistance(double distance){
+        speedTarget = distanceToSpeed(distance);
+        hoodAngleTarget = distanceToHoodAngle(distance);
+    }
+
 
 
     @Override
@@ -221,7 +226,6 @@ public class CompLauncherSubsystem implements Subsystem {
             }
 
             hoodServo.setPosition(angleToServo(hoodAngleTarget));
-//            launcherControlSystem.isWithinTolerance(new KineticState(0, 10));
 
         }
         getLauncherTelemetryAdv();

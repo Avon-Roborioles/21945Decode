@@ -50,7 +50,7 @@ public class CompIshOPMode extends NextFTCOpMode {
 
     @Override
     public void onInit() {
-        PedroComponent.follower().setPose(new Pose(72,72,270));
+        PedroComponent.follower().setPose(new Pose(72,72,(3*Math.PI)/2));
 
 
 

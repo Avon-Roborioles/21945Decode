@@ -1,15 +1,17 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
-import com.bylazar.telemetry.TelemetryManager;
+import com.bylazar.telemetry.PanelsTelemetry;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
 import org.firstinspires.ftc.teamcode.Utility.OctoQuadFWv3;
+import org.firstinspires.ftc.teamcode.Utility.TrapezoidProfileConstraints;
+import org.firstinspires.ftc.teamcode.Utility.TrapezoidProfileElement;
 
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
+import dev.nextftc.control.interpolators.InterpolatorElement;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
@@ -25,17 +27,20 @@ public class CompTurretSubsystem implements Subsystem {
     private double turretTargetPos =0;
     private final OctoQuadFWv3.EncoderDataBlock data = new OctoQuadFWv3.EncoderDataBlock();
     boolean homed = false;
-    double maxPower = 0;
+    double maxPower = 1;
+    boolean inTrap = false;
+
     private CompTurretSubsystem() {}
 
     // put hardware, commands, etc here
-    public MotorEx turretMotor = new MotorEx("Turret Motor");
+    public MotorEx turretMotor = new MotorEx("Turret Motor").reversed();
+    private InterpolatorElement interpolator = new TrapezoidProfileElement(new TrapezoidProfileConstraints(10, 100));
 
 
     private ControlSystem turretControlSystem = ControlSystem.builder()
-            .posPid(0.015, 0.00000000001,0.046)//.posPid(0.0393/2, 0.00000000001,0.02)
-//            .velPid(0,0,0)
-
+            .posPid(0.016, 0.0000000000,0.01)//.posPid(0.0393/2, 0.00000000001,0.02)
+            .basicFF(0,0,0.29)
+//            .interpolator(new TrapezoidProfileElement(new TrapezoidProfileConstraints(20, 100)))
             .build();
 
     public double getRotatePositionRaw(){
@@ -53,7 +58,7 @@ public class CompTurretSubsystem implements Subsystem {
     public Command turretLeft = new LambdaCommand()
             .setStart(() -> {
                 // Runs on start
-                turretTargetPos -= 5;
+                turretTargetPos += 5;
             })
             .setUpdate(() -> {
                 // Runs on update
@@ -68,7 +73,7 @@ public class CompTurretSubsystem implements Subsystem {
     public Command turretRight = new LambdaCommand()
             .setStart(() -> {
                 // Runs on start
-                turretTargetPos += 5;
+                turretTargetPos -= 5;
             })
             .setUpdate(() -> {
                 // Runs on update
@@ -80,13 +85,21 @@ public class CompTurretSubsystem implements Subsystem {
             .requires(this)
             .setInterruptible(true);
 
+    public void turnTurretToFieldAngle(double botHeadingRad, double fieldAngleRad){
+        double turretZeroHeading = botHeadingRad + Math.PI;
+        turretTargetPos = Math.toDegrees(fieldAngleRad - turretZeroHeading);
+
+
+    }
+
 
     @Override
     public void initialize() {
         Octo = ActiveOpMode.hardwareMap().get(OctoQuadFWv3.class, "OctoQuad");
         Octo.resetEverything();
+        interpolator.reset();
         Octo.setChannelBankConfig(OctoQuadFWv3.ChannelBankConfig.ALL_PULSE_WIDTH);
-        Octo.setSingleEncoderDirection(0, OctoQuadFWv3.EncoderDirection.REVERSE);
+        Octo.setSingleEncoderDirection(0, OctoQuadFWv3.EncoderDirection.FORWARD);
         Octo.setSingleChannelPulseWidthParams(0, new OctoQuadFWv3.ChannelPulseWidthParams(0,1024));
         Octo.setSingleChannelPulseWidthTracksWrap(0, true);
         Octo.saveParametersToFlash();
@@ -95,6 +108,8 @@ public class CompTurretSubsystem implements Subsystem {
         turretTargetPos=0;
         turretControlSystem.reset();
         homed = false;
+        inTrap = false;
+
 
 
         // initialization logic (runs on init)
@@ -106,36 +121,60 @@ public class CompTurretSubsystem implements Subsystem {
 
             Octo.readAllEncoderData(data);
             calculatePos();
-//            if(turretTargetPos>200){
-//                turretTargetPos= -180;
-//            }else if(turretTargetPos<-200){
-//                turretTargetPos= 180;
-//            }
             if(turretTargetPos>200){
-                turretTargetPos= 200;
+                inTrap = true;
+                interpolator.reset();
+                turretTargetPos= -180;
+                interpolator.setGoal(new KineticState(turretTargetPos));
             }else if(turretTargetPos<-200){
-                turretTargetPos= -200;
+                inTrap = true;
+                interpolator.reset();
+                turretTargetPos= 180;
+                interpolator.setGoal(new KineticState(turretTargetPos));
             }
+//            if(turretTargetPos>200){
+//                turretTargetPos= 200;
+//            }else if(turretTargetPos<-200){
+//                turretTargetPos= -200;
+//            }
+
             if(!homed){
                 turretControlSystem.setGoal(new KineticState(turretTargetPos));
-                turretMotor.setPower((turretControlSystem.calculate(new KineticState(calculatePos(), (data.velocities[0]) * DEGREES_PER_US))*0.5) * maxPower);
+                turretMotor.setPower((turretControlSystem.calculate(new KineticState(calculatePos(), (data.velocities[0]) * DEGREES_PER_US))*0.6) * maxPower);
                 if(Math.abs(turretPos-turretTargetPos)<4){
                     turretMotor.setPower(0);
                     homed = true;
                 }
-            }else {
+            }else if(!inTrap) {
+
                 turretControlSystem.setGoal(new KineticState(turretTargetPos));
+
+
                 turretMotor.setPower((turretControlSystem.calculate(new KineticState(calculatePos(), (data.velocities[0]) * DEGREES_PER_US)))*maxPower);
+            }else{
+                turretControlSystem.setGoal(interpolator.getCurrentReference());
+                turretMotor.setPower(turretControlSystem.calculate(new KineticState(calculatePos(), (data.velocities[0]) * DEGREES_PER_US))*maxPower);
+                if(Math.abs(interpolator.getGoal().getPosition()-calculatePos()) <20){
+                    inTrap = false;
+                }
             }
         }
-//        getTurretTelemetryAdv();
+        getTurretTelemetryAdv();
         // periodic logic (runs every loop)
     }
     public void getTurretTelemetryAdv(){
+        PanelsTelemetry.INSTANCE.getTelemetry().addData("Turret Position", calculatePos());
+        PanelsTelemetry.INSTANCE.getTelemetry().addData("Turret Target", turretTargetPos);
         ActiveOpMode.telemetry().addLine("-------------- Turret Telemetry Adv: --------------");
         ActiveOpMode.telemetry().addData("Turret Homed", homed);
+        ActiveOpMode.telemetry().addData("Turret In Trap", inTrap);
         ActiveOpMode.telemetry().addData("Turret Position", calculatePos());
         ActiveOpMode.telemetry().addData("Turret Velo", data.velocities[0]);
         ActiveOpMode.telemetry().addData("Turret Target", turretTargetPos);
+        ActiveOpMode.telemetry().addData("Turret Power", turretControlSystem.calculate(new KineticState(calculatePos(), (data.velocities[0]) * DEGREES_PER_US)));
+
     }
+
+
+
 }
