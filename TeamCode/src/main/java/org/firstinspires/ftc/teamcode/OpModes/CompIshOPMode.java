@@ -68,7 +68,7 @@ public class CompIshOPMode extends NextFTCOpMode {
     public void onStartButtonPressed() {
         Command launchWithoutSort = new LaunchWithOutSort();
         Command intakeToSorter = new IntakeToSorterCommand();
-        Command runTurretAndLauncherFromHeading = new RunTurretAndLauncherFromHeading(false);
+        Command runTurretAndLauncherFromHeading = new RunTurretAndLauncherFromHeading(true);
 
 
         DriverControlledCommand driverControlled = new PedroDriverControlled(

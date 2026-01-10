@@ -27,7 +27,8 @@ I1: "Odometry"
 I2: "OctoQuad"
 I3: "Prism"
 
-Digital:
+Digital: 
+D6: "IntakeBB"
 
 Analog:
 A2: "FloodGate"

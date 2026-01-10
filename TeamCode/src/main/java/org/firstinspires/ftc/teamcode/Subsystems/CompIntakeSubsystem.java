@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
@@ -14,6 +16,7 @@ public class CompIntakeSubsystem implements Subsystem {
     private double intakeSpeed = -1;
 
     // put hardware, commands, etc here
+    private DigitalChannel intakeBeamBreak;
     public MotorEx intakeMotor = new MotorEx("Intake Motor");
 
     public Command Intake = new SetPower(intakeMotor, intakeSpeed);
@@ -29,12 +32,17 @@ public class CompIntakeSubsystem implements Subsystem {
     public void stopIntake(){
         intakeMotor.setPower(0);
     }
+    public boolean intakeBBTripped(){
+        return intakeBeamBreak.getState();
+    }
 
 
 
     @Override
     public void initialize() {
         // initialization logic (runs on init)
+        intakeBeamBreak = ActiveOpMode.hardwareMap().get(DigitalChannel.class, "IntakeBB");
+        intakeBeamBreak.setMode(DigitalChannel.Mode.INPUT);
 
         intakeMotor.setPower(0);
     }
@@ -42,10 +50,13 @@ public class CompIntakeSubsystem implements Subsystem {
     @Override
     public void periodic() {
         // periodic logic (runs every loop)
+        getIntakeTelemetryAdv();
 
     }
     public void getIntakeTelemetryAdv(){
         ActiveOpMode.telemetry().addLine("-------------- Intake Telemetry Adv: --------------");
+        ActiveOpMode.telemetry().addData("Intake Beam Break", intakeBBTripped());
+
 
     }
 }
