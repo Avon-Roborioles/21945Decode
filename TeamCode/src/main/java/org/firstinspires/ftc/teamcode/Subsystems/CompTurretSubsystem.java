@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.bylazar.telemetry.PanelsTelemetry;
+import com.pedropathing.control.KalmanFilter;
+import com.pedropathing.control.KalmanFilterParameters;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 
@@ -23,7 +25,7 @@ public class CompTurretSubsystem implements Subsystem {
     OctoQuadFWv3 Octo;
     private double turretPos = 0;
     private static final double DEGREES_PER_US = (410.67 / 1024.0);
-    private double angleOffset = 201.72;
+    private double angleOffset = 201.72+3.78;
     private double turretTargetPos =0;
     private final OctoQuadFWv3.EncoderDataBlock data = new OctoQuadFWv3.EncoderDataBlock();
     boolean homed = false;
@@ -34,12 +36,12 @@ public class CompTurretSubsystem implements Subsystem {
 
     // put hardware, commands, etc here
     public MotorEx turretMotor = new MotorEx("Turret Motor").reversed();
-    private InterpolatorElement interpolator = new TrapezoidProfileElement(new TrapezoidProfileConstraints(10, 100));
+    private InterpolatorElement interpolator = new TrapezoidProfileElement(new TrapezoidProfileConstraints(1, 100));
 
 
     private ControlSystem turretControlSystem = ControlSystem.builder()
-            .posPid(0.016, 0.0000000000,0.01)//.posPid(0.0393/2, 0.00000000001,0.02)
-            .basicFF(0,0,0.29)
+            .posSquid(0.005, 0.0000000000,0.0)//.posPid(0.0393/2, 0.00000000001,0.02)
+            .basicFF(0,0,0.75)
 //            .interpolator(new TrapezoidProfileElement(new TrapezoidProfileConstraints(20, 100)))
             .build();
 
@@ -154,7 +156,7 @@ public class CompTurretSubsystem implements Subsystem {
             }else{
                 turretControlSystem.setGoal(interpolator.getCurrentReference());
                 turretMotor.setPower(turretControlSystem.calculate(new KineticState(calculatePos(), (data.velocities[0]) * DEGREES_PER_US))*maxPower);
-                if(Math.abs(interpolator.getGoal().getPosition()-calculatePos()) <20){
+                if(Math.abs(interpolator.getGoal().component1()-calculatePos()) <20){
                     inTrap = false;
                 }
             }

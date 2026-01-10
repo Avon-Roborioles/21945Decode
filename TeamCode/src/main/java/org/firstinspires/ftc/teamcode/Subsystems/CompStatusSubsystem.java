@@ -29,6 +29,7 @@ public class CompStatusSubsystem implements Subsystem {
     private CStatus left = CStatus.NULL;
     private CStatus center = CStatus.NULL;
     private CStatus right = CStatus.NULL;
+    private OBPattern currentOBPattern = OBPattern.NULL;
 
     PrismAnimations.Snakes purpleSnakes = new PrismAnimations.Snakes();
     PrismAnimations.Solid purpleLeft = new PrismAnimations.Solid();
@@ -54,6 +55,13 @@ public class CompStatusSubsystem implements Subsystem {
         GREEN,
         OFF,
         ERROR,
+        NULL
+    }
+
+    public enum OBPattern{
+        PPG,
+        PGP,
+        GPP,
         NULL
     }
 
@@ -177,6 +185,7 @@ public class CompStatusSubsystem implements Subsystem {
         purpleSnakes.setDirection(Direction.Forward);
         prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,purpleSnakes);
         prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_0);
+        currentOBPattern = OBPattern.NULL;
 
 
 
@@ -193,6 +202,26 @@ public class CompStatusSubsystem implements Subsystem {
         }else {
             //blue
             beacon.setPosition(0.6);
+        }
+    }
+    public void setCurrentOBPattern(OBPattern pattern){
+        currentOBPattern = pattern;
+    }
+    public OBPattern getCurrentOBPattern(){
+        return currentOBPattern;
+    }
+    public void cycleOBPattern(){
+        switch (currentOBPattern){
+            case PPG:
+                setCurrentOBPattern(OBPattern.PGP);
+                break;
+            case PGP:
+                setCurrentOBPattern(OBPattern.GPP);
+                break;
+            case GPP:
+                setCurrentOBPattern(OBPattern.PPG);
+                break;
+
         }
     }
     public double getFloodGateCurrent(){

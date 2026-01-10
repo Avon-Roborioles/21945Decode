@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.util.MovingStatistics;
 
 import org.firstinspires.ftc.teamcode.Commands.IntakeToSorterCommand;
 import org.firstinspires.ftc.teamcode.Commands.LaunchWithOutSort;
+import org.firstinspires.ftc.teamcode.Commands.RunTurretAndLauncherFromHeading;
 import org.firstinspires.ftc.teamcode.Subsystems.CompIntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompLauncherSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompPTOSubsystem;
@@ -65,6 +66,9 @@ public class CompIshOPMode extends NextFTCOpMode {
 
     @Override
     public void onStartButtonPressed() {
+        Command launchWithoutSort = new LaunchWithOutSort();
+        Command intakeToSorter = new IntakeToSorterCommand();
+        Command runTurretAndLauncherFromHeading = new RunTurretAndLauncherFromHeading(false);
 
 
         DriverControlledCommand driverControlled = new PedroDriverControlled(
@@ -95,10 +99,10 @@ public class CompIshOPMode extends NextFTCOpMode {
         Gamepads.gamepad1().touchpad().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.StopLauncher);
 
 
-        Gamepads.gamepad2().circle().whenBecomesTrue(new LaunchWithOutSort());;
+        Gamepads.gamepad2().circle().whenBecomesTrue(launchWithoutSort);
         Gamepads.gamepad2().square().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.SpinUpToSpeed(800));
         Gamepads.gamepad2().triangle();
-        Gamepads.gamepad2().cross().whenBecomesTrue(new IntakeToSorterCommand());
+        Gamepads.gamepad2().cross().whenBecomesTrue(intakeToSorter);
         Gamepads.gamepad2().dpadUp().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.SpeedUp);
         Gamepads.gamepad2().dpadDown().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.SpeedDown);
         Gamepads.gamepad2().dpadLeft();
@@ -119,7 +123,7 @@ public class CompIshOPMode extends NextFTCOpMode {
         Gamepads.gamepad2().rightBumper();
         Gamepads.gamepad2().options();
         Gamepads.gamepad2().share().toggleOnBecomesTrue().whenTrue(CompIntakeSubsystem.INSTANCE.Outtake).whenBecomesFalse(CompIntakeSubsystem.INSTANCE.StopIntake);
-        Gamepads.gamepad2().ps();
+        Gamepads.gamepad2().ps().toggleOnBecomesTrue().whenTrue(runTurretAndLauncherFromHeading);
         Gamepads.gamepad2().touchpad().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.StopLauncher);
         Command start = new SequentialGroup(CompSorterSubsystem.INSTANCE.wake, CompSorterSubsystem.INSTANCE.resetSorter, CompPTOSubsystem.INSTANCE.disengage);
         start.schedule();

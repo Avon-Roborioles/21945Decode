@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+
+import java.util.List;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.LambdaCommand;
@@ -20,6 +23,7 @@ public class CompVisionSubsystem implements Subsystem {
     private int redPipeline = 0;
     private int bluePipeline = 1;
     private final int startingPipeline = 0;
+    private int OBPipeline = 2;
     private double maxLLAngle = 49;
     private double minLLAngle = -40;
     private double maxLLPWM = 0.76;
@@ -83,6 +87,29 @@ public class CompVisionSubsystem implements Subsystem {
         limelight.stop();
         limelight.pipelineSwitch(bluePipeline);
         limelight.start();
+        lLTiltAngle = 0;
+    }
+    public void SearchForOb(){
+        update();
+        if (latestResult != null) {
+            //may need to sort in case multiple tags can be seen
+            if (latestResult.isValid()) {
+                switch (latestResult.getFiducialResults().get(1).getFiducialId()) {
+                    case 21:
+                        CompStatusSubsystem.INSTANCE.setCurrentOBPattern(CompStatusSubsystem.OBPattern.GPP);
+                        break;
+                    case 22:
+                        CompStatusSubsystem.INSTANCE.setCurrentOBPattern(CompStatusSubsystem.OBPattern.PGP);
+                        break;
+                    case 23:
+                        CompStatusSubsystem.INSTANCE.setCurrentOBPattern(CompStatusSubsystem.OBPattern.PPG);
+                        break;
+
+                }
+
+            }
+        }
+
     }
     private void stopLL(){
         limelight.stop();
@@ -114,6 +141,13 @@ public class CompVisionSubsystem implements Subsystem {
 
     public double getYawToGoal(LLResult result){
         return result.getTx();
+    }
+
+    public void setLLToOB(){
+        limelight.stop();
+        limelight.pipelineSwitch(OBPipeline);
+        limelight.start();
+
     }
 
     @Override
