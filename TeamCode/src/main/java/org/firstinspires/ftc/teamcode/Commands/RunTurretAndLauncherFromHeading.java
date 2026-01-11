@@ -44,7 +44,7 @@ public class RunTurretAndLauncherFromHeading extends Command {
         botPose = PedroComponent.follower().getPose();
         distanceToGoal = Math.hypot((goal.getX()- botPose.getX()), (goal.getY()-botPose.getY()));
         turretFieldAngleRad = Math.atan((goal.getX()- botPose.getX())/(goal.getY()- botPose.getY())) + Math.PI/2;
-//        CompTurretSubsystem.INSTANCE.turnTurretToFieldAngle(botPose.getHeading(), turretFieldAngleRad);
+        CompTurretSubsystem.INSTANCE.turnTurretToFieldAngle(botPose.getHeading(), turretFieldAngleRad);
 //        CompLauncherSubsystem.INSTANCE.RunLauncherFromDistance(distanceToGoal);
         ActiveOpMode.telemetry().addLine("-------------- RunTurretAndLauncherFromHeading Telemetry: --------------");
         ActiveOpMode.telemetry().addData("redAlliance", redAlliance);

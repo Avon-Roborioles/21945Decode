@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.MovingStatistics;
 import org.firstinspires.ftc.teamcode.Commands.IntakeToSorterCommand;
 import org.firstinspires.ftc.teamcode.Commands.LaunchWithOutSort;
 import org.firstinspires.ftc.teamcode.Commands.RunTurretAndLauncherFromHeading;
+import org.firstinspires.ftc.teamcode.Commands.TurretJoystickCommand;
 import org.firstinspires.ftc.teamcode.Subsystems.CompIntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompLauncherSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompPTOSubsystem;
@@ -69,7 +70,8 @@ public class CompIshOPMode extends NextFTCOpMode {
         Command launchWithoutSort = new LaunchWithOutSort();
         Command intakeToSorter = new IntakeToSorterCommand();
         Command runTurretAndLauncherFromHeading = new RunTurretAndLauncherFromHeading(true);
-
+        Command runTurretFromJoystick = new TurretJoystickCommand(Gamepads.gamepad2().rightStickX());
+        runTurretFromJoystick.schedule();
 
         DriverControlledCommand driverControlled = new PedroDriverControlled(
                 Gamepads.gamepad1().leftStickY(),
@@ -107,13 +109,11 @@ public class CompIshOPMode extends NextFTCOpMode {
         Gamepads.gamepad2().dpadDown().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.SpeedDown);
         Gamepads.gamepad2().dpadLeft();
         Gamepads.gamepad2().dpadRight();
-        Gamepads.gamepad2().leftStickX().atLeast(0.75).whenTrue(CompTurretSubsystem.INSTANCE.turretLeft);
-        Gamepads.gamepad2().leftStickX().lessThan(-0.75).whenTrue(CompTurretSubsystem.INSTANCE.turretRight);;
+        Gamepads.gamepad2().leftStickX();
+        Gamepads.gamepad2().leftStickX();
         Gamepads.gamepad2().leftStickY().lessThan(-0.75).whenBecomesTrue(CompLauncherSubsystem.INSTANCE.HoodPlus);
         Gamepads.gamepad2().leftStickY().atLeast(0.75).whenBecomesTrue(CompLauncherSubsystem.INSTANCE.HoodMinus);
         Gamepads.gamepad2().leftStickButton();
-        Gamepads.gamepad2().rightStickX().atLeast(0.75);
-        Gamepads.gamepad2().rightStickX().lessThan(-0.75);
         Gamepads.gamepad2().rightStickY().lessThan(-0.75);
         Gamepads.gamepad2().rightStickY().atLeast(0.75);
         Gamepads.gamepad2().rightStickButton();

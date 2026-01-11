@@ -25,7 +25,7 @@ public class CompTurretSubsystem implements Subsystem {
     OctoQuadFWv3 Octo;
     private double turretPos = 0;
     private static final double DEGREES_PER_US = (410.67 / 1024.0);
-    private double angleOffset = 203.8;
+    private double angleOffset = 204.2;
     private double turretTargetPos =0;
     private final OctoQuadFWv3.EncoderDataBlock data = new OctoQuadFWv3.EncoderDataBlock();
     double maxPower = 1;
@@ -41,7 +41,7 @@ public class CompTurretSubsystem implements Subsystem {
 
 
     private ControlSystem turretControlSystem = ControlSystem.builder()
-            .posSquid(0.0099, 0.00000000001,0.0355)
+            .posSquid(0.01, 0.00000000005,0.036)
             .basicFF(0,0,0.29)
             .build();
 
@@ -87,6 +87,10 @@ public class CompTurretSubsystem implements Subsystem {
             .requires(this)
             .setInterruptible(true);
 
+    public void moveTurretByAngle(double input){
+        turretTargetPos += input*5;
+    }
+
     public void turnTurretToFieldAngle(double botHeadingRad, double fieldAngleRad){
         double turretZeroHeading = botHeadingRad + Math.PI;
         turretTargetPos = Math.toDegrees(fieldAngleRad - turretZeroHeading);
@@ -119,7 +123,6 @@ public class CompTurretSubsystem implements Subsystem {
 
     @Override
     public void periodic() {
-        Octo.readAllEncoderData();
         turretControlSystem.reset();
         if(!ActiveOpMode.opModeInInit()){
 
