@@ -27,10 +27,12 @@ public class CompTurretSubsystem implements Subsystem {
     private static final double DEGREES_PER_US = (410.67 / 1024.0);
     private double angleOffset = 204.2;
     private double turretTargetPos =0;
+    private double turretFieldAngleGoal = 180;
+    private double distancePastFlip = 0;
+    private double lastFlipAngle = 0;
+    private double lastFlipGoal = 0;
     private final OctoQuadFWv3.EncoderDataBlock data = new OctoQuadFWv3.EncoderDataBlock();
     double maxPower = 1;
-    boolean inTrap = false;
-    double tempTarget = 0;
     double power = 0;
 
     private CompTurretSubsystem() {}
@@ -53,6 +55,7 @@ public class CompTurretSubsystem implements Subsystem {
         turretMotor.setPower(speed);
     }
     public double calculatePos(){
+        Octo.readAllEncoderData(data);
         turretPos = ((data.positions[0] * DEGREES_PER_US)- angleOffset);
         return turretPos;
     }
@@ -88,7 +91,9 @@ public class CompTurretSubsystem implements Subsystem {
             .setInterruptible(true);
 
     public void moveTurretByAngle(double input){
-        turretTargetPos += input*5;
+//        turretFieldAngleGoal += input*5;
+        turretTargetPos += input * 5;
+
     }
 
     public void turnTurretToFieldAngle(double botHeadingRad, double fieldAngleRad){
@@ -113,7 +118,6 @@ public class CompTurretSubsystem implements Subsystem {
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretTargetPos=0;
         turretControlSystem.reset();
-        inTrap = false;
         power = 0;
 
 
@@ -124,45 +128,25 @@ public class CompTurretSubsystem implements Subsystem {
     @Override
     public void periodic() {
         turretControlSystem.reset();
+        calculatePos();
         if(!ActiveOpMode.opModeInInit()){
 
-            Octo.readAllEncoderData(data);
-            calculatePos();
-            if(calculatePos()>200){
-                //inTrap = true;
-                interpolator.reset();
-                tempTarget = -160;
-                turretTargetPos = -160;
-                interpolator.setGoal(new KineticState(-160));
-            }else if(calculatePos()<-200){
-                //inTrap = true;
-                interpolator.reset();
-                tempTarget = 160;
-                turretTargetPos = 160;
-                interpolator.setGoal(new KineticState(160));
+            if(turretTargetPos>200){
+                lastFlipAngle = turretTargetPos;
+                distancePastFlip = turretTargetPos-200;
+
+                turretTargetPos = (-160 + (turretTargetPos-200));
+                lastFlipGoal = turretTargetPos;
+
+            }else if(turretTargetPos<-200){
+                lastFlipAngle = turretTargetPos;
+                distancePastFlip = turretTargetPos+200;
+                turretTargetPos = ( 160 + (turretTargetPos+200));
+                lastFlipGoal = turretTargetPos;
             }
-//            if(turretTargetPos>200){
-//                turretTargetPos= 200;
-//            }else if(turretTargetPos<-200){
-//                turretTargetPos= -200;
-//            }
 
-
-            if(!inTrap) {
-
-                turretControlSystem.setGoal(new KineticState(turretTargetPos));
-                power = turretControlSystem.calculate(new KineticState(calculatePos(), (data.velocities[0]) * DEGREES_PER_US));
-
-
-            }else{
-                turretControlSystem.setGoal(interpolator.getCurrentReference());
-                power = turretControlSystem.calculate(new KineticState(calculatePos(), (data.velocities[0]) * DEGREES_PER_US));
-                if(Math.abs(interpolator.getGoal().component1()-calculatePos()) <5){
-                    inTrap = false;
-                    turretTargetPos = tempTarget;
-                    interpolator.reset();
-                }
-            }
+            turretControlSystem.setGoal(new KineticState(turretTargetPos));
+            power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US));
             if (Math.abs(power) > 0.175){
                 turretMotor.setPower(power*maxPower);
             }else{
@@ -173,15 +157,17 @@ public class CompTurretSubsystem implements Subsystem {
         // periodic logic (runs every loop)
     }
     public void getTurretTelemetryAdv(){
-        PanelsTelemetry.INSTANCE.getTelemetry().addData("Turret Position", calculatePos());
+        PanelsTelemetry.INSTANCE.getTelemetry().addData("Turret Position", turretPos);
         PanelsTelemetry.INSTANCE.getTelemetry().addData("Turret Target", turretTargetPos);
         ActiveOpMode.telemetry().addLine("-------------- Turret Telemetry Adv: --------------");
-        ActiveOpMode.telemetry().addData("Turret In Trap", inTrap);
-        ActiveOpMode.telemetry().addData("Turret Position", calculatePos());
+        ActiveOpMode.telemetry().addData("Turret Position", turretPos);
         ActiveOpMode.telemetry().addData("Turret Velo", data.velocities[0]);
-        ActiveOpMode.telemetry().addData("Turret Power", turretControlSystem.calculate(new KineticState(calculatePos(), (data.velocities[0]) * DEGREES_PER_US)));
+        ActiveOpMode.telemetry().addData("Turret Power", turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)));
         ActiveOpMode.telemetry().addData("Turret Error", Math.abs(turretPos-turretTargetPos));
         ActiveOpMode.telemetry().addData("Turret Target", turretTargetPos);
+        ActiveOpMode.telemetry().addData("Last Flip Angle", lastFlipAngle);
+        ActiveOpMode.telemetry().addData("Distance Past Flip", distancePastFlip);
+        ActiveOpMode.telemetry().addData("Last Flip Goal", lastFlipGoal);
 
     }
 
