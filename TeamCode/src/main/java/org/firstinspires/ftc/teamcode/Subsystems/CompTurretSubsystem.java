@@ -17,6 +17,7 @@ import dev.nextftc.control.interpolators.InterpolatorElement;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.impl.MotorEx;
 
@@ -27,7 +28,7 @@ public class CompTurretSubsystem implements Subsystem {
     private static final double DEGREES_PER_US = (410.67 / 1024.0);
     private double angleOffset = 204.2;
     private double turretTargetPos =0;
-    private double turretFieldAngleGoal = 180;
+    private double turretFieldAngleGoal = 90;
     private double distancePastFlip = 0;
     private double lastFlipAngle = 0;
     private double lastFlipGoal = 0;
@@ -91,17 +92,21 @@ public class CompTurretSubsystem implements Subsystem {
             .setInterruptible(true);
 
     public void moveTurretByAngle(double input){
-//        turretFieldAngleGoal += input*5;
-        turretTargetPos += input * 5;
+        turretFieldAngleGoal -= input*5;
+//        turretTargetPos += input * 5;
 
     }
 
-    public void turnTurretToFieldAngle(double botHeadingRad, double fieldAngleRad){
+    private void turnTurretToFieldAngle(double botHeadingRad, double fieldAngleRad){
         double turretZeroHeading = botHeadingRad + Math.PI;
-        turretTargetPos = Math.toDegrees(fieldAngleRad - turretZeroHeading);
+        turretTargetPos = - Math.toDegrees(fieldAngleRad - turretZeroHeading);
 
 
     }
+    public void setTurretToFieldAngle(double fieldAngleRad){
+        turretFieldAngleGoal = Math.toDegrees(fieldAngleRad);
+    }
+
 
 
     @Override
@@ -119,6 +124,7 @@ public class CompTurretSubsystem implements Subsystem {
         turretTargetPos=0;
         turretControlSystem.reset();
         power = 0;
+        turretFieldAngleGoal = 90;
 
 
 
@@ -130,6 +136,7 @@ public class CompTurretSubsystem implements Subsystem {
         turretControlSystem.reset();
         calculatePos();
         if(!ActiveOpMode.opModeInInit()){
+            turnTurretToFieldAngle(PedroComponent.follower().getPose().getHeading(), Math.toRadians(turretFieldAngleGoal));
 
             if(turretTargetPos>200){
                 lastFlipAngle = turretTargetPos;
@@ -168,6 +175,7 @@ public class CompTurretSubsystem implements Subsystem {
         ActiveOpMode.telemetry().addData("Last Flip Angle", lastFlipAngle);
         ActiveOpMode.telemetry().addData("Distance Past Flip", distancePastFlip);
         ActiveOpMode.telemetry().addData("Last Flip Goal", lastFlipGoal);
+        ActiveOpMode.telemetry().addData("Turret Field Angle Goal", turretFieldAngleGoal);
 
     }
 
