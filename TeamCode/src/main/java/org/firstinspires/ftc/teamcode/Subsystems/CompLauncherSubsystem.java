@@ -22,8 +22,8 @@ public class CompLauncherSubsystem implements Subsystem {
 
     // Hardware
     public MotorGroup launcherMotorGroup = new MotorGroup(
-            new VoltageCompensatingMotor(new MotorEx("Launch Motor 1"), 0.5, 13),
-            new VoltageCompensatingMotor(new MotorEx("Launch Motor 2"), 0.5, 13)
+            new VoltageCompensatingMotor(new MotorEx("Launch Motor 2"), 0.5, 13),
+            new VoltageCompensatingMotor(new MotorEx("Launch Motor 1"), 0.5, 13)
     );
 
     public ServoEx hoodServo = new ServoEx("Hood");

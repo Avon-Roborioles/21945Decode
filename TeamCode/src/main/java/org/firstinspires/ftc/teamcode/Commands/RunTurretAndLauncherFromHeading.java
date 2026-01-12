@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Commands;
 import com.pedropathing.geometry.Pose;
 
 import org.firstinspires.ftc.teamcode.Subsystems.CompLauncherSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.CompStatusSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompTurretSubsystem;
 
 import dev.nextftc.core.commands.Command;
@@ -43,9 +44,11 @@ public class RunTurretAndLauncherFromHeading extends Command {
     public void update() {
         botPose = PedroComponent.follower().getPose();
         distanceToGoal = Math.hypot((goal.getX()- botPose.getX()), (goal.getY()-botPose.getY()));
-        turretFieldAngleRad = Math.atan2((goal.getY()- botPose.getY()), (goal.getX()- botPose.getX()));
+        //ToDO Test bot angular velo correction
+        turretFieldAngleRad = Math.atan2((goal.getY()- botPose.getY()), (goal.getX()- botPose.getX()) + PedroComponent.follower().getAngularVelocity()* CompStatusSubsystem.INSTANCE.getLoopTimeSeconds());
+
         CompTurretSubsystem.INSTANCE.turnTurretToFieldAngle(turretFieldAngleRad);
-//        CompLauncherSubsystem.INSTANCE.RunLauncherFromDistance(distanceToGoal);
+        CompLauncherSubsystem.INSTANCE.RunLauncherFromDistance(distanceToGoal);
         ActiveOpMode.telemetry().addLine("-------------- RunTurretAndLauncherFromHeading Telemetry: --------------");
         ActiveOpMode.telemetry().addData("redAlliance", redAlliance);
         ActiveOpMode.telemetry().addData("BotPose", botPose);

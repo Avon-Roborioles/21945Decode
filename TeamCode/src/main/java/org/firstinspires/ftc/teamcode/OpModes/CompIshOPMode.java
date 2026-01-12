@@ -38,8 +38,6 @@ import dev.nextftc.hardware.driving.DriverControlledCommand;
 public class CompIshOPMode extends NextFTCOpMode {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-    long prevTime = 0;
-    MovingStatistics statistics = new MovingStatistics(200);
 
     {
         addComponents(
@@ -127,31 +125,11 @@ public class CompIshOPMode extends NextFTCOpMode {
         Gamepads.gamepad2().touchpad().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.StopLauncher);
         Command start = new SequentialGroup(CompSorterSubsystem.INSTANCE.wake, CompSorterSubsystem.INSTANCE.resetSorter, CompPTOSubsystem.INSTANCE.disengage);
         start.schedule();
-
-
     }
 
     @Override
     public void onUpdate() {
-
-
-
-//        telemetry.addData("x", PedroComponent.follower().getPose().getX());
-//        telemetry.addData("y", PedroComponent.follower().getPose().getY());
-//        telemetry.addData("heading", PedroComponent.follower().getPose().getHeading());
-//        telemetry.addData("Distance to Goal", Math.hypot((0-PedroComponent.follower().getPose().getX()), (144-PedroComponent.follower().getPose().getY())));
         panelsTelemetry.update(telemetry);
-        long curTime = System.currentTimeMillis();
-        if (prevTime != 0)
-        {
-            long deltaTime = curTime - prevTime;
-            statistics.add(deltaTime);
-            telemetry.addData("Loop Hz", 1e3/statistics.getMean());
-        }
-        prevTime = curTime;
-
-//        CompStatusSubsystem.INSTANCE.sorterLight.schedule();
-
     }
 
     @Override

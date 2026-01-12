@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.util.MovingStatistics;
 
 import org.firstinspires.ftc.teamcode.Utility.Prism.Color;
 import org.firstinspires.ftc.teamcode.Utility.Prism.Direction;
@@ -33,6 +34,10 @@ public class CompStatusSubsystem implements Subsystem {
     private OBPattern currentOBPattern = OBPattern.NULL;
     private VoltageSensor controlHubVoltageSensor;
 
+    long prevTime = 0;
+    long curTime = 0;
+    long deltaTime = 0;
+    MovingStatistics statistics = new MovingStatistics(200);
 
     PrismAnimations.Snakes purpleSnakes = new PrismAnimations.Snakes();
     PrismAnimations.Solid purpleLeft = new PrismAnimations.Solid();
@@ -195,10 +200,29 @@ public class CompStatusSubsystem implements Subsystem {
 
     }
 
+    public long getLoopTimeMillis(){
+        return deltaTime;
+    }
+    public double getLoopTimeSeconds(){
+        return deltaTime/1000;
+    }
+    public double getLoopTimeHZ(){
+        return 1e3/deltaTime;
+    }
+
     @Override
     public void periodic() {
         // periodic logic (runs every loop)
         getStatusTelemetryAdv();
+
+        curTime = System.currentTimeMillis();
+        if (prevTime != 0)
+        {
+            deltaTime = curTime - prevTime;
+            statistics.add(deltaTime);
+
+        }
+        prevTime = curTime;
 
         if(ActiveOpMode.isStarted()){
             //green
@@ -257,6 +281,7 @@ public class CompStatusSubsystem implements Subsystem {
         ActiveOpMode.telemetry().addData("Current Draw", getFloodGateCurrent());
         ActiveOpMode.telemetry().addData("Voltage", controlHubVoltageSensor.getVoltage());
         ActiveOpMode.telemetry().addData("Current OB Pattern", currentOBPattern);
+        ActiveOpMode.telemetry().addData("Loop Hz", 1e3/statistics.getMean());
     }
     // ---------- Beacon Methods ----------
     public void setBeacon(double position){

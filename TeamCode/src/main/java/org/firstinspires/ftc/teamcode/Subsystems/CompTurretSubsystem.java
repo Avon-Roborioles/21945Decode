@@ -21,7 +21,7 @@ import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.impl.VoltageCompensatingMotor;
 
 public class CompTurretSubsystem implements Subsystem {
-    //TODO add rotational velo correction
+    //TODO tune manual feedforward
     public static final CompTurretSubsystem INSTANCE = new CompTurretSubsystem();
     OctoQuadFWv3 Octo;
     private double turretPos = 0;
@@ -34,6 +34,9 @@ public class CompTurretSubsystem implements Subsystem {
     private final OctoQuadFWv3.EncoderDataBlock data = new OctoQuadFWv3.EncoderDataBlock();
     double maxPower = 1;
     double power = 0;
+
+    double lastSetPoint = 0;
+    double kv = 0.001;
 
     private CompTurretSubsystem() {}
 
@@ -133,6 +136,7 @@ public class CompTurretSubsystem implements Subsystem {
         turretControlSystem.reset();
         power = 0;
         turretFieldAngleGoalDeg = 90;
+        lastSetPoint = turretFieldAngleGoalDeg;
 
 
 
@@ -151,7 +155,7 @@ public class CompTurretSubsystem implements Subsystem {
                 turretTargetPosDeg= ( 160 + (turretTargetPosDeg+200));
             }
             turretControlSystem.setGoal(new KineticState(turretTargetPosDeg));
-            power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US));
+            power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)) + ( kv * (turretTargetPosDeg - lastSetPoint));
             if (Math.abs(power) > 0.175){
                 turretMotor.setPower(power*maxPower);
             }else{
@@ -159,6 +163,7 @@ public class CompTurretSubsystem implements Subsystem {
             }
         }
         getTurretTelemetryAdv();
+        lastSetPoint = turretTargetPosDeg;
         // periodic logic (runs every loop)
     }
     public void getTurretTelemetryAdv(){
