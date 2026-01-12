@@ -21,6 +21,7 @@ import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.impl.VoltageCompensatingMotor;
 
 public class CompTurretSubsystem implements Subsystem {
+    //TODO add rotational velo correction
     public static final CompTurretSubsystem INSTANCE = new CompTurretSubsystem();
     OctoQuadFWv3 Octo;
     private double turretPos = 0;
@@ -30,7 +31,6 @@ public class CompTurretSubsystem implements Subsystem {
     private double turretFieldAngleGoalDeg = 90;
     private double botHeadingRad = 0;
     double turretZeroHeadingRad = 0;
-    private Boolean goingLeft = null;
     private final OctoQuadFWv3.EncoderDataBlock data = new OctoQuadFWv3.EncoderDataBlock();
     double maxPower = 1;
     double power = 0;
@@ -133,7 +133,6 @@ public class CompTurretSubsystem implements Subsystem {
         turretControlSystem.reset();
         power = 0;
         turretFieldAngleGoalDeg = 90;
-        goingLeft = null;
 
 
 
