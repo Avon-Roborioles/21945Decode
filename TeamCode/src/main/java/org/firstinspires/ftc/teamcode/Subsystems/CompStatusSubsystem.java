@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.Utility.Prism.Color;
 import org.firstinspires.ftc.teamcode.Utility.Prism.Direction;
@@ -30,6 +31,8 @@ public class CompStatusSubsystem implements Subsystem {
     private CStatus center = CStatus.NULL;
     private CStatus right = CStatus.NULL;
     private OBPattern currentOBPattern = OBPattern.NULL;
+    private VoltageSensor controlHubVoltageSensor;
+
 
     PrismAnimations.Snakes purpleSnakes = new PrismAnimations.Snakes();
     PrismAnimations.Solid purpleLeft = new PrismAnimations.Solid();
@@ -173,6 +176,7 @@ public class CompStatusSubsystem implements Subsystem {
         floodgate = ActiveOpMode.hardwareMap().get(AnalogInput.class, "FloodGate");
         beacon = ActiveOpMode.hardwareMap().get(ServoImplEx.class, "Beacon");
         prism = ActiveOpMode.hardwareMap().get(GoBildaPrismDriver.class, "Prism");
+        controlHubVoltageSensor = ActiveOpMode.hardwareMap().get(VoltageSensor.class, "Control Hub");
         buildAnimations();
         prism.setStripLength(36);
         prism.enableDefaultBootArtboard(true);
@@ -212,6 +216,9 @@ public class CompStatusSubsystem implements Subsystem {
     }
     public void cycleOBPattern(){
         switch (currentOBPattern){
+            case NULL:
+                setCurrentOBPattern(OBPattern.PPG);
+                break;
             case PPG:
                 setCurrentOBPattern(OBPattern.PGP);
                 break;
@@ -219,11 +226,28 @@ public class CompStatusSubsystem implements Subsystem {
                 setCurrentOBPattern(OBPattern.GPP);
                 break;
             case GPP:
-                setCurrentOBPattern(OBPattern.PPG);
+                setCurrentOBPattern(OBPattern.NULL);
                 break;
 
         }
     }
+    public Command cycleOBPatternCommand = new LambdaCommand()
+            .setStart(() -> {
+                // Runs on start
+
+            })
+            .setUpdate(() -> {
+                cycleOBPattern();
+                // Runs on update
+            })
+            .setStop(interrupted -> {
+                // Runs on stop
+            })
+            .setIsDone(() -> true) // Returns if the command has finished
+            .requires(this)
+            .setInterruptible(true);
+
+
     public double getFloodGateCurrent(){
         return (floodgate.getVoltage()/3.3)*80;
     }
@@ -231,6 +255,8 @@ public class CompStatusSubsystem implements Subsystem {
     public void getStatusTelemetryAdv(){
         ActiveOpMode.telemetry().addLine("-------------- Status Telemetry Adv: --------------");
         ActiveOpMode.telemetry().addData("Current Draw", getFloodGateCurrent());
+        ActiveOpMode.telemetry().addData("Voltage", controlHubVoltageSensor.getVoltage());
+        ActiveOpMode.telemetry().addData("Current OB Pattern", currentOBPattern);
     }
     // ---------- Beacon Methods ----------
     public void setBeacon(double position){

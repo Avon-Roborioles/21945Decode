@@ -20,6 +20,7 @@ import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.impl.MotorEx;
+import dev.nextftc.hardware.impl.VoltageCompensatingMotor;
 
 public class CompTurretSubsystem implements Subsystem {
     public static final CompTurretSubsystem INSTANCE = new CompTurretSubsystem();
@@ -32,6 +33,8 @@ public class CompTurretSubsystem implements Subsystem {
     private double distancePastFlip = 0;
     private double lastFlipAngle = 0;
     private double lastFlipGoal = 0;
+    private double botHeading = 0;
+    private Boolean onLeft = null;
     private final OctoQuadFWv3.EncoderDataBlock data = new OctoQuadFWv3.EncoderDataBlock();
     double maxPower = 1;
     double power = 0;
@@ -39,7 +42,8 @@ public class CompTurretSubsystem implements Subsystem {
     private CompTurretSubsystem() {}
 
     // put hardware, commands, etc here
-    public MotorEx turretMotor = new MotorEx("Turret Motor").reversed();
+    public MotorEx turretMotorEx = new MotorEx("Turret Motor").reversed();
+    public VoltageCompensatingMotor turretMotor = new VoltageCompensatingMotor( turretMotorEx , 0.25, 12.5 );
     private InterpolatorElement interpolator = new TrapezoidProfileElement(new TrapezoidProfileConstraints(20, 10));
 
 
@@ -93,13 +97,14 @@ public class CompTurretSubsystem implements Subsystem {
 
     public void moveTurretByAngle(double input){
         turretFieldAngleGoal -= input*5;
-//        turretTargetPos += input * 5;
-
     }
 
     private void turnTurretToFieldAngle(double botHeadingRad, double fieldAngleRad){
+
+
         double turretZeroHeading = botHeadingRad + Math.PI;
         turretTargetPos = - Math.toDegrees(fieldAngleRad - turretZeroHeading);
+
 
 
     }
@@ -120,7 +125,7 @@ public class CompTurretSubsystem implements Subsystem {
         Octo.setSingleChannelPulseWidthTracksWrap(0, true);
         Octo.saveParametersToFlash();
         Octo.resetSinglePosition(0);
-        turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        turretMotorEx.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretTargetPos=0;
         turretControlSystem.reset();
         power = 0;
@@ -135,22 +140,24 @@ public class CompTurretSubsystem implements Subsystem {
     public void periodic() {
         turretControlSystem.reset();
         calculatePos();
+        botHeading = PedroComponent.follower().getPose().getHeading();
         if(!ActiveOpMode.opModeInInit()){
-            turnTurretToFieldAngle(PedroComponent.follower().getPose().getHeading(), Math.toRadians(turretFieldAngleGoal));
 
             if(turretTargetPos>200){
                 lastFlipAngle = turretTargetPos;
                 distancePastFlip = turretTargetPos-200;
-
                 turretTargetPos = (-160 + (turretTargetPos-200));
                 lastFlipGoal = turretTargetPos;
-
             }else if(turretTargetPos<-200){
                 lastFlipAngle = turretTargetPos;
                 distancePastFlip = turretTargetPos+200;
                 turretTargetPos = ( 160 + (turretTargetPos+200));
                 lastFlipGoal = turretTargetPos;
             }
+
+            turnTurretToFieldAngle(botHeading, Math.toRadians(turretFieldAngleGoal));
+
+
 
             turretControlSystem.setGoal(new KineticState(turretTargetPos));
             power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US));

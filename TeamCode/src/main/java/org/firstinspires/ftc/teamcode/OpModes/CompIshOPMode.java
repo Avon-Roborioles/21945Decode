@@ -121,7 +121,7 @@ public class CompIshOPMode extends NextFTCOpMode {
         Gamepads.gamepad2().rightTrigger().atLeast(0.75);
         Gamepads.gamepad2().leftBumper();
         Gamepads.gamepad2().rightBumper();
-        Gamepads.gamepad2().options();
+        Gamepads.gamepad2().options().whenBecomesTrue(CompStatusSubsystem.INSTANCE.cycleOBPatternCommand);
         Gamepads.gamepad2().share().toggleOnBecomesTrue().whenTrue(CompIntakeSubsystem.INSTANCE.Outtake).whenBecomesFalse(CompIntakeSubsystem.INSTANCE.StopIntake);
         Gamepads.gamepad2().ps().toggleOnBecomesTrue().whenTrue(runTurretAndLauncherFromHeading);
         Gamepads.gamepad2().touchpad().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.StopLauncher);

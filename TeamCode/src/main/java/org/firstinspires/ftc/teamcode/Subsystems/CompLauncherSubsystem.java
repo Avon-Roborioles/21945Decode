@@ -12,6 +12,7 @@ import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.controllable.MotorGroup;
 import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.impl.ServoEx;
+import dev.nextftc.hardware.impl.VoltageCompensatingMotor;
 import dev.nextftc.hardware.positionable.SetPosition;
 
 public class CompLauncherSubsystem implements Subsystem {
@@ -21,8 +22,8 @@ public class CompLauncherSubsystem implements Subsystem {
 
     // Hardware
     public MotorGroup launcherMotorGroup = new MotorGroup(
-            new MotorEx("Launch Motor 1"),
-            new MotorEx("Launch Motor 2")
+            new VoltageCompensatingMotor(new MotorEx("Launch Motor 1"), 0.5, 13),
+            new VoltageCompensatingMotor(new MotorEx("Launch Motor 2"), 0.5, 13)
     );
 
     public ServoEx hoodServo = new ServoEx("Hood");

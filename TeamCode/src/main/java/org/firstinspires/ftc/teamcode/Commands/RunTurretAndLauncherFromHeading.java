@@ -29,7 +29,7 @@ public class RunTurretAndLauncherFromHeading extends Command {
 
     @Override
     public boolean isDone() {
-        return false;// whether or not the command is done
+        return true;// whether or not the command is done
     }
 
     @Override
@@ -58,6 +58,10 @@ public class RunTurretAndLauncherFromHeading extends Command {
 
     @Override
     public void stop(boolean interrupted) {
+        CompLauncherSubsystem.INSTANCE.HoodDown();
+        CompLauncherSubsystem.INSTANCE.SpinUpToSpeed(0);
+        CompTurretSubsystem.INSTANCE.setTurretToFieldAngle(90);
+
 
         // executed when the command ends
     }
