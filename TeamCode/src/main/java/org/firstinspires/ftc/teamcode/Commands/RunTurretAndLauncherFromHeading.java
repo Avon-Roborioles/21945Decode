@@ -44,7 +44,6 @@ public class RunTurretAndLauncherFromHeading extends Command {
     public void update() {
         botPose = PedroComponent.follower().getPose();
         distanceToGoal = Math.hypot((goal.getX()- botPose.getX()), (goal.getY()-botPose.getY()));
-        //ToDO Test bot angular velo correction
         turretFieldAngleRad = Math.atan2((goal.getY()- botPose.getY()), (goal.getX()- botPose.getX()) + PedroComponent.follower().getAngularVelocity()* CompStatusSubsystem.INSTANCE.getLoopTimeSeconds());
 
         CompTurretSubsystem.INSTANCE.turnTurretToFieldAngle(turretFieldAngleRad);

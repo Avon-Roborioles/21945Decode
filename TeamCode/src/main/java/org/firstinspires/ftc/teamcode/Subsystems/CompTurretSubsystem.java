@@ -21,7 +21,6 @@ import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.impl.VoltageCompensatingMotor;
 
 public class CompTurretSubsystem implements Subsystem {
-    //TODO tune manual feedforward
     public static final CompTurretSubsystem INSTANCE = new CompTurretSubsystem();
     OctoQuadFWv3 Octo;
     private double turretPos = 0;
@@ -36,13 +35,13 @@ public class CompTurretSubsystem implements Subsystem {
     double power = 0;
 
     double lastSetPoint = 0;
-    double kv = 0.001;
+    double kv = 0.09;
 
     private CompTurretSubsystem() {}
 
     // put hardware, commands, etc here
     public MotorEx turretMotorEx = new MotorEx("Turret Motor").reversed();
-    public VoltageCompensatingMotor turretMotor = new VoltageCompensatingMotor( turretMotorEx , 0.25, 12.7 );
+    public VoltageCompensatingMotor turretMotor = new VoltageCompensatingMotor( turretMotorEx , 0.25, 12.6 );
     private InterpolatorElement interpolator = new TrapezoidProfileElement(new TrapezoidProfileConstraints(20, 10));
 
 
@@ -116,6 +115,7 @@ public class CompTurretSubsystem implements Subsystem {
 
     public void moveTurretJoystick(double joystickValue){
         turretTargetPosDeg += joystickValue *2.5;
+        lastSetPoint = turretTargetPosDeg;
     }
 
 
