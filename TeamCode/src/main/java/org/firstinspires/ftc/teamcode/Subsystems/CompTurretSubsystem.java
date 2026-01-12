@@ -28,9 +28,6 @@ public class CompTurretSubsystem implements Subsystem {
     private double angleOffset = 204.2;
     private double turretTargetPosDeg =0;
     private double turretFieldAngleGoalDeg = 90;
-    private double distancePastFlip = 0;
-    private double lastFlipAngle = 0;
-    private double lastFlipGoal = 0;
     private double botHeadingRad = 0;
     double turretZeroHeadingRad = 0;
     private Boolean goingLeft = null;
@@ -42,7 +39,7 @@ public class CompTurretSubsystem implements Subsystem {
 
     // put hardware, commands, etc here
     public MotorEx turretMotorEx = new MotorEx("Turret Motor").reversed();
-    public VoltageCompensatingMotor turretMotor = new VoltageCompensatingMotor( turretMotorEx , 0.25, 12.5 );
+    public VoltageCompensatingMotor turretMotor = new VoltageCompensatingMotor( turretMotorEx , 0.25, 12.7 );
     private InterpolatorElement interpolator = new TrapezoidProfileElement(new TrapezoidProfileConstraints(20, 10));
 
 
@@ -104,25 +101,20 @@ public class CompTurretSubsystem implements Subsystem {
             botHeadingRad = Math.PI + (botHeadingRad + Math.PI);
         }
 
-        //for later the heading swaps at -180 and it brakes the math.
-
         turretZeroHeadingRad = botHeadingRad + Math.PI;
         if (fieldAngleRad > (turretZeroHeadingRad + Math.toRadians(200))){
             fieldAngleRad -=Math.toRadians(360);
-            ActiveOpMode.telemetry().addLine("test 1");
         }else if (fieldAngleRad < (turretZeroHeadingRad - Math.toRadians(200))) {
             fieldAngleRad +=Math.toRadians(360);
-            ActiveOpMode.telemetry().addLine("test 2");
-
         }
-        ActiveOpMode.telemetry().addData("fieldAngleDeg", Math.toDegrees(fieldAngleRad));
-        ActiveOpMode.telemetry().addData("bot heading", Math.toDegrees(botHeadingRad));
-        ActiveOpMode.telemetry().addData("turret zero heading", Math.toDegrees(turretZeroHeadingRad));
 
         turretTargetPosDeg = - Math.toDegrees(fieldAngleRad - turretZeroHeadingRad);
-
-
     }
+
+    public void moveTurretJoystick(double joystickValue){
+        turretTargetPosDeg += joystickValue *2.5;
+    }
+
 
 
     @Override
@@ -155,10 +147,8 @@ public class CompTurretSubsystem implements Subsystem {
 
         if(!ActiveOpMode.opModeInInit()){
             if(turretTargetPosDeg>200){
-                ActiveOpMode.telemetry().addLine("test 3");
                 turretTargetPosDeg= (-160 + (turretTargetPosDeg-200));
             }else if(turretTargetPosDeg<-200){
-                ActiveOpMode.telemetry().addLine("test 4");
                 turretTargetPosDeg= ( 160 + (turretTargetPosDeg+200));
             }
             turretControlSystem.setGoal(new KineticState(turretTargetPosDeg));

@@ -28,7 +28,7 @@ public class TurretJoystickCommand extends Command {
 
     @Override
     public void update() {
-
+        CompTurretSubsystem.INSTANCE.moveTurretJoystick(input.get());
         // executed on every update of the command
     }
 
