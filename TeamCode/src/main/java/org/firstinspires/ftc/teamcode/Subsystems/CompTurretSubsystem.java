@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.bylazar.telemetry.PanelsTelemetry;
-import com.pedropathing.control.KalmanFilter;
-import com.pedropathing.control.KalmanFilterParameters;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 
@@ -28,13 +26,14 @@ public class CompTurretSubsystem implements Subsystem {
     private double turretPos = 0;
     private static final double DEGREES_PER_US = (410.67 / 1024.0);
     private double angleOffset = 204.2;
-    private double turretTargetPos =0;
-    private double turretFieldAngleGoal = 90;
+    private double turretTargetPosDeg =0;
+    private double turretFieldAngleGoalDeg = 90;
     private double distancePastFlip = 0;
     private double lastFlipAngle = 0;
     private double lastFlipGoal = 0;
-    private double botHeading = 0;
-    private Boolean onLeft = null;
+    private double botHeadingRad = 0;
+    double turretZeroHeadingRad = 0;
+    private Boolean goingLeft = null;
     private final OctoQuadFWv3.EncoderDataBlock data = new OctoQuadFWv3.EncoderDataBlock();
     double maxPower = 1;
     double power = 0;
@@ -68,7 +67,7 @@ public class CompTurretSubsystem implements Subsystem {
     public Command turretLeft = new LambdaCommand()
             .setStart(() -> {
                 // Runs on start
-                turretTargetPos += 5;
+                turretTargetPosDeg += 5;
             })
             .setUpdate(() -> {
                 // Runs on update
@@ -83,7 +82,7 @@ public class CompTurretSubsystem implements Subsystem {
     public Command turretRight = new LambdaCommand()
             .setStart(() -> {
                 // Runs on start
-                turretTargetPos -= 5;
+                turretTargetPosDeg -= 5;
             })
             .setUpdate(() -> {
                 // Runs on update
@@ -95,23 +94,35 @@ public class CompTurretSubsystem implements Subsystem {
             .requires(this)
             .setInterruptible(true);
 
-    public void moveTurretByAngle(double input){
-        turretFieldAngleGoal -= input*5;
+
+
+    public void turnTurretToFieldAngle(double fieldAngleRad){
+        botHeadingRad = PedroComponent.follower().getPose().getHeading();
+        if(turretPos < 0 && botHeadingRad > 0){
+            botHeadingRad = -Math.PI + (botHeadingRad - Math.PI);
+        }else if (turretPos > 0 && botHeadingRad < 0) {
+            botHeadingRad = Math.PI + (botHeadingRad + Math.PI);
+        }
+
+        //for later the heading swaps at -180 and it brakes the math.
+
+        turretZeroHeadingRad = botHeadingRad + Math.PI;
+        if (fieldAngleRad > (turretZeroHeadingRad + Math.toRadians(200))){
+            fieldAngleRad -=Math.toRadians(360);
+            ActiveOpMode.telemetry().addLine("test 1");
+        }else if (fieldAngleRad < (turretZeroHeadingRad - Math.toRadians(200))) {
+            fieldAngleRad +=Math.toRadians(360);
+            ActiveOpMode.telemetry().addLine("test 2");
+
+        }
+        ActiveOpMode.telemetry().addData("fieldAngleDeg", Math.toDegrees(fieldAngleRad));
+        ActiveOpMode.telemetry().addData("bot heading", Math.toDegrees(botHeadingRad));
+        ActiveOpMode.telemetry().addData("turret zero heading", Math.toDegrees(turretZeroHeadingRad));
+
+        turretTargetPosDeg = - Math.toDegrees(fieldAngleRad - turretZeroHeadingRad);
+
+
     }
-
-    private void turnTurretToFieldAngle(double botHeadingRad, double fieldAngleRad){
-
-
-        double turretZeroHeading = botHeadingRad + Math.PI;
-        turretTargetPos = - Math.toDegrees(fieldAngleRad - turretZeroHeading);
-
-
-
-    }
-    public void setTurretToFieldAngle(double fieldAngleRad){
-        turretFieldAngleGoal = Math.toDegrees(fieldAngleRad);
-    }
-
 
 
     @Override
@@ -126,10 +137,11 @@ public class CompTurretSubsystem implements Subsystem {
         Octo.saveParametersToFlash();
         Octo.resetSinglePosition(0);
         turretMotorEx.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        turretTargetPos=0;
+        turretTargetPosDeg =0;
         turretControlSystem.reset();
         power = 0;
-        turretFieldAngleGoal = 90;
+        turretFieldAngleGoalDeg = 90;
+        goingLeft = null;
 
 
 
@@ -140,26 +152,16 @@ public class CompTurretSubsystem implements Subsystem {
     public void periodic() {
         turretControlSystem.reset();
         calculatePos();
-        botHeading = PedroComponent.follower().getPose().getHeading();
+
         if(!ActiveOpMode.opModeInInit()){
-
-            if(turretTargetPos>200){
-                lastFlipAngle = turretTargetPos;
-                distancePastFlip = turretTargetPos-200;
-                turretTargetPos = (-160 + (turretTargetPos-200));
-                lastFlipGoal = turretTargetPos;
-            }else if(turretTargetPos<-200){
-                lastFlipAngle = turretTargetPos;
-                distancePastFlip = turretTargetPos+200;
-                turretTargetPos = ( 160 + (turretTargetPos+200));
-                lastFlipGoal = turretTargetPos;
+            if(turretTargetPosDeg>200){
+                ActiveOpMode.telemetry().addLine("test 3");
+                turretTargetPosDeg= (-160 + (turretTargetPosDeg-200));
+            }else if(turretTargetPosDeg<-200){
+                ActiveOpMode.telemetry().addLine("test 4");
+                turretTargetPosDeg= ( 160 + (turretTargetPosDeg+200));
             }
-
-            turnTurretToFieldAngle(botHeading, Math.toRadians(turretFieldAngleGoal));
-
-
-
-            turretControlSystem.setGoal(new KineticState(turretTargetPos));
+            turretControlSystem.setGoal(new KineticState(turretTargetPosDeg));
             power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US));
             if (Math.abs(power) > 0.175){
                 turretMotor.setPower(power*maxPower);
@@ -172,17 +174,16 @@ public class CompTurretSubsystem implements Subsystem {
     }
     public void getTurretTelemetryAdv(){
         PanelsTelemetry.INSTANCE.getTelemetry().addData("Turret Position", turretPos);
-        PanelsTelemetry.INSTANCE.getTelemetry().addData("Turret Target", turretTargetPos);
+        PanelsTelemetry.INSTANCE.getTelemetry().addData("Turret Target", turretTargetPosDeg);
         ActiveOpMode.telemetry().addLine("-------------- Turret Telemetry Adv: --------------");
         ActiveOpMode.telemetry().addData("Turret Position", turretPos);
         ActiveOpMode.telemetry().addData("Turret Velo", data.velocities[0]);
         ActiveOpMode.telemetry().addData("Turret Power", turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)));
-        ActiveOpMode.telemetry().addData("Turret Error", Math.abs(turretPos-turretTargetPos));
-        ActiveOpMode.telemetry().addData("Turret Target", turretTargetPos);
-        ActiveOpMode.telemetry().addData("Last Flip Angle", lastFlipAngle);
-        ActiveOpMode.telemetry().addData("Distance Past Flip", distancePastFlip);
-        ActiveOpMode.telemetry().addData("Last Flip Goal", lastFlipGoal);
-        ActiveOpMode.telemetry().addData("Turret Field Angle Goal", turretFieldAngleGoal);
+        ActiveOpMode.telemetry().addData("Turret Error", Math.abs(turretPos- turretTargetPosDeg));
+        ActiveOpMode.telemetry().addData("Turret Target", turretTargetPosDeg);
+        ActiveOpMode.telemetry().addData("Turret Field Angle Goal", turretFieldAngleGoalDeg);
+
+
 
     }
 

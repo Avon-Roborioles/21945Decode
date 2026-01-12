@@ -44,8 +44,8 @@ public class RunTurretAndLauncherFromHeading extends Command {
         botPose = PedroComponent.follower().getPose();
         distanceToGoal = Math.hypot((goal.getX()- botPose.getX()), (goal.getY()-botPose.getY()));
         turretFieldAngleRad = Math.atan2((goal.getY()- botPose.getY()), (goal.getX()- botPose.getX()));
-        CompTurretSubsystem.INSTANCE.setTurretToFieldAngle(turretFieldAngleRad);
-        CompLauncherSubsystem.INSTANCE.RunLauncherFromDistance(distanceToGoal);
+        CompTurretSubsystem.INSTANCE.turnTurretToFieldAngle(turretFieldAngleRad);
+//        CompLauncherSubsystem.INSTANCE.RunLauncherFromDistance(distanceToGoal);
         ActiveOpMode.telemetry().addLine("-------------- RunTurretAndLauncherFromHeading Telemetry: --------------");
         ActiveOpMode.telemetry().addData("redAlliance", redAlliance);
         ActiveOpMode.telemetry().addData("BotPose", botPose);
@@ -60,7 +60,7 @@ public class RunTurretAndLauncherFromHeading extends Command {
     public void stop(boolean interrupted) {
         CompLauncherSubsystem.INSTANCE.HoodDown();
         CompLauncherSubsystem.INSTANCE.SpinUpToSpeed(0);
-        CompTurretSubsystem.INSTANCE.setTurretToFieldAngle(90);
+//        CompTurretSubsystem.INSTANCE.setTurretOff();
 
 
         // executed when the command ends
