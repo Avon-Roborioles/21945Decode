@@ -26,6 +26,9 @@ public class CompSorterSubsystem implements Subsystem {
     private double cWake = cDown +0.005;
     private double lWake = lDown +0.025;
     private double rWake = rDown +0.005;
+    private double cHug = cDown + 0.01;
+    private double lHug = lDown + 0.01;
+    private double rHug = rDown + 0.01;
     private boolean busy = false;
 
     Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
@@ -67,6 +70,13 @@ public class CompSorterSubsystem implements Subsystem {
             .setIsDone(() -> wakeT.done()) // Returns if the command has finished
             .requires()
             .setInterruptible(false);
+
+    public void sortHug(){
+        sortL.setPosition(lHug);
+        sortC.setPosition(cHug);
+        sortR.setPosition(rHug);
+    }
+
 
 
 

@@ -114,19 +114,10 @@ public class LaunchWithSort extends Command {
                 }
                 break;
             case Pause:
-                if(!delay.isTimerOn()) {
-                    delay.start();
-                }
-                if(delay.done()) {
-                    St = Step.CheckForMiss;
-                }
+
                 break;
             case CheckForMiss:
-                if(!(CompSorterSubsystem.INSTANCE.leftSlot() == CompSorterSubsystem.SlotDetection.EMPTY) || !(CompSorterSubsystem.INSTANCE.centerSlot() == CompSorterSubsystem.SlotDetection.EMPTY) || !(CompSorterSubsystem.INSTANCE.rightSlot() == CompSorterSubsystem.SlotDetection.EMPTY)){
-                    St = Step.LaunchCenter;
-                }else {
-                    St = Step.Done;
-                }
+
                 break;
         }
         // executed on every update of the command

@@ -7,6 +7,9 @@ import dev.nextftc.core.commands.Command;
 
 
 public class IntakeToSorterCommand extends Command {
+    boolean full = false;
+    boolean done = false;
+    boolean beamBreakClear = false;
     public IntakeToSorterCommand() {
         requires(CompIntakeSubsystem.INSTANCE, CompSorterSubsystem.INSTANCE/* subsystems */);
         setInterruptible(true); // this is the default, so you don't need to specify
@@ -14,24 +17,39 @@ public class IntakeToSorterCommand extends Command {
 
     @Override
     public boolean isDone() {
-        return CompSorterSubsystem.INSTANCE.sorterFull(); // whether or not the command is done
+        return done; // whether or not the command is done
     }
 
     @Override
     public void start() {
+        full = false;
+        done = false;
+
 
         // executed when the command begins
     }
 
     @Override
     public void update() {
-        CompIntakeSubsystem.INSTANCE.intake();
+        if(!full) {
+            CompIntakeSubsystem.INSTANCE.intake();
+            full = CompSorterSubsystem.INSTANCE.sorterFull();
+        }else{
+            CompSorterSubsystem.INSTANCE.sortHug();
+            if(CompIntakeSubsystem.INSTANCE.intakeBBTripped()){
+                CompIntakeSubsystem.INSTANCE.outtake();
+            }else{
+                done = true;
+            }
+        }
+
         // executed on every update of the command
     }
 
     @Override
     public void stop(boolean interrupted) {
         CompIntakeSubsystem.INSTANCE.stopIntake();
+        CompSorterSubsystem.INSTANCE.resetSorter();
         // executed when the command ends
     }
 }
