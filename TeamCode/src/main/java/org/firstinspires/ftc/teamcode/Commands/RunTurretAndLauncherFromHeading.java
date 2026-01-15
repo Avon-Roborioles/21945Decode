@@ -18,8 +18,8 @@ public class RunTurretAndLauncherFromHeading extends Command {
     boolean redAlliance;
     double turretFieldAngleRad;
 
-    Pose redGoal = new Pose(140,140);
-    Pose blueGoal = new Pose(4,140);
+    static Pose redGoal = new Pose(140,140);
+    static Pose blueGoal = new Pose(4,140);
     Pose goal;
 
     public RunTurretAndLauncherFromHeading(boolean redAlliance) {
@@ -30,6 +30,7 @@ public class RunTurretAndLauncherFromHeading extends Command {
 
     @Override
     public boolean isDone() {
+        //TODO Check for lag problem
         return true;// whether or not the command is done
     }
 
@@ -60,9 +61,8 @@ public class RunTurretAndLauncherFromHeading extends Command {
 
     @Override
     public void stop(boolean interrupted) {
-        CompLauncherSubsystem.INSTANCE.HoodDown();
-        CompLauncherSubsystem.INSTANCE.SpinUpToSpeed(0);
-//        CompTurretSubsystem.INSTANCE.setTurretOff();
+        CompLauncherSubsystem.INSTANCE.HoodDown().schedule();
+        CompLauncherSubsystem.INSTANCE.StopLauncher.schedule();
 
 
         // executed when the command ends

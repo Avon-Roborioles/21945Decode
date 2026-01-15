@@ -41,7 +41,7 @@ public class CompTurretSubsystem implements Subsystem {
 
     // put hardware, commands, etc here
     public MotorEx turretMotorEx = new MotorEx("Turret Motor").reversed();
-    public VoltageCompensatingMotor turretMotor = new VoltageCompensatingMotor( turretMotorEx , 0.25, 12.6 );
+    public VoltageCompensatingMotor turretMotor = new VoltageCompensatingMotor( turretMotorEx , 0.25, 12.8 );
     private InterpolatorElement interpolator = new TrapezoidProfileElement(new TrapezoidProfileConstraints(20, 10));
 
 
@@ -62,6 +62,7 @@ public class CompTurretSubsystem implements Subsystem {
         turretPos = ((data.positions[0] * DEGREES_PER_US)- angleOffset);
         return turretPos;
     }
+
 
     public Command turretLeft = new LambdaCommand()
             .setStart(() -> {
@@ -111,12 +112,15 @@ public class CompTurretSubsystem implements Subsystem {
         }
 
         turretTargetPosDeg = - Math.toDegrees(fieldAngleRad - turretZeroHeadingRad);
+
     }
 
     public void moveTurretJoystick(double joystickValue){
         turretTargetPosDeg += joystickValue *2.5;
         lastSetPoint = turretTargetPosDeg;
     }
+
+
 
 
 
@@ -156,7 +160,7 @@ public class CompTurretSubsystem implements Subsystem {
             }
             turretControlSystem.setGoal(new KineticState(turretTargetPosDeg));
             power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)) + ( kv * (turretTargetPosDeg - lastSetPoint));
-            if (Math.abs(power) > 0.175){
+            if ((Math.abs(power) > 0.175)){
                 turretMotor.setPower(power*maxPower);
             }else{
                 turretMotor.setPower(0);

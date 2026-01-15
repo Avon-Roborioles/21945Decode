@@ -70,7 +70,32 @@ public class CompStatusSubsystem implements Subsystem {
         PPG,
         PGP,
         GPP,
-        NULL
+        NULL,
+        UPG,
+        PUG,
+        PPU,
+        UGP,
+        PUP,
+        PGU,
+        UPP,
+        GUP,
+        GPU,
+        EPG,
+        PEG,
+        PPE,
+        EGP,
+        PEP,
+        PGE,
+        EPP,
+        GEP,
+        GPE,
+        TWOE
+    }
+    public enum order {
+        Center,
+        Left,
+        Right,
+        Skip
     }
 
 
@@ -224,9 +249,14 @@ public class CompStatusSubsystem implements Subsystem {
         }
         prevTime = curTime;
 
+
         if(ActiveOpMode.isStarted()){
-            //green
-            beacon.setPosition(0.5);
+            if (1e3/statistics.getMean()> 10){
+                setBeaconRed();
+            }else {
+                //green
+                beacon.setPosition(0.5);
+            }
         }else {
             //blue
             beacon.setPosition(0.6);
@@ -324,60 +354,61 @@ public class CompStatusSubsystem implements Subsystem {
     public void setLeftPurple(){
         if(!(left == CStatus.PURPLE)) {
             left = CStatus.PURPLE;
-            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0, purpleLeft);
+            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0, purpleLeft);
         }
     }
     public void setLeftGreen(){
         if(!(left == CStatus.GREEN)) {
             left = CStatus.GREEN;
-            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0, greenLeft);
+            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0, greenLeft);
         }
     }
     public void setLeftError(){
         if(!(left == CStatus.ERROR)) {
             left = CStatus.ERROR;
-            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0, errorLeft);
+            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0, errorLeft);
         }
     }
 
     public void setLeftOff() {
         if(!(left == CStatus.OFF)) {
             left = CStatus.OFF;
-            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0, offLeft);
+            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0, offLeft);
         }
     }
     public void setCenterPurple(){
         if(!(center == CStatus.PURPLE)) {
             center = CStatus.PURPLE;
-            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1, purpleMiddleFront);
-            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2, purpleMiddleBack);
+            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1, purpleMiddleFront);
+            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2, purpleMiddleBack);
         }
 
     }
     public void setCenterGreen(){
         if(!(center == CStatus.GREEN)) {
             center = CStatus.GREEN;
-            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1, greenMiddleFront);
-            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2, greenMiddleBack);
+            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1, greenMiddleFront);
+            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2, greenMiddleBack);
         }
     }
     public void setCenterError() {
         if(!(center == CStatus.ERROR)) {
             center = CStatus.ERROR;
-            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1, errorMiddleFront);
-            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2, errorMiddleBack);
+            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1, errorMiddleFront);
+            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2, errorMiddleBack);
         }
     }
     public void setCenterOff() {
         if(!(center == CStatus.OFF)) {
             center = CStatus.OFF;
-            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1, offMiddleFront);
-            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2, offMiddleBack);
+            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1, offMiddleFront);
+            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2, offMiddleBack);
         }
     }
     public void setRightPurple() {
         if(!(right == CStatus.PURPLE)) {
             right = CStatus.PURPLE;
+
             prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3, purpleRight);
         }
 
@@ -385,7 +416,7 @@ public class CompStatusSubsystem implements Subsystem {
     public void setRightGreen() {
         if(!(right == CStatus.GREEN)) {
             right = CStatus.GREEN;
-            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3, greenRight);
+            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3, greenRight);
         }
     }
     public void setRightError(){
@@ -397,43 +428,49 @@ public class CompStatusSubsystem implements Subsystem {
     public void setRightOff() {
         if(!(right == CStatus.OFF)) {
             right = CStatus.OFF;
-            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3, offRight);
+            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3, offRight);
         }
     }
 
     public void setAllOff(){
         if(!(left == CStatus.OFF)) {
             left = CStatus.OFF;
-            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0, offLeft);
+            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0, offLeft);
         }
         if(!(center == CStatus.OFF)) {
             center = CStatus.OFF;
-            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1, offMiddleFront);
-            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2, offMiddleBack);
+            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1, offMiddleFront);
+            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2, offMiddleBack);
         }
         if(!(right == CStatus.OFF)) {
             right = CStatus.OFF;
-            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3, offRight);
+            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3, offRight);
         }
     }
     public void setAllError() {
         if(!(left == CStatus.ERROR)) {
             left = CStatus.ERROR;
-            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0, errorLeft);
+            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0, errorLeft);
         }
         if(!(center == CStatus.ERROR)) {
             center = CStatus.ERROR;
-            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1, errorMiddleFront);
-            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2, errorMiddleBack);
+            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1, errorMiddleFront);
+            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2, errorMiddleBack);
         }
         if(!(right == CStatus.ERROR)) {
             right = CStatus.ERROR;
-            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3, errorRight);
+            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3, errorRight);
         }
     }
     public void returnToDefault(){
         prism.clearAllAnimations();
-        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,purpleSnakes);
+        prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,purpleSnakes);
+    }
+    public void updatePrism(){
+        prism.updateAllAnimations();
+    }
+    public void clearPrism(){
+        prism.clearAllAnimations();
     }
 
     public Command sorterLight= new LambdaCommand()

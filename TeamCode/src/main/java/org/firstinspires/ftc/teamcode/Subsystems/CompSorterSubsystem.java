@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Utility.Timing;
@@ -11,6 +12,7 @@ import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
+import dev.nextftc.ftc.components.BulkReadComponent;
 import dev.nextftc.hardware.impl.ServoEx;
 
 public class CompSorterSubsystem implements Subsystem {
@@ -30,6 +32,9 @@ public class CompSorterSubsystem implements Subsystem {
     private double lHug = lDown + 0.01;
     private double rHug = rDown + 0.01;
     private boolean busy = false;
+    private NormalizedRGBA leftColor;
+    private NormalizedRGBA centerColor;
+    private NormalizedRGBA rightColor;
 
     Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
     Timing.Timer reset = new Timing.Timer(200, TimeUnit.MILLISECONDS);
@@ -46,7 +51,8 @@ public class CompSorterSubsystem implements Subsystem {
         EMPTY,
         PURPLE,
         GREEN,
-        UNKNOWN
+        UNKNOWN,
+        LAUNCHED
     }
 
     public Command wake = new LambdaCommand()
@@ -173,7 +179,7 @@ public class CompSorterSubsystem implements Subsystem {
             .setInterruptible(false);
     // put hardware, commands, etc here
     private boolean leftDetected(){
-        return (sortCSL.getDistance(DistanceUnit.MM)<75 && sortCSL.getDistance(DistanceUnit.MM)>38);
+        return (sortCSL.getDistance(DistanceUnit.MM)<70 && sortCSL.getDistance(DistanceUnit.MM)>38);
     }
     private boolean centerDetected(){
         return (sortCSC.getDistance(DistanceUnit.MM)<80 && sortCSC.getDistance(DistanceUnit.MM)>38);
@@ -183,11 +189,12 @@ public class CompSorterSubsystem implements Subsystem {
     }
 
     public SlotDetection leftSlot(){
+        updateColor();
         if(leftDetected()){
-            if(sortCSL.red()>50 && sortCSL.green()<=100) {
+            if(leftColor.red>50 && leftColor.green<=100) {
                 CompStatusSubsystem.INSTANCE.setLeftPurple();
                 return SlotDetection.PURPLE;
-            }else if (sortCSL.green()>= 39){
+            }else if (leftColor.green>= 39){
                 CompStatusSubsystem.INSTANCE.setLeftGreen();
                 return SlotDetection.GREEN;
             }else {
@@ -200,11 +207,12 @@ public class CompSorterSubsystem implements Subsystem {
         }
     }
     public SlotDetection centerSlot(){
+        updateColor();
         if(centerDetected()){
-            if(sortCSC.red()>50 && sortCSC.green()<115 && sortCSC.blue()>125) {
+            if(centerColor.red>50 && centerColor.green<115 && centerColor.blue>125) {
                 CompStatusSubsystem.INSTANCE.setCenterPurple();
                 return SlotDetection.PURPLE;
-            }else if (sortCSC.green()> 116){
+            }else if (centerColor.green> 116){
                 CompStatusSubsystem.INSTANCE.setCenterGreen();
                 return SlotDetection.GREEN;
             }else {
@@ -217,11 +225,12 @@ public class CompSorterSubsystem implements Subsystem {
         }
     }
     public SlotDetection rightSlot(){
+        updateColor();
         if(rightDetected()){
-            if(sortCSR.red()>20 && sortCSR.green()<37.5) {
+            if(leftColor.red>20 && leftColor.green<37.5) {
                 CompStatusSubsystem.INSTANCE.setRightPurple();
                 return SlotDetection.PURPLE;
-            }else if ( sortCSR.blue()<25){
+            }else if ( leftColor.blue<25){
                 CompStatusSubsystem.INSTANCE.setRightGreen();
                 return SlotDetection.GREEN;
             }else {
@@ -233,13 +242,49 @@ public class CompSorterSubsystem implements Subsystem {
             return SlotDetection.EMPTY;
         }
     }
+    public void light(){
+
+
+//        if(leftColor.red>20 && leftColor.green<37.5) {
+//            CompStatusSubsystem.INSTANCE.setRightPurple();
+//        }else if ( leftColor.blue<25) {
+//            CompStatusSubsystem.INSTANCE.setRightGreen();
+//        }else {
+//            CompStatusSubsystem.INSTANCE.setRightError();
+//        }
+//        if(centerColor.red>50 && centerColor.green<115 && centerColor.blue>125) {
+//            CompStatusSubsystem.INSTANCE.setCenterPurple();
+//        }else if (centerColor.green> 116){
+//            CompStatusSubsystem.INSTANCE.setCenterGreen();
+//        }else {
+//            CompStatusSubsystem.INSTANCE.setCenterError();
+//        }
+//
+//        if(leftColor.red>50 && leftColor.green<=100) {
+//            CompStatusSubsystem.INSTANCE.setLeftPurple();
+//        }else if (leftColor.green>= 39){
+//            CompStatusSubsystem.INSTANCE.setLeftGreen();
+//        }else {
+//            CompStatusSubsystem.INSTANCE.setLeftError();
+//        }
+
+
+
+
+
+    }
     public boolean sorterFull(){
-        return !(leftSlot() == SlotDetection.EMPTY) && !(centerSlot() == SlotDetection.EMPTY) && !(rightSlot() == SlotDetection.EMPTY);
+        return (leftDetected()) && (centerDetected()) && (rightDetected());
     }
     public boolean sorterEmpty(){
         return !leftDetected() && !centerDetected() && !rightDetected();
     }
 
+    public void updateColor(){
+        leftColor = sortCSL.getNormalizedColors();
+        centerColor = sortCSC.getNormalizedColors();
+        rightColor = sortCSR.getNormalizedColors();
+    }
 
 
 
@@ -255,9 +300,10 @@ public class CompSorterSubsystem implements Subsystem {
     @Override
     public void periodic() {
         // periodic logic (runs every loop)
-//        getSorterTelemetryAdv();
+
     }
     public void getSorterTelemetryAdv(){
+
         ActiveOpMode.telemetry().addLine("-------------- Sorter Telemetry Adv: --------------");
         ActiveOpMode.telemetry().addData("Sorter Busy:", busy);
         ActiveOpMode.telemetry().addData("Sort CS L Distance MM:", sortCSL.getDistance(DistanceUnit.MM));
@@ -266,12 +312,9 @@ public class CompSorterSubsystem implements Subsystem {
         ActiveOpMode.telemetry().addData("Left Slot:", leftSlot());
         ActiveOpMode.telemetry().addData("Center Slot:", centerSlot());
         ActiveOpMode.telemetry().addData("Right Slot:", rightSlot());
-//        ActiveOpMode.telemetry().addData("Sort L Detected", leftDetected());
-//        ActiveOpMode.telemetry().addData("Sort C Detected", centerDetected());
-//        ActiveOpMode.telemetry().addData("Sort R Detected", rightDetected());
-        ActiveOpMode.telemetry().addData("Sort CS L [A,R,G,B]","" + sortCSL.alpha() + ", " + sortCSL.red() + ", " + sortCSL.green() + ", " + sortCSL.blue());
-        ActiveOpMode.telemetry().addData("Sort CS C [A,R,G,B]","" + sortCSC.alpha() + ", " + sortCSC.red() + ", " + sortCSC.green() + ", " + sortCSC.blue());
-        ActiveOpMode.telemetry().addData("Sort CS R [A,R,G,B]","" + sortCSR.alpha() + ", " + sortCSR.red() + ", " + sortCSR.green() + ", " + sortCSR.blue());
+            ActiveOpMode.telemetry().addData("Sort CS L [A,R,G,B]","" + leftColor.alpha + ", " + leftColor.red + ", " + leftColor.green + ", " + leftColor.blue);
+        ActiveOpMode.telemetry().addData("Sort CS C [A,R,G,B]","" + centerColor.alpha + ", " + centerColor.red + ", " + centerColor.green + ", " + centerColor.blue);
+        ActiveOpMode.telemetry().addData("Sort CS R [A,R,G,B]","" + rightColor.alpha + ", " + rightColor.red + ", " + rightColor.green + ", " + rightColor.blue);
 
 
     }

@@ -5,11 +5,12 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import dev.nextftc.core.commands.Command;
 
 @Autonomous
-public class AutoPathway {
+public class AutoPathway extends LinearOpMode {
 
         Command setStartingPoint, setDriveDown, setCollection, setDriveUp, setDriveDown2, setCollection2, setDriveUp2,setDriveDown3, setCollection3, setDriveUp4,
                 setDriveDown4, setCollection4, setDriveUp5, setEndingPoint;
@@ -143,6 +144,11 @@ public class AutoPathway {
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                 .build();
+    }
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+
     }
 }
 

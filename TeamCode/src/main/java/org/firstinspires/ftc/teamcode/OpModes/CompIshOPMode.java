@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.util.MovingStatistics;
 
 import org.firstinspires.ftc.teamcode.Commands.IntakeToSorterCommand;
 import org.firstinspires.ftc.teamcode.Commands.LaunchWithOutSort;
+import org.firstinspires.ftc.teamcode.Commands.LaunchWithSort;
 import org.firstinspires.ftc.teamcode.Commands.RunTurretAndLauncherFromHeading;
 import org.firstinspires.ftc.teamcode.Commands.TurretJoystickCommand;
 import org.firstinspires.ftc.teamcode.Subsystems.CompIntakeSubsystem;
@@ -25,6 +26,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.CommandGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
+import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.extensions.pedro.PedroComponent;
@@ -66,6 +68,7 @@ public class CompIshOPMode extends NextFTCOpMode {
     @Override
     public void onStartButtonPressed() {
         Command launchWithoutSort = new LaunchWithOutSort();
+        Command launchWithSort = new LaunchWithSort();
         Command intakeToSorter = new IntakeToSorterCommand();
         Command runTurretAndLauncherFromHeading = new RunTurretAndLauncherFromHeading(false);
         Command runTurretFromJoystick = new TurretJoystickCommand(Gamepads.gamepad2().rightStickX());
@@ -79,8 +82,8 @@ public class CompIshOPMode extends NextFTCOpMode {
         );
         driverControlled.schedule();
 
-        Gamepads.gamepad1().circle();
-        Gamepads.gamepad1().square();
+        Gamepads.gamepad1().circle().whenBecomesTrue(launchWithoutSort).whenBecomesFalse(new LambdaCommand().setStart(launchWithoutSort::cancel).setIsDone(() -> true));
+        Gamepads.gamepad1().square().whenBecomesTrue(launchWithSort).whenBecomesFalse(new LambdaCommand().setStart(launchWithSort::cancel).setIsDone(() -> true));
         Gamepads.gamepad1().triangle();
         Gamepads.gamepad1().cross();
         Gamepads.gamepad1().dpadUp();
@@ -99,9 +102,9 @@ public class CompIshOPMode extends NextFTCOpMode {
         Gamepads.gamepad1().touchpad().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.StopLauncher);
 
 
-        Gamepads.gamepad2().circle().whenBecomesTrue(launchWithoutSort);
+        Gamepads.gamepad2().circle().whenBecomesTrue(launchWithoutSort).whenBecomesFalse(new LambdaCommand().setStart(launchWithoutSort::cancel).setIsDone(() -> true));
         Gamepads.gamepad2().square().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.SpinUpToSpeed(800));
-        Gamepads.gamepad2().triangle();
+        Gamepads.gamepad2().triangle().whenBecomesTrue(new LambdaCommand().setStart(intakeToSorter::cancel).setIsDone(() -> true));
         Gamepads.gamepad2().cross().whenBecomesTrue(intakeToSorter);
         Gamepads.gamepad2().dpadUp().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.SpeedUp);
         Gamepads.gamepad2().dpadDown().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.SpeedDown);

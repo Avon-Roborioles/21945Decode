@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Commands;
 
 import org.firstinspires.ftc.teamcode.Subsystems.CompIntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompSorterSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.CompStatusSubsystem;
 
 import dev.nextftc.core.commands.Command;
 
@@ -24,6 +25,7 @@ public class IntakeToSorterCommand extends Command {
     public void start() {
         full = false;
         done = false;
+        CompStatusSubsystem.INSTANCE.setAllError();
 
 
         // executed when the command begins
@@ -35,13 +37,17 @@ public class IntakeToSorterCommand extends Command {
             CompIntakeSubsystem.INSTANCE.intake();
             full = CompSorterSubsystem.INSTANCE.sorterFull();
         }else{
-            CompSorterSubsystem.INSTANCE.sortHug();
             if(CompIntakeSubsystem.INSTANCE.intakeBBTripped()){
+                CompSorterSubsystem.INSTANCE.sortHug();
                 CompIntakeSubsystem.INSTANCE.outtake();
             }else{
                 done = true;
             }
+
+//            CompSorterSubsystem.INSTANCE.light();
         }
+        CompSorterSubsystem.INSTANCE.updateColor();
+//        CompSorterSubsystem.INSTANCE.getSorterTelemetryAdv();
 
         // executed on every update of the command
     }
@@ -49,7 +55,8 @@ public class IntakeToSorterCommand extends Command {
     @Override
     public void stop(boolean interrupted) {
         CompIntakeSubsystem.INSTANCE.stopIntake();
-        CompSorterSubsystem.INSTANCE.resetSorter();
+//        CompStatusSubsystem.INSTANCE.updatePrism();
+
         // executed when the command ends
     }
 }
