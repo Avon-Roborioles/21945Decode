@@ -90,7 +90,7 @@ public class CompIshOPMode extends NextFTCOpMode {
 
         Gamepads.gamepad1().circle().whenBecomesTrue(launchWithoutSort).whenBecomesFalse(new LambdaCommand().setStart(launchWithoutSort::cancel).setIsDone(() -> true));
         Gamepads.gamepad1().square();
-        Gamepads.gamepad1().triangle();
+        Gamepads.gamepad1().triangle().whenBecomesTrue(CompPTOSubsystem.INSTANCE.engage).whenBecomesFalse(CompPTOSubsystem.INSTANCE.disengage);
         Gamepads.gamepad1().cross().whenBecomesTrue(runTurretAndLauncherFromHeading).whenBecomesFalse(new LambdaCommand().setStart(() -> {runTurretAndLauncherFromHeading.cancel();runTurretFromJoystick.schedule();}).setIsDone(() -> true));;
         Gamepads.gamepad1().dpadUp();
         Gamepads.gamepad1().dpadDown();
