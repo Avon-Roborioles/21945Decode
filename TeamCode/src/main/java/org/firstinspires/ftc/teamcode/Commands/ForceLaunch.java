@@ -6,11 +6,9 @@ import org.firstinspires.ftc.teamcode.Utility.Timing;
 import java.util.concurrent.TimeUnit;
 
 import dev.nextftc.core.commands.Command;
-import dev.nextftc.core.commands.groups.CommandGroup;
-import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.ftc.ActiveOpMode;
 
-public class LaunchWithOutSort extends Command {
+public class ForceLaunch extends Command {
     enum Step{
         LaunchCenter,
         WaitCenter,
@@ -22,7 +20,6 @@ public class LaunchWithOutSort extends Command {
         ResetRight,
         WaitRight,
         Pause,
-        CheckForMiss,
         Done
 
     }
@@ -32,7 +29,7 @@ public class LaunchWithOutSort extends Command {
     Timing.Timer reset = new Timing.Timer(200, TimeUnit.MILLISECONDS);
     Timing.Timer delay = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
 
-    public LaunchWithOutSort() {
+    public ForceLaunch() {
         requires(/* subsystems */);
         setInterruptible(true); // this is the default, so you don't need to specify
     }
@@ -53,13 +50,9 @@ public class LaunchWithOutSort extends Command {
     public void update() {
         switch (St) {
             case LaunchCenter:
-                if(!(CompSorterSubsystem.INSTANCE.centerSlot() == CompSorterSubsystem.SlotDetection.EMPTY)){
-                    CompSorterSubsystem.INSTANCE.sendCenter();
-                    wait.start();
-                    St = Step.WaitCenter;
-                } else {
-                    St = Step.LaunchLeft;
-                }
+                CompSorterSubsystem.INSTANCE.sendCenter();
+                wait.start();
+                St = Step.WaitCenter;
                 break;
             case WaitCenter:
                 if(wait.done()){
@@ -74,14 +67,9 @@ public class LaunchWithOutSort extends Command {
                 }
                 break;
             case LaunchLeft:
-                if(!(CompSorterSubsystem.INSTANCE.leftSlot() == CompSorterSubsystem.SlotDetection.EMPTY)){
-                    CompSorterSubsystem.INSTANCE.sendLeft();
-                    wait.start();
-                    St = Step.WaitLeft;
-                } else {
-                    St = Step.LaunchRight;
-
-                }
+                CompSorterSubsystem.INSTANCE.sendLeft();
+                wait.start();
+                St = Step.WaitLeft;
                 break;
             case WaitLeft:
                 if(wait.done()){
@@ -96,13 +84,9 @@ public class LaunchWithOutSort extends Command {
                 }
                 break;
             case LaunchRight:
-                if(!(CompSorterSubsystem.INSTANCE.rightSlot() == CompSorterSubsystem.SlotDetection.EMPTY)){
-                    CompSorterSubsystem.INSTANCE.sendRight();
-                    wait.start();
-                    St = Step.WaitRight;
-                } else {
-                    St = Step.Pause;
-                }
+                CompSorterSubsystem.INSTANCE.sendRight();
+                wait.start();
+                St = Step.WaitRight;
                 break;
             case WaitRight:
                 if(wait.done()){
@@ -121,13 +105,6 @@ public class LaunchWithOutSort extends Command {
                     delay.start();
                 }
                 if(delay.done()) {
-                    St = Step.CheckForMiss;
-                }
-                break;
-            case CheckForMiss:
-                if(!(CompSorterSubsystem.INSTANCE.leftSlot() == CompSorterSubsystem.SlotDetection.EMPTY) || !(CompSorterSubsystem.INSTANCE.centerSlot() == CompSorterSubsystem.SlotDetection.EMPTY) || !(CompSorterSubsystem.INSTANCE.rightSlot() == CompSorterSubsystem.SlotDetection.EMPTY)){
-                    St = Step.LaunchCenter;
-                }else {
                     St = Step.Done;
                 }
                 break;

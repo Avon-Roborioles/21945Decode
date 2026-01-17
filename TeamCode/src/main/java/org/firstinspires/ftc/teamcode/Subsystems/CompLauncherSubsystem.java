@@ -91,7 +91,8 @@ public class CompLauncherSubsystem implements Subsystem {
 
     //Basic Commands
     public Command HoodDown(){
-        return new SetPosition(hoodServo, 0.00).requires(hoodServo);
+        hoodAngleTarget = 5;
+        return new SetPosition(hoodServo, angleToServo(hoodAngleTarget));
     }
 
 

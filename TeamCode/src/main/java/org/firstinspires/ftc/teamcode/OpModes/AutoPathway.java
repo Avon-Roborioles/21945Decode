@@ -7,10 +7,12 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.OpModes.Auto.AutoBase;
+
 import dev.nextftc.core.commands.Command;
 
 @Autonomous
-public class AutoPathway extends LinearOpMode {
+public class AutoPathway extends AutoBase {
 
         Command setStartingPoint, setDriveDown, setCollection, setDriveUp, setDriveDown2, setCollection2, setDriveUp2,setDriveDown3, setCollection3, setDriveUp4,
                 setDriveDown4, setCollection4, setDriveUp5, setEndingPoint;
@@ -146,10 +148,7 @@ public class AutoPathway extends LinearOpMode {
                 .build();
     }
 
-    @Override
-    public void runOpMode() throws InterruptedException {
 
-    }
 }
 
 

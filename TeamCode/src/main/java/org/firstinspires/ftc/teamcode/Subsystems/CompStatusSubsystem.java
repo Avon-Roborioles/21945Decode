@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynchDevice;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.MovingStatistics;
@@ -21,6 +22,7 @@ import dev.nextftc.ftc.ActiveOpMode;
 public class CompStatusSubsystem implements Subsystem {
     public static final CompStatusSubsystem INSTANCE = new CompStatusSubsystem();
     private CompStatusSubsystem() {}
+
 
     int brightness = 10 ;
 

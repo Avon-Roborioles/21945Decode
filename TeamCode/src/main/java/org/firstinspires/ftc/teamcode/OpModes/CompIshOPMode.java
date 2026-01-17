@@ -7,6 +7,7 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.MovingStatistics;
 
+import org.firstinspires.ftc.teamcode.Commands.ForceLaunch;
 import org.firstinspires.ftc.teamcode.Commands.IntakeToSorterCommand;
 import org.firstinspires.ftc.teamcode.Commands.LaunchWithOutSort;
 import org.firstinspires.ftc.teamcode.Commands.LaunchWithSort;
@@ -40,7 +41,6 @@ import dev.nextftc.hardware.driving.DriverControlledCommand;
 public class CompIshOPMode extends NextFTCOpMode {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-
     {
         addComponents(
                 new SubsystemComponent(CompLauncherSubsystem.INSTANCE, CompIntakeSubsystem.INSTANCE, CompSorterSubsystem.INSTANCE, CompPTOSubsystem.INSTANCE, CompTurretSubsystem.INSTANCE, CompVisionSubsystem.INSTANCE, CompStatusSubsystem.INSTANCE, LauncherSubsystemGroup.INSTANCE),
@@ -72,6 +72,12 @@ public class CompIshOPMode extends NextFTCOpMode {
         Command intakeToSorter = new IntakeToSorterCommand();
         Command runTurretAndLauncherFromHeading = new RunTurretAndLauncherFromHeading(false);
         Command runTurretFromJoystick = new TurretJoystickCommand(Gamepads.gamepad2().rightStickX());
+        Command forceLaunch = new ForceLaunch();
+        Command eStop = new SequentialGroup(CompLauncherSubsystem.INSTANCE.StopLauncher, CompIntakeSubsystem.INSTANCE.StopIntake, CompLauncherSubsystem.INSTANCE.HoodDown(), new LambdaCommand().setStart(intakeToSorter::cancel).setIsDone(() -> true),
+                new LambdaCommand().setStart(forceLaunch::cancel).setIsDone(() -> true),
+                new LambdaCommand().setStart(runTurretFromJoystick::cancel).setIsDone(() -> true),
+                new LambdaCommand().setStart(runTurretAndLauncherFromHeading::cancel).setIsDone(() -> true),
+                new LambdaCommand().setStart(launchWithSort::cancel).setIsDone(() -> true));
         runTurretFromJoystick.schedule();
 
         DriverControlledCommand driverControlled = new PedroDriverControlled(
@@ -83,29 +89,29 @@ public class CompIshOPMode extends NextFTCOpMode {
         driverControlled.schedule();
 
         Gamepads.gamepad1().circle().whenBecomesTrue(launchWithoutSort).whenBecomesFalse(new LambdaCommand().setStart(launchWithoutSort::cancel).setIsDone(() -> true));
-        Gamepads.gamepad1().square().whenBecomesTrue(launchWithSort).whenBecomesFalse(new LambdaCommand().setStart(launchWithSort::cancel).setIsDone(() -> true));
+        Gamepads.gamepad1().square();
         Gamepads.gamepad1().triangle();
-        Gamepads.gamepad1().cross();
+        Gamepads.gamepad1().cross().whenBecomesTrue(runTurretAndLauncherFromHeading).whenBecomesFalse(new LambdaCommand().setStart(() -> {runTurretAndLauncherFromHeading.cancel();runTurretFromJoystick.schedule();}).setIsDone(() -> true));;
         Gamepads.gamepad1().dpadUp();
         Gamepads.gamepad1().dpadDown();
         Gamepads.gamepad1().dpadLeft();
         Gamepads.gamepad1().dpadRight();
         Gamepads.gamepad1().leftStickButton();
         Gamepads.gamepad1().rightStickButton();
-        Gamepads.gamepad1().leftTrigger().atLeast(0.75);
-        Gamepads.gamepad1().rightTrigger().atLeast(0.75);
-        Gamepads.gamepad1().leftBumper();
-        Gamepads.gamepad1().rightBumper();
+        Gamepads.gamepad1().leftTrigger().atLeast(0.75).whenBecomesTrue(new LambdaCommand().setStart(intakeToSorter::cancel).setIsDone(() -> true));;
+        Gamepads.gamepad1().rightTrigger().atLeast(0.75).whenBecomesTrue(new LambdaCommand().setStart(()->{PedroComponent.follower().setMaxPower(0.5);}).setIsDone(() -> true)).whenBecomesFalse(new LambdaCommand().setStart(()->{PedroComponent.follower().setMaxPower(1);}));
+        Gamepads.gamepad1().leftBumper().whenBecomesTrue(intakeToSorter);
+        Gamepads.gamepad1().rightBumper().toggleOnBecomesTrue().whenTrue(CompIntakeSubsystem.INSTANCE.Outtake).whenBecomesFalse(CompIntakeSubsystem.INSTANCE.StopIntake);;
         Gamepads.gamepad1().options();
         Gamepads.gamepad1().share();
-        Gamepads.gamepad1().ps();
-        Gamepads.gamepad1().touchpad().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.StopLauncher);
+        Gamepads.gamepad1().ps().whenBecomesTrue(new LambdaCommand().setStart(() -> {PedroComponent.follower().setPose(new Pose(PedroComponent.follower().getPose().getX(),PedroComponent.follower().getPose().getY(),(3*Math.PI)/2));}).setIsDone(() -> true));;
+        Gamepads.gamepad1().touchpad().whenBecomesTrue(eStop);
 
 
-        Gamepads.gamepad2().circle().whenBecomesTrue(launchWithoutSort).whenBecomesFalse(new LambdaCommand().setStart(launchWithoutSort::cancel).setIsDone(() -> true));
+        Gamepads.gamepad2().circle().whenBecomesTrue(launchWithSort).whenBecomesFalse(new LambdaCommand().setStart(launchWithSort::cancel).setIsDone(() -> true));;
         Gamepads.gamepad2().square().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.SpinUpToSpeed(800));
-        Gamepads.gamepad2().triangle().whenBecomesTrue(new LambdaCommand().setStart(intakeToSorter::cancel).setIsDone(() -> true));
-        Gamepads.gamepad2().cross().whenBecomesTrue(intakeToSorter);
+        Gamepads.gamepad2().triangle().whenBecomesTrue(forceLaunch).whenBecomesFalse(new LambdaCommand().setStart(forceLaunch::cancel).setIsDone(() -> true));
+        Gamepads.gamepad2().cross();
         Gamepads.gamepad2().dpadUp().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.SpeedUp);
         Gamepads.gamepad2().dpadDown().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.SpeedDown);
         Gamepads.gamepad2().dpadLeft();
@@ -123,9 +129,9 @@ public class CompIshOPMode extends NextFTCOpMode {
         Gamepads.gamepad2().leftBumper();
         Gamepads.gamepad2().rightBumper();
         Gamepads.gamepad2().options().whenBecomesTrue(CompStatusSubsystem.INSTANCE.cycleOBPatternCommand);
-        Gamepads.gamepad2().share().toggleOnBecomesTrue().whenTrue(CompIntakeSubsystem.INSTANCE.Outtake).whenBecomesFalse(CompIntakeSubsystem.INSTANCE.StopIntake);
-        Gamepads.gamepad2().ps().toggleOnBecomesTrue().whenTrue(runTurretAndLauncherFromHeading);
-        Gamepads.gamepad2().touchpad().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.StopLauncher);
+        Gamepads.gamepad2().share();
+        Gamepads.gamepad2().ps();
+        Gamepads.gamepad2().touchpad().whenBecomesTrue(eStop);
         Command start = new SequentialGroup(CompSorterSubsystem.INSTANCE.wake, CompSorterSubsystem.INSTANCE.resetSorter, CompPTOSubsystem.INSTANCE.disengage);
         start.schedule();
     }

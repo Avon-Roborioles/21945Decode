@@ -54,6 +54,10 @@ public class IntakeToSorterCommand extends Command {
 
     @Override
     public void stop(boolean interrupted) {
+        if (!interrupted) {
+            CompSorterSubsystem.INSTANCE.sortHug();
+        }
+
         CompIntakeSubsystem.INSTANCE.stopIntake();
 //        CompStatusSubsystem.INSTANCE.updatePrism();
 

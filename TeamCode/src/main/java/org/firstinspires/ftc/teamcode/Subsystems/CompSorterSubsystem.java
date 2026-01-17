@@ -185,7 +185,7 @@ public class CompSorterSubsystem implements Subsystem {
         return (sortCSC.getDistance(DistanceUnit.MM)<80 && sortCSC.getDistance(DistanceUnit.MM)>38);
     }
     private boolean rightDetected(){
-        return (sortCSR.getDistance(DistanceUnit.MM)<44 && sortCSR.getDistance(DistanceUnit.MM)>38);
+        return (sortCSR.getDistance(DistanceUnit.MM)<42 && sortCSR.getDistance(DistanceUnit.MM)>33);
     }
 
     public SlotDetection leftSlot(){
