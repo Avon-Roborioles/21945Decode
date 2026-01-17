@@ -111,7 +111,7 @@ public class CompIshOPMode extends NextFTCOpMode {
         Gamepads.gamepad2().circle().whenBecomesTrue(launchWithSort).whenBecomesFalse(new LambdaCommand().setStart(launchWithSort::cancel).setIsDone(() -> true));;
         Gamepads.gamepad2().square().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.SpinUpToSpeed(800));
         Gamepads.gamepad2().triangle().whenBecomesTrue(forceLaunch).whenBecomesFalse(new LambdaCommand().setStart(forceLaunch::cancel).setIsDone(() -> true));
-        Gamepads.gamepad2().cross();
+        Gamepads.gamepad2().cross().toggleOnBecomesTrue().whenBecomesTrue(runTurretAndLauncherFromHeading).whenBecomesFalse(new LambdaCommand().setStart(() -> {runTurretAndLauncherFromHeading.cancel();runTurretFromJoystick.schedule();}).setIsDone(() -> true));;
         Gamepads.gamepad2().dpadUp().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.SpeedUp);
         Gamepads.gamepad2().dpadDown().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.SpeedDown);
         Gamepads.gamepad2().dpadLeft();
@@ -124,7 +124,7 @@ public class CompIshOPMode extends NextFTCOpMode {
         Gamepads.gamepad2().rightStickY().lessThan(-0.75);
         Gamepads.gamepad2().rightStickY().atLeast(0.75);
         Gamepads.gamepad2().rightStickButton();
-        Gamepads.gamepad2().leftTrigger().atLeast(0.75);
+        Gamepads.gamepad2().leftTrigger().atLeast(0.75).whenBecomesTrue(new LambdaCommand().setStart(intakeToSorter::cancel).setIsDone(() -> true));
         Gamepads.gamepad2().rightTrigger().atLeast(0.75);
         Gamepads.gamepad2().leftBumper();
         Gamepads.gamepad2().rightBumper();

@@ -99,7 +99,7 @@ public class CompLauncherSubsystem implements Subsystem {
     public Command SpeedUp = new LambdaCommand()
             .setStart(() -> {
                 // Runs on start
-                speedTarget += 50;
+                speedTarget += 25;
             })
             .setUpdate(() -> {
                 // Runs on update
@@ -114,7 +114,7 @@ public class CompLauncherSubsystem implements Subsystem {
     public Command SpeedDown = new LambdaCommand()
             .setStart(() -> {
                 // Runs on start
-                speedTarget -= 50;
+                speedTarget -= 25;
             })
             .setUpdate(() -> {
                 // Runs on update
@@ -145,7 +145,7 @@ public class CompLauncherSubsystem implements Subsystem {
     public Command HoodPlus = new LambdaCommand()
             .setStart(() -> {
                 // Runs on start
-                hoodAngleTarget += 5;
+                hoodAngleTarget += 2.5;
             })
             .setUpdate(() -> {
                 // Runs on update
@@ -160,7 +160,7 @@ public class CompLauncherSubsystem implements Subsystem {
     public Command HoodMinus = new LambdaCommand()
             .setStart(() -> {
                 // Runs on start
-                hoodAngleTarget -= 5;
+                hoodAngleTarget -= 2.5;
             })
             .setUpdate(() -> {
                 // Runs on update
