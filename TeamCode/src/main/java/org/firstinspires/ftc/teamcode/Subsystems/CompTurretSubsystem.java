@@ -25,13 +25,13 @@ public class CompTurretSubsystem implements Subsystem {
     OctoQuadFWv3 Octo;
     private double turretPos = 0;
     private static final double DEGREES_PER_US = (410.67 / 1024.0);
-    private double angleOffset = 204.2;
+    private double angleOffset = 204.2 - 0.8;
     private double turretTargetPosDeg =0;
     private double turretFieldAngleGoalDeg = 90;
     private double botHeadingRad = 0;
     double turretZeroHeadingRad = 0;
     private final OctoQuadFWv3.EncoderDataBlock data = new OctoQuadFWv3.EncoderDataBlock();
-    double maxPower = 1;
+    double maxPower = 0;
     double power = 0;
 
     double lastSetPoint = 0;
@@ -41,13 +41,13 @@ public class CompTurretSubsystem implements Subsystem {
 
     // put hardware, commands, etc here
     public MotorEx turretMotorEx = new MotorEx("Turret Motor").reversed();
-    public VoltageCompensatingMotor turretMotor = new VoltageCompensatingMotor( turretMotorEx , 0.25, 12.8 );
+    public VoltageCompensatingMotor turretMotor = new VoltageCompensatingMotor( turretMotorEx , 0.25, 14 );
     private InterpolatorElement interpolator = new TrapezoidProfileElement(new TrapezoidProfileConstraints(20, 10));
 
 
     private ControlSystem turretControlSystem = ControlSystem.builder()
-            .posSquid(0.01, 0.00000000005,0.036)
-            .basicFF(0,0,0.29)
+            .posSquid(0.018, 0.0000000001,0.07)
+            .basicFF(0,0,0.35)
             .build();
 
     public double getRotatePositionRaw(){
@@ -160,7 +160,7 @@ public class CompTurretSubsystem implements Subsystem {
             }
             turretControlSystem.setGoal(new KineticState(turretTargetPosDeg));
             power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)) + ( kv * (turretTargetPosDeg - lastSetPoint));
-            if ((Math.abs(power) > 0.175)){
+            if ((Math.abs(power) > 0)){
                 turretMotor.setPower(power*maxPower);
             }else{
                 turretMotor.setPower(0);

@@ -18,8 +18,8 @@ public class RunTurretAndLauncherFromHeading extends Command {
     boolean redAlliance;
     double turretFieldAngleRad;
 
-    static Pose redGoal = new Pose(142,142);
-    static Pose blueGoal = new Pose(2,142);
+    static Pose redGoal = new Pose(144,144);
+    static Pose blueGoal = new Pose(0,144);
     Pose goal;
 
     public RunTurretAndLauncherFromHeading(boolean redAlliance) {
@@ -47,7 +47,7 @@ public class RunTurretAndLauncherFromHeading extends Command {
         turretFieldAngleRad = Math.atan2((goal.getY()- botPose.getY()), (goal.getX()- botPose.getX()) + PedroComponent.follower().getAngularVelocity()* CompStatusSubsystem.INSTANCE.getLoopTimeSeconds());
 
         CompTurretSubsystem.INSTANCE.turnTurretToFieldAngle(turretFieldAngleRad);
-//        CompLauncherSubsystem.INSTANCE.RunLauncherFromDistance(distanceToGoal);
+        CompLauncherSubsystem.INSTANCE.RunLauncherFromDistance(distanceToGoal);
         ActiveOpMode.telemetry().addLine("-------------- RunTurretAndLauncherFromHeading Telemetry: --------------");
         ActiveOpMode.telemetry().addData("redAlliance", redAlliance);
         ActiveOpMode.telemetry().addData("BotPose", botPose);

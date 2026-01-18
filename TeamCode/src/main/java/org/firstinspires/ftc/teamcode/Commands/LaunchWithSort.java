@@ -51,7 +51,7 @@ public class LaunchWithSort extends Command {
     Slot lastLaunch = Slot.Null;
 
     Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
-    Timing.Timer reset = new Timing.Timer(500, TimeUnit.MILLISECONDS);
+    Timing.Timer reset = new Timing.Timer(250, TimeUnit.MILLISECONDS);
 
 
     public LaunchWithSort() {

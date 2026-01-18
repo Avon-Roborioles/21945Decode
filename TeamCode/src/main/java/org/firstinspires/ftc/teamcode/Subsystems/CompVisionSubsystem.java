@@ -23,6 +23,7 @@ public class CompVisionSubsystem implements Subsystem {
     private int redPipeline = 0;
     private int bluePipeline = 1;
     private final int startingPipeline = 0;
+
     private int OBPipeline = 2;
     private double maxLLAngle = 49;
     private double minLLAngle = -40;
@@ -90,11 +91,12 @@ public class CompVisionSubsystem implements Subsystem {
         lLTiltAngle = 0;
     }
     public void SearchForOb(){
+        llTiltToAngle(0);
         update();
         if (latestResult != null) {
             //may need to sort in case multiple tags can be seen
             if (latestResult.isValid()) {
-                switch (latestResult.getFiducialResults().get(1).getFiducialId()) {
+                switch (latestResult.getFiducialResults().get(0).getFiducialId()) {
                     case 21:
                         CompStatusSubsystem.INSTANCE.setCurrentOBPattern(CompStatusSubsystem.OBPattern.GPP);
                         break;
@@ -111,8 +113,9 @@ public class CompVisionSubsystem implements Subsystem {
         }
 
     }
-    private void stopLL(){
+    public void stopLL(){
         limelight.stop();
+        limelight.close();
     }
     private void startLL(){
         limelight.start();
@@ -179,7 +182,6 @@ public class CompVisionSubsystem implements Subsystem {
 
                 ActiveOpMode.telemetry().addData("Yaw to Goal", latestResult.getTx());
                 ActiveOpMode.telemetry().addData("Pitch to Goal", latestResult.getTy());
-                ActiveOpMode.telemetry().addData("distance", getDistanceToGoal(latestResult));
             }
         }
     }

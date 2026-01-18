@@ -130,7 +130,7 @@ public class CompIshOPMode extends NextFTCOpMode {
         Gamepads.gamepad2().rightBumper();
         Gamepads.gamepad2().options().whenBecomesTrue(CompStatusSubsystem.INSTANCE.cycleOBPatternCommand);
         Gamepads.gamepad2().share();
-        Gamepads.gamepad2().ps();
+        Gamepads.gamepad2().ps().toggleOnBecomesTrue().whenTrue(new LambdaCommand().setStart(() -> {CompVisionSubsystem.INSTANCE.setLLToOB();}).setUpdate(() -> {CompVisionSubsystem.INSTANCE.SearchForOb();}).setIsDone(() -> true).setStop((Interrupted)-> {CompVisionSubsystem.INSTANCE.stopLL();}));
         Gamepads.gamepad2().touchpad().whenBecomesTrue(eStop);
         Command start = new SequentialGroup(CompSorterSubsystem.INSTANCE.wake, CompSorterSubsystem.INSTANCE.resetSorter, CompPTOSubsystem.INSTANCE.disengage);
         start.schedule();

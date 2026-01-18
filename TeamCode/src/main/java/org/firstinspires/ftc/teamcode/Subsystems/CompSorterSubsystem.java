@@ -191,7 +191,7 @@ public class CompSorterSubsystem implements Subsystem {
     public SlotDetection leftSlot(){
         updateColor();
         if(leftDetected()){
-            if(leftColor.red<0.3) {
+            if(leftColor.red<0.37) {
                 CompStatusSubsystem.INSTANCE.setLeftGreen();
                 return SlotDetection.GREEN;
             }else {
@@ -206,7 +206,7 @@ public class CompSorterSubsystem implements Subsystem {
     public SlotDetection centerSlot(){
         updateColor();
         if(centerDetected()){
-            if(centerColor.red< 0.34) {
+            if(centerColor.green>0.74) {
                 CompStatusSubsystem.INSTANCE.setCenterGreen();
                 return SlotDetection.GREEN;
             }else {
@@ -221,7 +221,7 @@ public class CompSorterSubsystem implements Subsystem {
     public SlotDetection rightSlot(){
         updateColor();
         if(rightDetected()){
-            if(leftColor.red<0.39) {
+            if(rightColor.red<0.42) {
                 CompStatusSubsystem.INSTANCE.setRightGreen();
                 return SlotDetection.GREEN;
             }else{
@@ -287,7 +287,7 @@ public class CompSorterSubsystem implements Subsystem {
         sortCSR = ActiveOpMode.hardwareMap().get(RevColorSensorV3.class, "Sort CS R");
         sortCSL.setGain(400);
         sortCSR.setGain(800);
-        sortCSL.setGain(400);
+        sortCSC.setGain(400);
 
         busy= false;
     }
@@ -295,10 +295,10 @@ public class CompSorterSubsystem implements Subsystem {
     @Override
     public void periodic() {
         // periodic logic (runs every loop)
-//        getSorterTelemetryAdv();
-        ActiveOpMode.telemetry().addData("Left Slot:", leftSlot());
-        ActiveOpMode.telemetry().addData("Center Slot:", centerSlot());
-        ActiveOpMode.telemetry().addData("Right Slot:", rightSlot());
+        getSorterTelemetryAdv();
+//        ActiveOpMode.telemetry().addData("Left Slot:", leftSlot());
+//        ActiveOpMode.telemetry().addData("Center Slot:", centerSlot());
+//        ActiveOpMode.telemetry().addData("Right Slot:", rightSlot());
 
     }
     public void getSorterTelemetryAdv(){
