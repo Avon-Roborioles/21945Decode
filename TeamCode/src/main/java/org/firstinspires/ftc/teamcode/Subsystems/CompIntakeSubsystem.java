@@ -50,7 +50,7 @@ public class CompIntakeSubsystem implements Subsystem {
     @Override
     public void periodic() {
         // periodic logic (runs every loop)
-        getIntakeTelemetryAdv();
+//        getIntakeTelemetryAdv();
 
     }
     public void getIntakeTelemetryAdv(){

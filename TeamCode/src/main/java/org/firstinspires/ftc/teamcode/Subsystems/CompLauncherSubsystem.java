@@ -230,7 +230,7 @@ public class CompLauncherSubsystem implements Subsystem {
             hoodServo.setPosition(angleToServo(hoodAngleTarget));
 
         }
-        getLauncherTelemetryAdv();
+//        getLauncherTelemetryAdv();
     }
     //Telemetry
     public void getLauncherTelemetryAdv(){

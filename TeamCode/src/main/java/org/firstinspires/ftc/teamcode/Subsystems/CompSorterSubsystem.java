@@ -314,7 +314,7 @@ public class CompSorterSubsystem implements Subsystem {
     @Override
     public void periodic() {
         // periodic logic (runs every loop)
-        getSorterTelemetryAdv();
+//        getSorterTelemetryAdv();
 //        ActiveOpMode.telemetry().addData("Left Slot:", leftSlot());
 //        ActiveOpMode.telemetry().addData("Center Slot:", centerSlot());
 //        ActiveOpMode.telemetry().addData("Right Slot:", rightSlot());

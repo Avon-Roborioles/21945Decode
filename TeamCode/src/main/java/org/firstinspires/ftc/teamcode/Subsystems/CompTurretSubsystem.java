@@ -166,7 +166,7 @@ public class CompTurretSubsystem implements Subsystem {
                 turretMotor.setPower(0);
             }
         }
-        getTurretTelemetryAdv();
+//        getTurretTelemetryAdv();
         lastSetPoint = turretTargetPosDeg;
         // periodic logic (runs every loop)
     }
