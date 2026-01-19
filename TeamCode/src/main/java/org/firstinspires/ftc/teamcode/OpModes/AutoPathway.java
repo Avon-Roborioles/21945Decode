@@ -3,6 +3,7 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -16,6 +17,7 @@ import dev.nextftc.extensions.pedro.PedroComponent;
 
 @Autonomous
 public class AutoPathway extends AutoBase {
+        PathChain Path1, Path2, Path3, Path4, Path5, Path6, Path7, Path8, Path9, Path10, Path11;
 
         Command setStartingPoint, setDriveDown, setCollection, setDriveUp, setDriveDown2, setCollection2, setDriveUp2,setDriveDown3, setCollection3, setDriveUp4,
                 setDriveDown4, setCollection4, setDriveUp5, setEndingPoint;
@@ -41,7 +43,7 @@ public class AutoPathway extends AutoBase {
 
     public void buildPaths () {
         Follower follower = PedroComponent.follower();
-        PathChain Path1 = follower.pathBuilder().addPath(
+        Path1 = follower.pathBuilder().addPath(
                         new BezierLine(
                                new Pose(22.460, 120.248),
 
@@ -51,7 +53,7 @@ public class AutoPathway extends AutoBase {
 
                 .build();
 
-        PathChain Path2 = follower.pathBuilder().addPath(
+         Path2 = follower.pathBuilder().addPath(
                         new BezierLine(
                                 new Pose(34.770, 83.963),
 
@@ -61,7 +63,7 @@ public class AutoPathway extends AutoBase {
 
                 .build();
 
-        PathChain Path3 = follower.pathBuilder().addPath(
+        Path3 = follower.pathBuilder().addPath(
                         new BezierLine(
                                 new Pose(13.193, 83.404),
 
@@ -71,7 +73,7 @@ public class AutoPathway extends AutoBase {
 
                 .build();
 
-       PathChain Path4 = follower.pathBuilder().addPath(
+       Path4 = follower.pathBuilder().addPath(
                         new BezierCurve(
                                 new Pose(39.801, 93.689),
                                 new Pose(55.366, 56.891),
@@ -81,7 +83,7 @@ public class AutoPathway extends AutoBase {
 
                 .build();
 
-        PathChain Path5 = follower.pathBuilder().addPath(
+       Path5 = follower.pathBuilder().addPath(
                         new BezierLine(
                                 new Pose(33.540, 59.174),
 
@@ -91,7 +93,7 @@ public class AutoPathway extends AutoBase {
 
                 .build();
 
-        PathChain Path6 = follower.pathBuilder().addPath(
+       Path6 = follower.pathBuilder().addPath(
                         new BezierCurve(
                                 new Pose(11.627, 58.807),
                                 new Pose(24.373, 77.503),
@@ -101,7 +103,7 @@ public class AutoPathway extends AutoBase {
 
                 .build();
 
-        PathChain Path7 = follower.pathBuilder().addPath(
+       Path7 = follower.pathBuilder().addPath(
                         new BezierCurve(
                                 new Pose(49.193, 84.522),
                                 new Pose(49.065, 33.615),
@@ -111,7 +113,7 @@ public class AutoPathway extends AutoBase {
 
                 .build();
 
-        PathChain Path8 = follower.pathBuilder().addPath(
+       Path8 = follower.pathBuilder().addPath(
                         new BezierLine(
                                 new Pose(33.547, 35.528),
 
@@ -121,7 +123,7 @@ public class AutoPathway extends AutoBase {
 
                 .build();
 
-        PathChain Path9 = follower.pathBuilder().addPath(
+       Path9 = follower.pathBuilder().addPath(
                         new BezierCurve(
                                 new Pose(11.851, 34.882),
                                 new Pose(28.932, 60.286),
@@ -131,7 +133,7 @@ public class AutoPathway extends AutoBase {
 
                 .build();
 
-        PathChain Path10 = follower.pathBuilder().addPath(
+       Path10 = follower.pathBuilder().addPath(
                         new BezierCurve(
                                 new Pose(54.335, 69.540),
                                 new Pose(3.584, 47.528),
@@ -141,7 +143,7 @@ public class AutoPathway extends AutoBase {
 
                 .build();
 
-        PathChain Path11 = follower.pathBuilder().addPath(
+       Path11 = follower.pathBuilder().addPath(
                         new BezierLine(
                                 new Pose(2.683, 2.236),
 
