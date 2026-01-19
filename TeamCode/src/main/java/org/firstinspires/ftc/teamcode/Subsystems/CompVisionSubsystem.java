@@ -1,14 +1,15 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
-import java.util.List;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.impl.ServoEx;
 import dev.nextftc.hardware.positionable.SetPosition;
@@ -23,6 +24,8 @@ public class CompVisionSubsystem implements Subsystem {
     private int redPipeline = 0;
     private int bluePipeline = 1;
     private final int startingPipeline = 0;
+    private int reLocalizingPipeline = 3;
+    private int restPipeline = 4;
 
     private int OBPipeline = 2;
     private double maxLLAngle = 49;
@@ -116,6 +119,21 @@ public class CompVisionSubsystem implements Subsystem {
     public void stopLL(){
         limelight.stop();
         limelight.close();
+    }
+    public void setReLocalizingPipeline(){
+        limelight.stop();
+        limelight.pipelineSwitch(reLocalizingPipeline);
+        limelight.start();
+    }
+    public void reLocalizeWithLimeLight(){
+        update();
+        if(latestResult != null){
+            if(latestResult.isValid()) {
+                PedroComponent.follower().setX(latestResult.getBotpose().getPosition().x);
+                PedroComponent.follower().setY(latestResult.getBotpose().getPosition().y);
+                PedroComponent.follower().setHeading(latestResult.getBotpose().getOrientation().getYaw(AngleUnit.RADIANS));
+            }
+        }
     }
     private void startLL(){
         limelight.start();
