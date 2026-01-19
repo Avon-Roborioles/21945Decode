@@ -10,22 +10,27 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.OpModes.Auto.AutoBase;
 
+import java.time.Duration;
+
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.delays.Delay;
+import dev.nextftc.core.commands.delays.WaitUntil;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 
 @Autonomous
 public class AutoPathway extends AutoBase {
-        PathChain Path1, Path2, Path3, Path4, Path5, Path6, Path7, Path8, Path9, Path10, Path11;
+        PathChain DriveToBalls, PickUpBalls, DriveToScore, DriveToBalls2, PickUpBalls2, DriveToScore2, DriveToBalls3,PickUpBalls3, DriveToScore3, DriveAndPickUp, DriveToScore4;
+        Command runAuto;
 
         Command setStartingPoint, setDriveDown, setCollection, setDriveUp, setDriveDown2, setCollection2, setDriveUp2,setDriveDown3, setCollection3, setDriveUp4,
                 setDriveDown4, setCollection4, setDriveUp5, setEndingPoint;
 
-        Pose StartingPoint = new Pose (22.460, 120.248);
+        Pose StartingPoint = new Pose (22.460, 120.248, Math.toRadians(180));
         Pose DriveDown = new Pose (34.770, 83.963);
-        Pose Collection = new Pose (13.193, 83.404);
-        Pose DriveUp = new Pose (39.801, 93.689);
+        Pose Collection1 = new Pose (20, 83.404);
+        Pose DriveUp = new Pose (39.801, 93.689)
         Pose DriveDown2 = new Pose (55.366, 56.891);
         Pose Collection2 = new Pose (33.540, 59.174);
         Pose DriveUp2 = new Pose (11.627, 58.807);
@@ -43,29 +48,29 @@ public class AutoPathway extends AutoBase {
 
     public void buildPaths () {
         Follower follower = PedroComponent.follower();
-        Path1 = follower.pathBuilder().addPath(
+        DriveToBalls = follower.pathBuilder().addPath(
                         new BezierLine(
-                               new Pose(22.460, 120.248),
+                               StartingPoint,
 
-                                new Pose(34.770, 83.963)
+                                DriveDown
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                 .build();
 
-         Path2 = follower.pathBuilder().addPath(
+         PickUpBalls = follower.pathBuilder().addPath(
                         new BezierLine(
-                                new Pose(34.770, 83.963),
+                                DriveDown,
 
-                                new Pose(13.193, 83.404)
+                                Collection1
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                 .build();
 
-        Path3 = follower.pathBuilder().addPath(
+        DriveToScore = follower.pathBuilder().addPath(
                         new BezierLine(
-                                new Pose(13.193, 83.404),
+                                Collection1,
 
                                 new Pose(39.801, 93.689)
                         )
@@ -73,7 +78,7 @@ public class AutoPathway extends AutoBase {
 
                 .build();
 
-       Path4 = follower.pathBuilder().addPath(
+       DriveToBalls2 = follower.pathBuilder().addPath(
                         new BezierCurve(
                                 new Pose(39.801, 93.689),
                                 new Pose(55.366, 56.891),
@@ -83,17 +88,17 @@ public class AutoPathway extends AutoBase {
 
                 .build();
 
-       Path5 = follower.pathBuilder().addPath(
+       PickUpBalls2 = follower.pathBuilder().addPath(
                         new BezierLine(
                                 new Pose(33.540, 59.174),
 
-                                new Pose(11.627, 58.807)
+                                new Pose(24, 58.807)
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                 .build();
 
-       Path6 = follower.pathBuilder().addPath(
+       DriveToScore2 = follower.pathBuilder().addPath(
                         new BezierCurve(
                                 new Pose(11.627, 58.807),
                                 new Pose(24.373, 77.503),
@@ -103,7 +108,7 @@ public class AutoPathway extends AutoBase {
 
                 .build();
 
-       Path7 = follower.pathBuilder().addPath(
+       DriveToBalls3= follower.pathBuilder().addPath(
                         new BezierCurve(
                                 new Pose(49.193, 84.522),
                                 new Pose(49.065, 33.615),
@@ -113,17 +118,17 @@ public class AutoPathway extends AutoBase {
 
                 .build();
 
-       Path8 = follower.pathBuilder().addPath(
+       PickUpBalls3 = follower.pathBuilder().addPath(
                         new BezierLine(
                                 new Pose(33.547, 35.528),
 
-                                new Pose(11.851, 34.882)
+                                new Pose(20, 34.882)
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                 .build();
 
-       Path9 = follower.pathBuilder().addPath(
+       DriveToScore3 = follower.pathBuilder().addPath(
                         new BezierCurve(
                                 new Pose(11.851, 34.882),
                                 new Pose(28.932, 60.286),
@@ -133,7 +138,7 @@ public class AutoPathway extends AutoBase {
 
                 .build();
 
-       Path10 = follower.pathBuilder().addPath(
+       DriveAndPickUp = follower.pathBuilder().addPath(
                         new BezierCurve(
                                 new Pose(54.335, 69.540),
                                 new Pose(3.584, 47.528),
@@ -143,7 +148,7 @@ public class AutoPathway extends AutoBase {
 
                 .build();
 
-       Path11 = follower.pathBuilder().addPath(
+       DriveToScore4 = follower.pathBuilder().addPath(
                         new BezierLine(
                                 new Pose(2.683, 2.236),
 
@@ -157,12 +162,35 @@ public class AutoPathway extends AutoBase {
     public void onInit() {
         PedroComponent.follower().setPose(StartingPoint);
         buildPaths();
-        Command runAuto = new SequentialGroup( new FollowPath(Path1)
+         runAuto = new SequentialGroup(
+                 new FollowPath(DriveToBalls),
+                 new Delay(1),
+                 new FollowPath(PickUpBalls),
+                 new Delay(1),
+                new FollowPath(DriveToScore),
+              new Delay(1),
+                 new FollowPath (DriveToBalls2),
+                new Delay(1),
+               new FollowPath (PickUpBalls2),
+                 new Delay(1),
+                new FollowPath (DriveToScore2),
+                new Delay(1),
+                new FollowPath (DriveToBalls3),
+                new Delay(1),
+                new FollowPath (PickUpBalls3),
+                new Delay(1),
+               new FollowPath (DriveToScore3),
+               new Delay(1),
+               new FollowPath (DriveAndPickUp),
+               new Delay(1),
+               new FollowPath (DriveToScore4)
 
         );
     }
     @Override public void onWaitForStart () {}
-    @Override public void onStartButtonPressed (){}
+    @Override public void onStartButtonPressed (){
+       runAuto.schedule();
+    }
     @Override public void onUpdate () {}
     @Override public void onStop () {}
 
