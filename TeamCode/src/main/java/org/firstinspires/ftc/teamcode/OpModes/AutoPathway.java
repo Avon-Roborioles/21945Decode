@@ -10,6 +10,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.OpModes.Auto.AutoBase;
 
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.groups.SequentialGroup;
+import dev.nextftc.extensions.pedro.FollowPath;
+import dev.nextftc.extensions.pedro.PedroComponent;
 
 @Autonomous
 public class AutoPathway extends AutoBase {
@@ -36,7 +39,8 @@ public class AutoPathway extends AutoBase {
         Pose EndingPoint = new Pose (52.099, 81.168);
 
 
-    public AutoPathway (Follower follower) {
+    public void buildPaths () {
+        Follower follower = PedroComponent.follower();
         PathChain Path1 = follower.pathBuilder().addPath(
                         new BezierLine(
                                new Pose(22.460, 120.248),
@@ -147,6 +151,20 @@ public class AutoPathway extends AutoBase {
 
                 .build();
     }
+    @Override
+    public void onInit() {
+        PedroComponent.follower().setPose(StartingPoint);
+        buildPaths();
+        Command runAuto = new SequentialGroup( new FollowPath(Path1)
+
+        );
+    }
+    @Override public void onWaitForStart () {}
+    @Override public void onStartButtonPressed (){}
+    @Override public void onUpdate () {}
+    @Override public void onStop () {}
+
+
 
 
 }
