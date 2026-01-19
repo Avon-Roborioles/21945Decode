@@ -21,6 +21,7 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 
 public abstract class AutoBase extends NextFTCOpMode {
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
+    //test
 
     {
         addComponents(
