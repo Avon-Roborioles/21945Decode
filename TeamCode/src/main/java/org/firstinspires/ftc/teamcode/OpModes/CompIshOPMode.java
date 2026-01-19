@@ -126,7 +126,7 @@ public class CompIshOPMode extends NextFTCOpMode {
         Gamepads.gamepad2().rightStickButton();
         Gamepads.gamepad2().leftTrigger().atLeast(0.75).whenBecomesTrue(new LambdaCommand().setStart(intakeToSorter::cancel).setIsDone(() -> true));
         Gamepads.gamepad2().rightTrigger().atLeast(0.75);
-        Gamepads.gamepad2().leftBumper();
+        Gamepads.gamepad2().leftBumper().whenBecomesTrue(intakeToSorter);
         Gamepads.gamepad2().rightBumper();
         Gamepads.gamepad2().options().whenBecomesTrue(CompStatusSubsystem.INSTANCE.cycleOBPatternCommand);
         Gamepads.gamepad2().share();

@@ -19,18 +19,20 @@ public class CompSorterSubsystem implements Subsystem {
     public static final CompSorterSubsystem INSTANCE = new CompSorterSubsystem();
     private CompSorterSubsystem() {}
 
-    private double lUp = 0.5;
+    private double hugPos = 0.075;
+
     private double lDown = 0;
-    private double cUp = 0.5;
-    private double cDown = 0.035;
-    private double rUp = 0.535;
     private double rDown = 0.035;
-    private double cWake = cDown +0.005;
+    private double cDown = 0.035;
+    private double lUp = lDown+0.5;
+    private double rUp = rDown+ 0.5;
+    private double cUp = cDown+ 0.5;
     private double lWake = lDown +0.025;
-    private double rWake = rDown +0.005;
-    private double cHug = cDown + 0.01;
-    private double lHug = lDown + 0.01;
-    private double rHug = rDown + 0.01;
+    private double rWake = rDown +0.025;
+    private double cWake = cDown +0.025;
+    private double lHug = lDown + hugPos;
+    private double rHug = rDown + hugPos;
+    private double cHug = cDown + hugPos;
     private boolean busy = false;
     private NormalizedRGBA leftColor;
     private NormalizedRGBA centerColor;
@@ -54,7 +56,24 @@ public class CompSorterSubsystem implements Subsystem {
         UNKNOWN,
         LAUNCHED
     }
+    public Command hug = new LambdaCommand()
+            .setStart(() -> {
+                // Runs on start
 
+                sortL.setPosition(lHug);
+                sortC.setPosition(cHug);
+                sortR.setPosition(rHug);
+            })
+            .setUpdate(() -> {
+                // Runs on update
+            })
+            .setStop(interrupted -> {
+
+                // Runs on stop
+            })
+            .setIsDone(() -> true) // Returns if the command has finished
+            .requires()
+            .setInterruptible(false);
     public Command wake = new LambdaCommand()
             .setStart(() -> {
                 // Runs on start
@@ -206,7 +225,7 @@ public class CompSorterSubsystem implements Subsystem {
     public SlotDetection centerSlot(){
         updateColor();
         if(centerDetected()){
-            if(centerColor.green>0.74) {
+            if(centerColor.green>0.70) {
                 CompStatusSubsystem.INSTANCE.setCenterGreen();
                 return SlotDetection.GREEN;
             }else {
@@ -221,7 +240,7 @@ public class CompSorterSubsystem implements Subsystem {
     public SlotDetection rightSlot(){
         updateColor();
         if(rightDetected()){
-            if(rightColor.red<0.42) {
+            if(rightColor.red<0.40) {
                 CompStatusSubsystem.INSTANCE.setRightGreen();
                 return SlotDetection.GREEN;
             }else{

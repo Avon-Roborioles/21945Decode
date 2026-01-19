@@ -41,7 +41,7 @@ public class CompTurretSubsystem implements Subsystem {
 
     // put hardware, commands, etc here
     public MotorEx turretMotorEx = new MotorEx("Turret Motor").reversed();
-    public VoltageCompensatingMotor turretMotor = new VoltageCompensatingMotor( turretMotorEx , 0.25, 14 );
+    public VoltageCompensatingMotor turretMotor = new VoltageCompensatingMotor( turretMotorEx , 0.25, 13 );
     private InterpolatorElement interpolator = new TrapezoidProfileElement(new TrapezoidProfileConstraints(20, 10));
 
 

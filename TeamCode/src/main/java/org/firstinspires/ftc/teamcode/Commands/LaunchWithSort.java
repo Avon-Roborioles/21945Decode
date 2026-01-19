@@ -11,6 +11,9 @@ import dev.nextftc.ftc.ActiveOpMode;
 
 public class LaunchWithSort extends Command {
     enum Step{
+        GetReady,
+        WaitForReady,
+        Ready,
         LaunchFirst,
         WaitFirst,
         ResetFirst,
@@ -51,7 +54,8 @@ public class LaunchWithSort extends Command {
     Slot lastLaunch = Slot.Null;
 
     Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
-    Timing.Timer reset = new Timing.Timer(250, TimeUnit.MILLISECONDS);
+    Timing.Timer reset = new Timing.Timer(125, TimeUnit.MILLISECONDS);
+    Timing.Timer ready = new Timing.Timer(250, TimeUnit.MILLISECONDS);
 
 
     public LaunchWithSort() {
@@ -66,11 +70,11 @@ public class LaunchWithSort extends Command {
 
     @Override
     public void start() {
-        St = Step.LaunchFirst;
+        CompSorterSubsystem.INSTANCE.resetSorter();
+        St = Step.GetReady;
         firstLaunch = Slot.Null;
-        left = CompSorterSubsystem.INSTANCE.leftSlot();
-        right = CompSorterSubsystem.INSTANCE.rightSlot();
-        center = CompSorterSubsystem.INSTANCE.centerSlot();
+
+
         sorterPattern = CompStatusSubsystem.INSTANCE.getCurrentOBPattern();
         switch (sorterPattern){
             case PPG:
@@ -100,7 +104,25 @@ public class LaunchWithSort extends Command {
     @Override
     public void update() {
 
+
         switch (St) {
+            case GetReady:
+                CompSorterSubsystem.INSTANCE.resetSorter();
+                ready.start();
+                St = Step.WaitForReady;
+                break;
+            case WaitForReady:
+                if(ready.done()){
+                    St = Step.Ready;
+                }
+                break;
+            case Ready:
+                left = CompSorterSubsystem.INSTANCE.leftSlot();
+                right = CompSorterSubsystem.INSTANCE.rightSlot();
+                center = CompSorterSubsystem.INSTANCE.centerSlot();
+                St = Step.LaunchFirst;
+
+                break;
             case LaunchFirst:
                 if(first == Color.PURPLE){
                     launchPurpleFirst();
@@ -264,7 +286,6 @@ public class LaunchWithSort extends Command {
         }
         // executed on every update of the command
         ActiveOpMode.telemetry().addData("Step", St);
-
     }
 
     @Override

@@ -25,7 +25,8 @@ public class IntakeToSorterCommand extends Command {
     public void start() {
         full = false;
         done = false;
-        CompStatusSubsystem.INSTANCE.setAllError();
+        CompSorterSubsystem.INSTANCE.resetSorter();
+
 
 
         // executed when the command begins

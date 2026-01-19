@@ -12,6 +12,9 @@ import dev.nextftc.ftc.ActiveOpMode;
 
 public class LaunchWithOutSort extends Command {
     enum Step{
+        GetReady,
+        WaitForReady,
+        Ready,
         LaunchCenter,
         WaitCenter,
         ResetCenter,
@@ -31,6 +34,8 @@ public class LaunchWithOutSort extends Command {
     Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
     Timing.Timer reset = new Timing.Timer(200, TimeUnit.MILLISECONDS);
     Timing.Timer delay = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
+    Timing.Timer ready = new Timing.Timer(250, TimeUnit.MILLISECONDS);
+
 
     public LaunchWithOutSort() {
         requires(/* subsystems */);
@@ -44,7 +49,7 @@ public class LaunchWithOutSort extends Command {
 
     @Override
     public void start() {
-        St = Step.LaunchCenter;
+        St = Step.GetReady;
         CompSorterSubsystem.INSTANCE.resetSorter();
         // executed when the command begins
     }
@@ -52,6 +57,20 @@ public class LaunchWithOutSort extends Command {
     @Override
     public void update() {
         switch (St) {
+            case GetReady:
+                CompSorterSubsystem.INSTANCE.resetSorter();
+                ready.start();
+                St = Step.WaitForReady;
+                break;
+            case WaitForReady:
+                if(ready.done()){
+                    St = Step.Ready;
+                }
+                break;
+            case Ready:
+                St = Step.LaunchCenter;
+
+                break;
             case LaunchCenter:
                 if(!(CompSorterSubsystem.INSTANCE.centerSlot() == CompSorterSubsystem.SlotDetection.EMPTY)){
                     CompSorterSubsystem.INSTANCE.sendCenter();
