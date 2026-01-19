@@ -27,23 +27,41 @@ public class AutoPathway extends AutoBase {
         Command setStartingPoint, setDriveDown, setCollection, setDriveUp, setDriveDown2, setCollection2, setDriveUp2,setDriveDown3, setCollection3, setDriveUp4,
                 setDriveDown4, setCollection4, setDriveUp5, setEndingPoint;
 
-        Pose StartingPoint = new Pose (22.460, 120.248, Math.toRadians(180));
-        Pose DriveDown = new Pose (34.770, 83.963);
-        Pose Collection1 = new Pose (20, 83.404);
-        Pose DriveUp = new Pose (39.801, 93.689)
-        Pose DriveDown2 = new Pose (55.366, 56.891);
-        Pose Collection2 = new Pose (33.540, 59.174);
-        Pose DriveUp2 = new Pose (11.627, 58.807);
-        Pose DriveDown3 = new Pose (24.373, 77.503);
-        Pose Collection3 = new Pose (49.193, 84.522);
-        Pose DriveUp3 = new Pose (49.065, 33.615);
-        Pose DriveDown4 = new Pose (33.547, 35.528);
-        Pose DriveCollection4 = new Pose (11.851, 34.882);
-        Pose DriveUp4 = new Pose (28.932, 60.286);
-        Pose DriveDown5 = new Pose(54.335, 69.540);
-        Pose Collection5 = new Pose (3.584, 47.528);
-        Pose DriveUp5 = new Pose (2.683, 2.236);
-        Pose EndingPoint = new Pose (52.099, 81.168);
+    Pose StartingPoint = new Pose (22.460, 120.248, Math.toRadians(180));
+    Pose DriveDown = new Pose (53, 83.963);
+    Pose Collection1 = new Pose (20, 83.404);
+    Pose DriveUp = new Pose (39.801, 93.689);
+    Pose DriveDown2 = new Pose (50,59);
+    Pose DriveDown2CP= new Pose (55,56);
+    Pose Collection2 = new Pose (20, 58);
+    Pose DriveUp2 = new Pose (53, 84);
+    Pose DriveUp2CP = new Pose (20,77);
+    Pose DriveDown3 = new Pose (45, 35);
+    Pose DriveDown3CP = new Pose (49, 33);
+    Pose Collection3 = new Pose (20, 34);
+    Pose DriveUp3 = new Pose (54, 84);
+    Pose DriveUp3CP = new Pose (28, 60);
+    //Pose DriveDown4 = new Pose (12, 2);
+    //Pose DriveDown4CP= new Pose (5, 61);
+   // Pose DriveUp4 = new Pose (52, 81);
+
+
+
+       // Pose DriveDown2 = new Pose (33, 59);
+       // Pose Collection2 = new Pose (37.540, 59.174);
+       // Pose DriveUpControlPoint = new Pose ( 55, 56);
+        //Pose DriveUp2 = new Pose (11.627, 58.807);
+       // Pose DriveDown3 = new Pose (24.373, 77.503);
+        //Pose Collection3ControlPoint = new Pose (24,77);
+       // Pose Collection3 = new Pose (49.193, 84.522);
+      //  Pose DriveUp3 = new Pose (49.065, 33.615);
+      //  Pose DriveDown4 = new Pose (33.547, 35.528);
+      //  Pose DriveCollection4 = new Pose (11.851, 34.882);
+     //   Pose DriveUp4 = new Pose (28.932, 60.286);
+      //  Pose DriveDown5 = new Pose(54.335, 69.540);
+      //  Pose Collection5 = new Pose (3.584, 47.528);
+       // Pose DriveUp5 = new Pose (2.683, 2.236);
+      //  Pose EndingPoint = new Pose (52.099, 81.168);)
 
 
     public void buildPaths () {
@@ -72,7 +90,7 @@ public class AutoPathway extends AutoBase {
                         new BezierLine(
                                 Collection1,
 
-                                new Pose(39.801, 93.689)
+                                DriveUp
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
@@ -80,9 +98,9 @@ public class AutoPathway extends AutoBase {
 
        DriveToBalls2 = follower.pathBuilder().addPath(
                         new BezierCurve(
-                                new Pose(39.801, 93.689),
-                                new Pose(55.366, 56.891),
-                                new Pose(33.540, 59.174)
+                                DriveUp,
+                                DriveDown2CP,
+                                DriveDown2
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
@@ -90,9 +108,9 @@ public class AutoPathway extends AutoBase {
 
        PickUpBalls2 = follower.pathBuilder().addPath(
                         new BezierLine(
-                                new Pose(33.540, 59.174),
+                               DriveDown2,
 
-                                new Pose(24, 58.807)
+                                Collection2
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
@@ -100,9 +118,9 @@ public class AutoPathway extends AutoBase {
 
        DriveToScore2 = follower.pathBuilder().addPath(
                         new BezierCurve(
-                                new Pose(11.627, 58.807),
-                                new Pose(24.373, 77.503),
-                                new Pose(49.193, 84.522)
+                                Collection2,
+                                DriveUp2CP,
+                               DriveUp2
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
@@ -110,9 +128,9 @@ public class AutoPathway extends AutoBase {
 
        DriveToBalls3= follower.pathBuilder().addPath(
                         new BezierCurve(
-                                new Pose(49.193, 84.522),
-                                new Pose(49.065, 33.615),
-                                new Pose(33.547, 35.528)
+                                DriveUp2,
+                               DriveDown3CP,
+                                DriveDown3
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
@@ -120,9 +138,9 @@ public class AutoPathway extends AutoBase {
 
        PickUpBalls3 = follower.pathBuilder().addPath(
                         new BezierLine(
-                                new Pose(33.547, 35.528),
+                                DriveDown3,
 
-                                new Pose(20, 34.882)
+                                Collection3
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
@@ -130,33 +148,33 @@ public class AutoPathway extends AutoBase {
 
        DriveToScore3 = follower.pathBuilder().addPath(
                         new BezierCurve(
-                                new Pose(11.851, 34.882),
-                                new Pose(28.932, 60.286),
-                                new Pose(54.335, 69.540)
+                                Collection3,
+                                DriveUp3CP,
+                                DriveUp3
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                 .build();
 
-       DriveAndPickUp = follower.pathBuilder().addPath(
-                        new BezierCurve(
-                                new Pose(54.335, 69.540),
-                                new Pose(3.584, 47.528),
-                                new Pose(2.683, 2.236)
-                        )
-                ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(270))
-
-                .build();
-
-       DriveToScore4 = follower.pathBuilder().addPath(
-                        new BezierLine(
-                                new Pose(2.683, 2.236),
-
-                                new Pose(52.099, 81.168)
-                        )
-                ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-
-                .build();
+//       DriveAndPickUp = follower.pathBuilder().addPath(
+//                        new BezierCurve(
+//                               DriveUp3,
+//                                DriveDown4CP,
+//                                DriveDown4
+//                        )
+//                ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(270))
+//
+//                .build();
+//
+//       DriveToScore4 = follower.pathBuilder().addPath(
+//                        new BezierLine(
+//                                DriveDown4,
+//
+//                                DriveUp4
+//                        )
+//                ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+//
+//                .build();
     }
     @Override
     public void onInit() {
@@ -179,11 +197,7 @@ public class AutoPathway extends AutoBase {
                 new Delay(1),
                 new FollowPath (PickUpBalls3),
                 new Delay(1),
-               new FollowPath (DriveToScore3),
-               new Delay(1),
-               new FollowPath (DriveAndPickUp),
-               new Delay(1),
-               new FollowPath (DriveToScore4)
+               new FollowPath (DriveToScore3)
 
         );
     }
