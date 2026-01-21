@@ -1,18 +1,17 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
 
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.MovingStatistics;
 
-import org.firstinspires.ftc.teamcode.Commands.ForceLaunch;
-import org.firstinspires.ftc.teamcode.Commands.IntakeToSorterCommand;
-import org.firstinspires.ftc.teamcode.Commands.LaunchWithOutSort;
-import org.firstinspires.ftc.teamcode.Commands.LaunchWithSort;
-import org.firstinspires.ftc.teamcode.Commands.RunTurretAndLauncherFromHeading;
-import org.firstinspires.ftc.teamcode.Commands.TurretJoystickCommand;
+import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunch;
+import org.firstinspires.ftc.teamcode.Commands.Intake.IntakeToSorterCommand;
+import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchWithOutSort;
+import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchWithSort;
+import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromHeading;
+import org.firstinspires.ftc.teamcode.Commands.Turret.TurretJoystickCommand;
 import org.firstinspires.ftc.teamcode.Subsystems.CompIntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompLauncherSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompPTOSubsystem;
@@ -25,7 +24,6 @@ import org.firstinspires.ftc.teamcode.Utility.Prism.GoBildaPrismDriver;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import dev.nextftc.core.commands.Command;
-import dev.nextftc.core.commands.groups.CommandGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.components.BindingsComponent;

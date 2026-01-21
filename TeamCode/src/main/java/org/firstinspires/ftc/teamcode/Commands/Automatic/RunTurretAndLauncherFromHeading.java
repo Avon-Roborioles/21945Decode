@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Commands;
+package org.firstinspires.ftc.teamcode.Commands.Automatic;
 
 import com.pedropathing.geometry.Pose;
 

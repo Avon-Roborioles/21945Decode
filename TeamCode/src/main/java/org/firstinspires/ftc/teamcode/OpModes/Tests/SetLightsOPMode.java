@@ -1,11 +1,9 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.OpModes.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Utility.Prism.Color;
-import org.firstinspires.ftc.teamcode.Utility.Prism.Direction;
 import org.firstinspires.ftc.teamcode.Utility.Prism.GoBildaPrismDriver;
 import org.firstinspires.ftc.teamcode.Utility.Prism.PrismAnimations;
 @TeleOp(name="Set Lights", group="Setup")

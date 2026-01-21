@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Commands;
+package org.firstinspires.ftc.teamcode.Commands.Launch;
 
 import org.firstinspires.ftc.teamcode.Subsystems.CompSorterSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompStatusSubsystem;

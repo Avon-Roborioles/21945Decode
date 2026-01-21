@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.OpModes.Tests;
 
 
 import com.bylazar.telemetry.PanelsTelemetry;
@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.MovingStatistics;
 
-import org.firstinspires.ftc.teamcode.Commands.IntakeToSorterCommand;
-import org.firstinspires.ftc.teamcode.Commands.LaunchWithOutSort;
+import org.firstinspires.ftc.teamcode.Commands.Intake.IntakeToSorterCommand;
+import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchWithOutSort;
 import org.firstinspires.ftc.teamcode.Subsystems.CompIntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompLauncherSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompPTOSubsystem;
@@ -18,7 +18,6 @@ import org.firstinspires.ftc.teamcode.Subsystems.CompStatusSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompTurretSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompVisionSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.LauncherSubsystemGroup;
-import org.firstinspires.ftc.teamcode.Utility.Prism.GoBildaPrismDriver;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import dev.nextftc.core.commands.Command;

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.OpModes.Tests;
 
 
 
@@ -9,8 +9,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
-import org.firstinspires.ftc.teamcode.Commands.IntakeToSorterCommand;
-import org.firstinspires.ftc.teamcode.Commands.LaunchWithOutSort;
+import org.firstinspires.ftc.teamcode.Commands.Intake.IntakeToSorterCommand;
+import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchWithOutSort;
 import org.firstinspires.ftc.teamcode.Subsystems.CompIntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompLauncherSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompPTOSubsystem;

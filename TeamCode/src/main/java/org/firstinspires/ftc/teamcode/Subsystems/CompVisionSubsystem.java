@@ -129,9 +129,9 @@ public class CompVisionSubsystem implements Subsystem {
         update();
         if(latestResult != null){
             if(latestResult.isValid()) {
-                PedroComponent.follower().setX(latestResult.getBotpose().getPosition().x);
-                PedroComponent.follower().setY(latestResult.getBotpose().getPosition().y);
-                PedroComponent.follower().setHeading(latestResult.getBotpose().getOrientation().getYaw(AngleUnit.RADIANS));
+//                PedroComponent.follower().setX(latestResult.getBotpose().getPosition().x);
+//                PedroComponent.follower().setY(latestResult.getBotpose().getPosition().y);
+//                PedroComponent.follower().setHeading(latestResult.getBotpose().getOrientation().getYaw(AngleUnit.RADIANS));
             }
         }
     }
