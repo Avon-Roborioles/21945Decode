@@ -101,9 +101,9 @@ public class BlueGoal extends AutoBase {
          runAuto = new SequentialGroup(
                     new ParallelGroup(new SequentialGroup(new FollowPath(DriveToScorePreload, false),
                          LaunchWOSort),new InstantCommand(()->{RunLaunch.schedule();})),
-                    new FollowPath(DriveToPickUp1)
-//                 new ParallelGroup(new SequentialGroup(new FollowPath(DriveToPickUp1),
-//                         new FollowPath(DrivePickUp1)), new AutoIntake(),StopLauncher),
+                 
+                 new ParallelGroup(new SequentialGroup(new FollowPath(DriveToPickUp1),
+                         new FollowPath(DrivePickUp1)), new AutoIntake(),StopLauncher)
 //                 new ParallelGroup(new SequentialGroup(new FollowPath(DriveToScore1),
 //                         new InstantCommand(()->{LaunchWOSort.schedule();}), RunLaunch))//,
 //                 new ParallelGroup(new SequentialGroup(new FollowPath(DriveToPickUp2),
