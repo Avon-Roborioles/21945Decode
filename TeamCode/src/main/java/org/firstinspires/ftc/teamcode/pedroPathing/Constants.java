@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
 import com.pedropathing.control.FilteredPIDFCoefficients;
+import com.pedropathing.control.KalmanFilter;
 import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
@@ -16,7 +17,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class Constants {
 
+
     public static FollowerConstants followerConstants = new FollowerConstants()
+
             .mass(14.15208)
             .forwardZeroPowerAcceleration(-43.175)
             .lateralZeroPowerAcceleration(-72.42)
@@ -50,6 +53,7 @@ public class Constants {
             .xVelocity(73.17)
             .yVelocity(52.08)
             .useVoltageCompensation(true)
+
 
             .nominalVoltage(12);
 

@@ -222,7 +222,7 @@ public class CompLauncherSubsystem implements Subsystem {
         if (ActiveOpMode.isStarted()) {
             if (!(speedTarget < 250)) {
                 launcherControlSystem.setGoal(new KineticState(0, speedTarget));
-                launcherMotorGroup.setPower(launcherControlSystem.calculate(launcherMotorGroup.getState()));
+                launcherMotorGroup.setPower(launcherControlSystem.calculate(launcherMotorGroup.getState())*0.25);
             } else {
                 launcherMotorGroup.setPower(0);
             }

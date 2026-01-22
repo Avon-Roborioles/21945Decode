@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Utility.TrapezoidProfileElement;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
+import dev.nextftc.control.feedback.PIDCoefficients;
 import dev.nextftc.control.interpolators.InterpolatorElement;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.LambdaCommand;
@@ -19,7 +21,7 @@ import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.impl.VoltageCompensatingMotor;
-
+@Configurable
 public class CompTurretSubsystem implements Subsystem {
     public static final CompTurretSubsystem INSTANCE = new CompTurretSubsystem();
     OctoQuadFWv3 Octo;
@@ -31,8 +33,14 @@ public class CompTurretSubsystem implements Subsystem {
     private double botHeadingRad = 0;
     double turretZeroHeadingRad = 0;
     private final OctoQuadFWv3.EncoderDataBlock data = new OctoQuadFWv3.EncoderDataBlock();
-    double maxPower = 0;
+    double maxPower = 1;
     double power = 0;
+    boolean turretOn = true;
+
+    public static double kp=0.01;
+    public static double kI=0.000000000010;
+    public static double kD = 0.035;
+    private PIDCoefficients coefficients = new PIDCoefficients(kp,kI,kD);
 
     double lastSetPoint = 0;
     double kv = 0.09;
@@ -45,10 +53,7 @@ public class CompTurretSubsystem implements Subsystem {
     private InterpolatorElement interpolator = new TrapezoidProfileElement(new TrapezoidProfileConstraints(20, 10));
 
 
-    private ControlSystem turretControlSystem = ControlSystem.builder()
-            .posSquid(0.018, 0.0000000001,0.07)
-            .basicFF(0,0,0.35)
-            .build();
+    private ControlSystem turretControlSystem;
 
     public double getRotatePositionRaw(){
         return turretMotor.getCurrentPosition();
@@ -105,11 +110,19 @@ public class CompTurretSubsystem implements Subsystem {
         }
 
         turretZeroHeadingRad = botHeadingRad + Math.PI;
-        if (fieldAngleRad > (turretZeroHeadingRad + Math.toRadians(200))){
-            fieldAngleRad -=Math.toRadians(360);
-        }else if (fieldAngleRad < (turretZeroHeadingRad - Math.toRadians(200))) {
-            fieldAngleRad +=Math.toRadians(360);
+        //400 degree flip
+//        if (fieldAngleRad > (turretZeroHeadingRad + Math.toRadians(200))){
+//            fieldAngleRad -=Math.toRadians(360);
+//        }else if (fieldAngleRad < (turretZeroHeadingRad - Math.toRadians(200))) {
+//            fieldAngleRad +=Math.toRadians(360);
+//        }
+        //200 Degree Limit
+        if (fieldAngleRad > (turretZeroHeadingRad + Math.toRadians(100))){
+            fieldAngleRad = (turretZeroHeadingRad + Math.toRadians(100));
+        }else if (fieldAngleRad < (turretZeroHeadingRad - Math.toRadians(100))) {
+            fieldAngleRad = (turretZeroHeadingRad - Math.toRadians(100));
         }
+
 
         turretTargetPosDeg = - Math.toDegrees(fieldAngleRad - turretZeroHeadingRad);
 
@@ -126,6 +139,10 @@ public class CompTurretSubsystem implements Subsystem {
 
     @Override
     public void initialize() {
+        turretControlSystem = ControlSystem.builder()
+                .posSquID(coefficients)
+                .basicFF(0,0,0.22)
+                .build();
         Octo = ActiveOpMode.hardwareMap().get(OctoQuadFWv3.class, "OctoQuad");
         Octo.resetEverything();
         interpolator.reset();
@@ -141,7 +158,9 @@ public class CompTurretSubsystem implements Subsystem {
         power = 0;
         turretFieldAngleGoalDeg = 90;
         lastSetPoint = turretFieldAngleGoalDeg;
-
+        coefficients.kI=kI;
+        coefficients.kP=kp;
+        coefficients.kD=kD;
 
 
         // initialization logic (runs on init)
@@ -149,15 +168,22 @@ public class CompTurretSubsystem implements Subsystem {
 
     @Override
     public void periodic() {
-        turretControlSystem.reset();
         calculatePos();
 
         if(!ActiveOpMode.opModeInInit()){
-            if(turretTargetPosDeg>200){
-                turretTargetPosDeg= (-160 + (turretTargetPosDeg-200));
-            }else if(turretTargetPosDeg<-200){
-                turretTargetPosDeg= ( 160 + (turretTargetPosDeg+200));
+            //400 Degree Flip
+//            if(turretTargetPosDeg>200){
+//                turretTargetPosDeg= (-160 + (turretTargetPosDeg-200));
+//            }else if(turretTargetPosDeg<-200){
+//                turretTargetPosDeg= ( 160 + (turretTargetPosDeg+200));
+//            }
+            // 200 Hard limit
+            if(turretTargetPosDeg>100){
+                turretTargetPosDeg = 100;
+            }else if(turretTargetPosDeg<-100){
+                turretTargetPosDeg= -100;
             }
+
             turretControlSystem.setGoal(new KineticState(turretTargetPosDeg));
             power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)) + ( kv * (turretTargetPosDeg - lastSetPoint));
             if ((Math.abs(power) > 0)){
@@ -166,8 +192,11 @@ public class CompTurretSubsystem implements Subsystem {
                 turretMotor.setPower(0);
             }
         }
-//        getTurretTelemetryAdv();
+        getTurretTelemetryAdv();
         lastSetPoint = turretTargetPosDeg;
+        coefficients.kD=kD;
+        coefficients.kI=kI;
+        coefficients.kP=kp;
         // periodic logic (runs every loop)
     }
     public void getTurretTelemetryAdv(){
