@@ -51,6 +51,7 @@ public class CompIshOPMode extends NextFTCOpMode {
     @Override
     public void onInit() {
         PedroComponent.follower().setPose(new Pose(72,72,(3*Math.PI)/2));
+//        PedroComponent.follower().setPose(new Pose(26.75, 130, Math.toRadians(141)));
 
 
 
@@ -68,7 +69,7 @@ public class CompIshOPMode extends NextFTCOpMode {
         Command launchWithoutSort = new LaunchWithOutSort();
         Command launchWithSort = new LaunchWithSort();
         Command intakeToSorter = new IntakeToSorterCommand();
-        Command runTurretAndLauncherFromHeading = new RunTurretAndLauncherFromHeading(false);
+        Command runTurretAndLauncherFromHeading = new RunTurretAndLauncherFromHeading(true);
         Command runTurretFromJoystick = new TurretJoystickCommand(Gamepads.gamepad2().rightStickX());
         Command forceLaunch = new ForceLaunch();
         Command eStop = new SequentialGroup(CompLauncherSubsystem.INSTANCE.StopLauncher, CompIntakeSubsystem.INSTANCE.StopIntake, CompLauncherSubsystem.INSTANCE.HoodDown(), new LambdaCommand().setStart(intakeToSorter::cancel).setIsDone(() -> true),

@@ -54,7 +54,6 @@ public class BlueGoal extends AutoBase {
 
 
     public void buildPaths () {
-        Follower follower = PedroComponent.follower();
         DriveToScorePreload = new Path(new BezierLine(startingPos, scorePreload));
         DriveToScorePreload.setLinearHeadingInterpolation(startingPos.getHeading(), scorePreload.getHeading());
         DriveToScorePreload.setTimeoutConstraint(1000);
@@ -93,68 +92,76 @@ public class BlueGoal extends AutoBase {
     }
     @Override
     public void onInit() {
+
+    }
+    @Override public void onWaitForStart () {
+
+    }
+    @Override public void onStartButtonPressed (){
         Command RunLaunch = new RunTurretAndLauncherFromHeading(false);
         Command Intake = new AutoIntake();
         Command StopLauncher = new LambdaCommand().setStart(()->{RunLaunch.cancel();}).setIsDone(()->{ return true;});
-        Command LaunchWOSort = new SequentialGroup(new ForceLaunch(), StopLauncher);
-        PedroComponent.follower().setPose(startingPos);
+        Command LaunchWOSort = new SequentialGroup(new ForceLaunch());
+//        PedroComponent.follower().setPose(startingPos);
+//        PedroComponent.follower().setStartingPose(startingPos);
+//        PedroComponent.follower().setHeading(startingPos.getHeading());
+        PedroComponent.follower().setPose(new Pose(26.75, 130, Math.toRadians(141)));
         PedroComponent.follower().setMaxPower(0.75);
+        PedroComponent.follower().update();
         buildPaths();
-         runAuto = new SequentialGroup(
+        runAuto = new SequentialGroup(
                  new ParallelGroup(
                             new SequentialGroup(
                                     new FollowPath(DriveToScorePreload, false),
                                     LaunchWOSort
                             ),
-                            new InstantCommand(()->{
-                                RunLaunch.schedule();
-                            })
-                 ),
-                 new ParallelGroup(
-                         new SequentialGroup(
-                                 new FollowPath(DriveToPickUp1),
-                                 new FollowPath(DrivePickUp1)),
-                         new AutoIntake()
-                 ),
-                 new ParallelGroup(
-                         new SequentialGroup(
-                                 new FollowPath(DriveToScore1),
-                                 LaunchWOSort
-                         ),
-                         new InstantCommand(()->{
-                             RunLaunch.schedule();
-                         })
-                 ),
-                 new ParallelGroup(
-                         new SequentialGroup(
-                                 new FollowPath(DriveToPickUp2),
-                                 new FollowPath(DrivePickUp2)),
-                         new AutoIntake()
-                 ),
-                 new ParallelGroup(
-                         new SequentialGroup(
-                                 new FollowPath(DriveToScore2),
-                                 LaunchWOSort
-                         ),
-                         new InstantCommand(()->{
-                             RunLaunch.schedule();
-                         })
-                 ),
-                 new ParallelGroup(
-                         new SequentialGroup(
-                                 new FollowPath(DriveToPickUp3),
-                                 new FollowPath(DrivePickUp3)),
-                         new AutoIntake()
-                 ),
-                 new ParallelGroup(
-                         new SequentialGroup(
-                                 new FollowPath(DriveToScore3),
-                                 LaunchWOSort
-                         ),
-                         new InstantCommand(()->{
-                             RunLaunch.schedule();
-                         })
-                 )
+                            RunLaunch
+                 )//,
+//                 new ParallelGroup(
+//                         new SequentialGroup(
+//                                 new FollowPath(DriveToPickUp1),
+//                                 new FollowPath(DrivePickUp1)),
+//                         new AutoIntake()
+//                 ),
+//                 new ParallelGroup(
+//                         new SequentialGroup(
+//                                 new FollowPath(DriveToScore1),
+//                                 LaunchWOSort
+//                         ),
+//                         new InstantCommand(()->{
+//                             RunLaunch.schedule();
+//                         })
+//                 ),
+//                 new ParallelGroup(
+//                         new SequentialGroup(
+//                                 new FollowPath(DriveToPickUp2),
+//                                 new FollowPath(DrivePickUp2)),
+//                         new AutoIntake()
+//                 ),
+//                 new ParallelGroup(
+//                         new SequentialGroup(
+//                                 new FollowPath(DriveToScore2),
+//                                 LaunchWOSort
+//                         ),
+//                         new InstantCommand(()->{
+//                             RunLaunch.schedule();
+//                         })
+//                 ),
+//                 new ParallelGroup(
+//                         new SequentialGroup(
+//                                 new FollowPath(DriveToPickUp3),
+//                                 new FollowPath(DrivePickUp3)),
+//                         new AutoIntake()
+//                 ),
+//                 new ParallelGroup(
+//                         new SequentialGroup(
+//                                 new FollowPath(DriveToScore3),
+//                                 LaunchWOSort
+//                         ),
+//                         new InstantCommand(()->{
+//                             RunLaunch.schedule();
+//                         })
+//                 )
 //                 new FollowPath (DriveToScore2),
 //                 new Delay(1),
 //                 new FollowPath (DriveToPickUp3),
@@ -167,13 +174,13 @@ public class BlueGoal extends AutoBase {
 //                 new Delay(1)
 
         );
-    }
-    @Override public void onWaitForStart () {}
-    @Override public void onStartButtonPressed (){
        runAuto.schedule();
     }
     @Override public void onUpdate () {
+        telemetry.addData("Bot Pose", PedroComponent.follower().getPose());
+
         telemetry.update();
+
 
     }
     @Override public void onStop () {}

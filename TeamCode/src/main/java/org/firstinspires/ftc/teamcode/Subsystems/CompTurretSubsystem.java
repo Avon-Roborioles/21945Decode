@@ -111,17 +111,17 @@ public class CompTurretSubsystem implements Subsystem {
 
         turretZeroHeadingRad = botHeadingRad + Math.PI;
         //400 degree flip
-//        if (fieldAngleRad > (turretZeroHeadingRad + Math.toRadians(200))){
-//            fieldAngleRad -=Math.toRadians(360);
-//        }else if (fieldAngleRad < (turretZeroHeadingRad - Math.toRadians(200))) {
-//            fieldAngleRad +=Math.toRadians(360);
-//        }
-        //200 Degree Limit
-        if (fieldAngleRad > (turretZeroHeadingRad + Math.toRadians(100))){
-            fieldAngleRad = (turretZeroHeadingRad + Math.toRadians(100));
-        }else if (fieldAngleRad < (turretZeroHeadingRad - Math.toRadians(100))) {
-            fieldAngleRad = (turretZeroHeadingRad - Math.toRadians(100));
+        if (fieldAngleRad > (turretZeroHeadingRad + Math.toRadians(200))){
+            fieldAngleRad -=Math.toRadians(360);
+        }else if (fieldAngleRad < (turretZeroHeadingRad - Math.toRadians(200))) {
+            fieldAngleRad +=Math.toRadians(360);
         }
+        //200 Degree Limit
+//        if (fieldAngleRad > (turretZeroHeadingRad + Math.toRadians(100))){
+//            fieldAngleRad = (turretZeroHeadingRad + Math.toRadians(100));
+//        }else if (fieldAngleRad < (turretZeroHeadingRad - Math.toRadians(100))) {
+//            fieldAngleRad = (turretZeroHeadingRad - Math.toRadians(100));
+//        }
 
 
         turretTargetPosDeg = - Math.toDegrees(fieldAngleRad - turretZeroHeadingRad);
@@ -172,17 +172,17 @@ public class CompTurretSubsystem implements Subsystem {
 
         if(!ActiveOpMode.opModeInInit()){
             //400 Degree Flip
-//            if(turretTargetPosDeg>200){
+            if(turretTargetPosDeg>200){
+                turretTargetPosDeg= (-160 + (turretTargetPosDeg-200));
+            }else if(turretTargetPosDeg<-200){
+                turretTargetPosDeg= ( 160 + (turretTargetPosDeg+200));
+            }
+            // 200 Hard limit
+//            if(turretTargetPosDeg>100){
 //                turretTargetPosDeg= (-160 + (turretTargetPosDeg-200));
 //            }else if(turretTargetPosDeg<-200){
 //                turretTargetPosDeg= ( 160 + (turretTargetPosDeg+200));
 //            }
-            // 200 Hard limit
-            if(turretTargetPosDeg>100){
-                turretTargetPosDeg = 100;
-            }else if(turretTargetPosDeg<-100){
-                turretTargetPosDeg= -100;
-            }
 
             turretControlSystem.setGoal(new KineticState(turretTargetPosDeg));
             power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)) + ( kv * (turretTargetPosDeg - lastSetPoint));
