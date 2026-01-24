@@ -98,7 +98,30 @@ public class CompTurretSubsystem implements Subsystem {
             .setIsDone(() -> true) // Returns if the command has finished
             .requires(this)
             .setInterruptible(true);
+    public void turnTurretToFieldAngleAuto(double fieldAngleRad, double botHeadingRad) {
+        if (turretPos < 0 && botHeadingRad > 0) {
+            botHeadingRad = -Math.PI + (botHeadingRad - Math.PI);
+        } else if (turretPos > 0 && botHeadingRad < 0) {
+            botHeadingRad = Math.PI + (botHeadingRad + Math.PI);
+        }
 
+        turretZeroHeadingRad = botHeadingRad + Math.PI;
+        //400 degree flip
+        if (fieldAngleRad > (turretZeroHeadingRad + Math.toRadians(200))) {
+            fieldAngleRad -= Math.toRadians(360);
+        } else if (fieldAngleRad < (turretZeroHeadingRad - Math.toRadians(200))) {
+            fieldAngleRad += Math.toRadians(360);
+        }
+        //200 Degree Limit
+//        if (fieldAngleRad > (turretZeroHeadingRad + Math.toRadians(100))){
+//            fieldAngleRad = (turretZeroHeadingRad + Math.toRadians(100));
+//        }else if (fieldAngleRad < (turretZeroHeadingRad - Math.toRadians(100))) {
+//            fieldAngleRad = (turretZeroHeadingRad - Math.toRadians(100));
+//        }
+
+
+        turretTargetPosDeg = - Math.toDegrees(fieldAngleRad - turretZeroHeadingRad);
+    }
 
 
     public void turnTurretToFieldAngle(double fieldAngleRad){

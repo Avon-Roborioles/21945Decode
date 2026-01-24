@@ -10,6 +10,9 @@ import dev.nextftc.ftc.ActiveOpMode;
 
 public class ForceLaunch extends Command {
     enum Step{
+        GetReady,
+        WaitForReady,
+        Ready,
         LaunchCenter,
         WaitCenter,
         ResetCenter,
@@ -26,8 +29,9 @@ public class ForceLaunch extends Command {
 
     Step St = Step.LaunchCenter;
     Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
-    Timing.Timer reset = new Timing.Timer(200, TimeUnit.MILLISECONDS);
+    Timing.Timer reset = new Timing.Timer(250, TimeUnit.MILLISECONDS);
     Timing.Timer delay = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
+    Timing.Timer ready = new Timing.Timer(300, TimeUnit.MILLISECONDS);
 
     public ForceLaunch() {
         requires(/* subsystems */);
@@ -41,7 +45,7 @@ public class ForceLaunch extends Command {
 
     @Override
     public void start() {
-        St = Step.LaunchCenter;
+        St = Step.GetReady;
         CompSorterSubsystem.INSTANCE.resetSorter();
         // executed when the command begins
     }
@@ -49,6 +53,21 @@ public class ForceLaunch extends Command {
     @Override
     public void update() {
         switch (St) {
+            case GetReady:
+                CompSorterSubsystem.INSTANCE.resetSorter();
+                ready.start();
+                St = Step.WaitForReady;
+                break;
+            case WaitForReady:
+                if(ready.done()){
+                    St = Step.Ready;
+                }
+                break;
+            case Ready:
+
+                St = Step.LaunchCenter;
+
+                break;
             case LaunchCenter:
                 CompSorterSubsystem.INSTANCE.sendCenter();
                 wait.start();

@@ -69,7 +69,7 @@ public class CompIshOPMode extends NextFTCOpMode {
         Command launchWithoutSort = new LaunchWithOutSort();
         Command launchWithSort = new LaunchWithSort();
         Command intakeToSorter = new IntakeToSorterCommand();
-        Command runTurretAndLauncherFromHeading = new RunTurretAndLauncherFromHeading(true);
+        Command runTurretAndLauncherFromHeading = new RunTurretAndLauncherFromHeading(false);
         Command runTurretFromJoystick = new TurretJoystickCommand(Gamepads.gamepad2().rightStickX());
         Command forceLaunch = new ForceLaunch();
         Command eStop = new SequentialGroup(CompLauncherSubsystem.INSTANCE.StopLauncher, CompIntakeSubsystem.INSTANCE.StopIntake, CompLauncherSubsystem.INSTANCE.HoodDown(), new LambdaCommand().setStart(intakeToSorter::cancel).setIsDone(() -> true),
@@ -100,7 +100,7 @@ public class CompIshOPMode extends NextFTCOpMode {
         Gamepads.gamepad1().leftTrigger().atLeast(0.75).whenBecomesTrue(new LambdaCommand().setStart(intakeToSorter::cancel).setIsDone(() -> true));;
         Gamepads.gamepad1().rightTrigger().atLeast(0.75).whenBecomesTrue(new LambdaCommand().setStart(()->{PedroComponent.follower().setMaxPower(0.5);}).setIsDone(() -> true)).whenBecomesFalse(new LambdaCommand().setStart(()->{PedroComponent.follower().setMaxPower(1);}));
         Gamepads.gamepad1().leftBumper().whenBecomesTrue(intakeToSorter);
-        Gamepads.gamepad1().rightBumper().toggleOnBecomesTrue().whenTrue(CompIntakeSubsystem.INSTANCE.Outtake).whenBecomesFalse(CompIntakeSubsystem.INSTANCE.StopIntake);;
+        Gamepads.gamepad1().rightBumper().whenTrue(CompIntakeSubsystem.INSTANCE.Outtake).whenBecomesFalse(CompIntakeSubsystem.INSTANCE.StopIntake);
         Gamepads.gamepad1().options();
         Gamepads.gamepad1().share();
         Gamepads.gamepad1().ps().whenBecomesTrue(new LambdaCommand().setStart(() -> {PedroComponent.follower().setPose(new Pose(PedroComponent.follower().getPose().getX(),PedroComponent.follower().getPose().getY(),(3*Math.PI)/2));}).setIsDone(() -> true));;
@@ -126,7 +126,7 @@ public class CompIshOPMode extends NextFTCOpMode {
         Gamepads.gamepad2().leftTrigger().atLeast(0.75).whenBecomesTrue(new LambdaCommand().setStart(intakeToSorter::cancel).setIsDone(() -> true));
         Gamepads.gamepad2().rightTrigger().atLeast(0.75);
         Gamepads.gamepad2().leftBumper().whenBecomesTrue(intakeToSorter);
-        Gamepads.gamepad2().rightBumper();
+        Gamepads.gamepad2().rightBumper().whenTrue(CompIntakeSubsystem.INSTANCE.Outtake).whenBecomesFalse(CompIntakeSubsystem.INSTANCE.StopIntake);
         Gamepads.gamepad2().options().whenBecomesTrue(CompStatusSubsystem.INSTANCE.cycleOBPatternCommand);
         Gamepads.gamepad2().share();
         Gamepads.gamepad2().ps().toggleOnBecomesTrue().whenTrue(new LambdaCommand().setStart(() -> {CompVisionSubsystem.INSTANCE.setLLToOB();}).setUpdate(() -> {CompVisionSubsystem.INSTANCE.SearchForOb();}).setIsDone(() -> true).setStop((Interrupted)-> {CompVisionSubsystem.INSTANCE.stopLL();}));
