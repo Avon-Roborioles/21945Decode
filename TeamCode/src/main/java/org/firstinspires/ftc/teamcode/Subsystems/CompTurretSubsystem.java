@@ -37,9 +37,13 @@ public class CompTurretSubsystem implements Subsystem {
     double power = 0;
     boolean turretOn = true;
 
-    public static double kp=0.01;
-    public static double kI=0.000000000010;
-    public static double kD = 0.035;
+    public static double kp=0.008;
+    public static double kI=0.00000000000;
+    public static double kD = 0.03;
+    public static double kps=0.005;
+    public static double kIs=0.000000000005;
+    public static double kDs = 0.015;
+
     private PIDCoefficients coefficients = new PIDCoefficients(kp,kI,kD);
 
     double lastSetPoint = 0;
@@ -164,7 +168,7 @@ public class CompTurretSubsystem implements Subsystem {
     public void initialize() {
         turretControlSystem = ControlSystem.builder()
                 .posSquID(coefficients)
-                .basicFF(0,0,0.22)
+                .basicFF(0,0,0.1)
                 .build();
         Octo = ActiveOpMode.hardwareMap().get(OctoQuadFWv3.class, "OctoQuad");
         Octo.resetEverything();
@@ -209,7 +213,7 @@ public class CompTurretSubsystem implements Subsystem {
 
             turretControlSystem.setGoal(new KineticState(turretTargetPosDeg));
             power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)) + ( kv * (turretTargetPosDeg - lastSetPoint));
-            if ((Math.abs(power) > 0)){
+            if ((Math.abs(power) > 0.1)){
                 turretMotor.setPower(power*maxPower);
             }else{
                 turretMotor.setPower(0);
@@ -217,9 +221,15 @@ public class CompTurretSubsystem implements Subsystem {
         }
         getTurretTelemetryAdv();
         lastSetPoint = turretTargetPosDeg;
-        coefficients.kD=kD;
-        coefficients.kI=kI;
-        coefficients.kP=kp;
+        if (Math.abs(turretPos- turretTargetPosDeg) <30){
+            coefficients.kD=kDs;
+            coefficients.kI=kIs;
+            coefficients.kP=kps;
+        }else{
+            coefficients.kD=kD;
+            coefficients.kI=kI;
+            coefficients.kP=kp;
+        }
         // periodic logic (runs every loop)
     }
     public void getTurretTelemetryAdv(){
