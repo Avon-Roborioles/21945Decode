@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFro
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntake;
 import org.firstinspires.ftc.teamcode.Commands.Intake.IntakeToSorterCommand;
 import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunch;
+import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunchAuto;
 import org.firstinspires.ftc.teamcode.Subsystems.CompVisionSubsystem;
 
 import dev.nextftc.core.commands.Command;
@@ -114,7 +115,7 @@ public class BlueGoal extends AutoBase {
         Command Intake = new AutoIntake();
         Command StopLauncher = new LambdaCommand().setStart(()->{RunLaunchPre.cancel();RunLaunch1.cancel();RunLaunch2.cancel();RunLaunch3.cancel();
         }).setIsDone(()->{ return true;});
-        Command LaunchWOSort = new SequentialGroup(new ForceLaunch(), StopLauncher);
+        Command LaunchWOSort = new SequentialGroup(new ForceLaunchAuto(), StopLauncher);
         PedroComponent.follower().setPose(new Pose(26.75, 130, Math.toRadians(141)));
         PedroComponent.follower().setMaxPower(maxPower);
         PedroComponent.follower().update();

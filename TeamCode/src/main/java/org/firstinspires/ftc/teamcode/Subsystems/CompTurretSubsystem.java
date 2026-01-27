@@ -35,6 +35,8 @@ public class CompTurretSubsystem implements Subsystem {
     private final OctoQuadFWv3.EncoderDataBlock data = new OctoQuadFWv3.EncoderDataBlock();
     double maxPower = 1;
     double power = 0;
+    double leftLimit = -100;
+    double rightLimit = 160;
     boolean turretOn = true;
 
     public static double kp=0.008;
@@ -117,11 +119,6 @@ public class CompTurretSubsystem implements Subsystem {
             fieldAngleRad += Math.toRadians(360);
         }
         //200 Degree Limit
-//        if (fieldAngleRad > (turretZeroHeadingRad + Math.toRadians(100))){
-//            fieldAngleRad = (turretZeroHeadingRad + Math.toRadians(100));
-//        }else if (fieldAngleRad < (turretZeroHeadingRad - Math.toRadians(100))) {
-//            fieldAngleRad = (turretZeroHeadingRad - Math.toRadians(100));
-//        }
 
 
         turretTargetPosDeg = - Math.toDegrees(fieldAngleRad - turretZeroHeadingRad);
@@ -144,11 +141,6 @@ public class CompTurretSubsystem implements Subsystem {
             fieldAngleRad +=Math.toRadians(360);
         }
         //200 Degree Limit
-//        if (fieldAngleRad > (turretZeroHeadingRad + Math.toRadians(100))){
-//            fieldAngleRad = (turretZeroHeadingRad + Math.toRadians(100));
-//        }else if (fieldAngleRad < (turretZeroHeadingRad - Math.toRadians(100))) {
-//            fieldAngleRad = (turretZeroHeadingRad - Math.toRadians(100));
-//        }
 
 
         turretTargetPosDeg = - Math.toDegrees(fieldAngleRad - turretZeroHeadingRad);
@@ -188,6 +180,7 @@ public class CompTurretSubsystem implements Subsystem {
         coefficients.kI=kI;
         coefficients.kP=kp;
         coefficients.kD=kD;
+        turretOn = true;
 
 
         // initialization logic (runs on init)
@@ -213,11 +206,13 @@ public class CompTurretSubsystem implements Subsystem {
 
             turretControlSystem.setGoal(new KineticState(turretTargetPosDeg));
             power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)) + ( kv * (turretTargetPosDeg - lastSetPoint));
-            if ((Math.abs(power) > 0.1)){
+            if ((Math.abs(power) > 0.1) && turretOn){
                 turretMotor.setPower(power*maxPower);
             }else{
                 turretMotor.setPower(0);
             }
+        }else{
+            turretTargetPosDeg = turretPos;
         }
         getTurretTelemetryAdv();
         lastSetPoint = turretTargetPosDeg;
@@ -245,6 +240,13 @@ public class CompTurretSubsystem implements Subsystem {
 
 
 
+    }
+
+    public void turnTurretOff(){
+        turretOn = false;
+    }
+    public void turnTurretOn(){
+        turretOn = true;
     }
 
 

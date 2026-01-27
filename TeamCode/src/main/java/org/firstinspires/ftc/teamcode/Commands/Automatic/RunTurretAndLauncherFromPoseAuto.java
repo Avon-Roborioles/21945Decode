@@ -18,8 +18,8 @@ public class RunTurretAndLauncherFromPoseAuto extends Command {
     boolean redAlliance;
     double turretFieldAngleRad;
 
-    static Pose redGoal = new Pose(0,144);
-//static Pose redGoal = new Pose(0,144);
+    static Pose redGoal = new Pose(144,144);
+
     static Pose blueGoal = new Pose(0,144);
     Pose goal;
 
@@ -44,6 +44,9 @@ public class RunTurretAndLauncherFromPoseAuto extends Command {
 
     @Override
     public void update() {
+        if (!PedroComponent.follower().isBusy()){
+            botPose = PedroComponent.follower().getPose();
+        }
         distanceToGoal = Math.hypot((goal.getX()- botPose.getX()), (goal.getY()-botPose.getY()));
         turretFieldAngleRad = Math.atan2((goal.getY()- botPose.getY()), (goal.getX()- botPose.getX()) + PedroComponent.follower().getAngularVelocity()* CompStatusSubsystem.INSTANCE.getLoopTimeSeconds());
 
