@@ -4,13 +4,10 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
-import com.qualcomm.robotcore.robocol.Command;
 
 import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromHeading;
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntake;
 import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunch;
-
-import java.nio.file.Path;
 
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
@@ -22,7 +19,7 @@ import dev.nextftc.extensions.pedro.PedroComponent;
 public class SimpleBlueGoal extends AutoBase {
 
     PathChain DriveToTriangle, DriveToBase;
-    Command runAuto;
+    SequentialGroup runAuto;
 
   Pose StartingPoint = new Pose (56,8);
   Pose toDrive = new Pose (60, 89);
@@ -53,7 +50,6 @@ public class SimpleBlueGoal extends AutoBase {
     @Override
     public void onInit() {
         dev.nextftc.core.commands.Command RunLaunch = new RunTurretAndLauncherFromHeading(false);
-        dev.nextftc.core.commands.Command Intake = new AutoIntake();
         dev.nextftc.core.commands.Command StopLauncher = new LambdaCommand().setStart(()->{RunLaunch.cancel();}).setIsDone(()->{ return true;});
         dev.nextftc.core.commands.Command LaunchWOSort = new SequentialGroup(new ForceLaunch(), StopLauncher);
         PedroComponent.follower().setPose(StartingPoint);
@@ -83,12 +79,13 @@ public class SimpleBlueGoal extends AutoBase {
 
 
 
-        )))
+
+        ))))
 
          ;}
 
 @Override public void onWaitForStart () {}
-@Override public void onStartButtonPressed (){
+@Override public void onStartButtonPressed (){ 
     runAuto.schedule();;
 }
 @Override public void onUpdate () {
