@@ -35,11 +35,17 @@ public class CompTurretSubsystem implements Subsystem {
     private final OctoQuadFWv3.EncoderDataBlock data = new OctoQuadFWv3.EncoderDataBlock();
     double maxPower = 1;
     double power = 0;
+    double leftLimit = -100;
+    double rightLimit = 160;
     boolean turretOn = true;
 
-    public static double kp=0.01;
-    public static double kI=0.000000000010;
-    public static double kD = 0.035;
+    public static double kp=0.008;
+    public static double kI=0.00000000000;
+    public static double kD = 0.03;
+    public static double kps=0.005;
+    public static double kIs=0.000000000005;
+    public static double kDs = 0.015;
+
     private PIDCoefficients coefficients = new PIDCoefficients(kp,kI,kD);
 
     double lastSetPoint = 0;
@@ -98,7 +104,25 @@ public class CompTurretSubsystem implements Subsystem {
             .setIsDone(() -> true) // Returns if the command has finished
             .requires(this)
             .setInterruptible(true);
+    public void turnTurretToFieldAngleAuto(double fieldAngleRad, double botHeadingRad) {
+        if (turretPos < 0 && botHeadingRad > 0) {
+            botHeadingRad = -Math.PI + (botHeadingRad - Math.PI);
+        } else if (turretPos > 0 && botHeadingRad < 0) {
+            botHeadingRad = Math.PI + (botHeadingRad + Math.PI);
+        }
 
+        turretZeroHeadingRad = botHeadingRad + Math.PI;
+        //400 degree flip
+        if (fieldAngleRad > (turretZeroHeadingRad + Math.toRadians(200))) {
+            fieldAngleRad -= Math.toRadians(360);
+        } else if (fieldAngleRad < (turretZeroHeadingRad - Math.toRadians(200))) {
+            fieldAngleRad += Math.toRadians(360);
+        }
+        //200 Degree Limit
+
+
+        turretTargetPosDeg = - Math.toDegrees(fieldAngleRad - turretZeroHeadingRad);
+    }
 
 
     public void turnTurretToFieldAngle(double fieldAngleRad){
@@ -111,17 +135,12 @@ public class CompTurretSubsystem implements Subsystem {
 
         turretZeroHeadingRad = botHeadingRad + Math.PI;
         //400 degree flip
-//        if (fieldAngleRad > (turretZeroHeadingRad + Math.toRadians(200))){
-//            fieldAngleRad -=Math.toRadians(360);
-//        }else if (fieldAngleRad < (turretZeroHeadingRad - Math.toRadians(200))) {
-//            fieldAngleRad +=Math.toRadians(360);
-//        }
-        //200 Degree Limit
-        if (fieldAngleRad > (turretZeroHeadingRad + Math.toRadians(100))){
-            fieldAngleRad = (turretZeroHeadingRad + Math.toRadians(100));
-        }else if (fieldAngleRad < (turretZeroHeadingRad - Math.toRadians(100))) {
-            fieldAngleRad = (turretZeroHeadingRad - Math.toRadians(100));
+        if (fieldAngleRad > (turretZeroHeadingRad + Math.toRadians(200))){
+            fieldAngleRad -=Math.toRadians(360);
+        }else if (fieldAngleRad < (turretZeroHeadingRad - Math.toRadians(200))) {
+            fieldAngleRad +=Math.toRadians(360);
         }
+        //200 Degree Limit
 
 
         turretTargetPosDeg = - Math.toDegrees(fieldAngleRad - turretZeroHeadingRad);
@@ -141,7 +160,7 @@ public class CompTurretSubsystem implements Subsystem {
     public void initialize() {
         turretControlSystem = ControlSystem.builder()
                 .posSquID(coefficients)
-                .basicFF(0,0,0.22)
+                .basicFF(0,0,0.1)
                 .build();
         Octo = ActiveOpMode.hardwareMap().get(OctoQuadFWv3.class, "OctoQuad");
         Octo.resetEverything();
@@ -161,6 +180,7 @@ public class CompTurretSubsystem implements Subsystem {
         coefficients.kI=kI;
         coefficients.kP=kp;
         coefficients.kD=kD;
+        turretOn = true;
 
 
         // initialization logic (runs on init)
@@ -172,31 +192,39 @@ public class CompTurretSubsystem implements Subsystem {
 
         if(!ActiveOpMode.opModeInInit()){
             //400 Degree Flip
-//            if(turretTargetPosDeg>200){
+            if(turretTargetPosDeg>200){
+                turretTargetPosDeg= (-160 + (turretTargetPosDeg-200));
+            }else if(turretTargetPosDeg<-200){
+                turretTargetPosDeg= ( 160 + (turretTargetPosDeg+200));
+            }
+            // 200 Hard limit
+//            if(turretTargetPosDeg>100){
 //                turretTargetPosDeg= (-160 + (turretTargetPosDeg-200));
 //            }else if(turretTargetPosDeg<-200){
 //                turretTargetPosDeg= ( 160 + (turretTargetPosDeg+200));
 //            }
-            // 200 Hard limit
-            if(turretTargetPosDeg>100){
-                turretTargetPosDeg = 100;
-            }else if(turretTargetPosDeg<-100){
-                turretTargetPosDeg= -100;
-            }
 
             turretControlSystem.setGoal(new KineticState(turretTargetPosDeg));
             power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)) + ( kv * (turretTargetPosDeg - lastSetPoint));
-            if ((Math.abs(power) > 0)){
+            if ((Math.abs(power) > 0.1) && turretOn){
                 turretMotor.setPower(power*maxPower);
             }else{
                 turretMotor.setPower(0);
             }
+        }else{
+            turretTargetPosDeg = turretPos;
         }
         getTurretTelemetryAdv();
         lastSetPoint = turretTargetPosDeg;
-        coefficients.kD=kD;
-        coefficients.kI=kI;
-        coefficients.kP=kp;
+        if (Math.abs(turretPos- turretTargetPosDeg) <30){
+            coefficients.kD=kDs;
+            coefficients.kI=kIs;
+            coefficients.kP=kps;
+        }else{
+            coefficients.kD=kD;
+            coefficients.kI=kI;
+            coefficients.kP=kp;
+        }
         // periodic logic (runs every loop)
     }
     public void getTurretTelemetryAdv(){
@@ -212,6 +240,13 @@ public class CompTurretSubsystem implements Subsystem {
 
 
 
+    }
+
+    public void turnTurretOff(){
+        turretOn = false;
+    }
+    public void turnTurretOn(){
+        turretOn = true;
     }
 
 

@@ -1,25 +1,19 @@
 package org.firstinspires.ftc.teamcode.OpModes.Auto;
-import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
-import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromHeading;
 import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromPoseAuto;
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntake;
-import org.firstinspires.ftc.teamcode.Commands.Intake.IntakeToSorterCommand;
 import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunch;
-import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunchAuto;
+import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchWithSort;
 import org.firstinspires.ftc.teamcode.Subsystems.CompVisionSubsystem;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
-import dev.nextftc.core.commands.groups.ParallelDeadlineGroup;
 import dev.nextftc.core.commands.groups.ParallelGroup;
-import dev.nextftc.core.commands.groups.ParallelRaceGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.commands.utility.LambdaCommand;
@@ -27,10 +21,10 @@ import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 
 @Autonomous
-public class BlueGoal extends AutoBase {
+public class BlueGoalSort extends AutoBase {
     Path DriveToScorePreload, DriveToPickUp1, DrivePickUp1, DriveToScore1, DriveToPickUp2, DrivePickUp2, DriveToScore2, DriveToPickUp3, DrivePickUp3, DriveToScore3, DriveEndDrive;
     Pose startingPos = new Pose(26.75, 130, Math.toRadians(141));
-    Pose scorePreload = new Pose(56, 120, Math.toRadians(115));
+    Pose scorePreload = new Pose(58, 100, Math.toRadians(80));
     Pose toPickUp1 = new Pose(44, 84, Math.toRadians(180));
     Pose pickUp1 = new Pose(22, 84, Math.toRadians(180));
     Pose toScore1 = new Pose(57, 80, Math.toRadians(270));
@@ -45,7 +39,7 @@ public class BlueGoal extends AutoBase {
     Pose toScore3 = new Pose(60,70 , Math.toRadians(270));
     Pose toScore3CP = new Pose(50, 38);
     Pose endPos = new Pose(60,64, Math.toRadians(270));
-    double maxPower = 1;
+    double maxPower = 0.75;
 
 
 
@@ -105,7 +99,7 @@ public class BlueGoal extends AutoBase {
 
     }
     @Override public void onStartButtonPressed (){
-
+        CompVisionSubsystem.INSTANCE.setLLToOB();
 //
         Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(false, scorePreload);
         Command RunLaunch1 = new RunTurretAndLauncherFromPoseAuto(false, toScore1);
@@ -115,7 +109,7 @@ public class BlueGoal extends AutoBase {
         Command Intake = new AutoIntake();
         Command StopLauncher = new LambdaCommand().setStart(()->{RunLaunchPre.cancel();RunLaunch1.cancel();RunLaunch2.cancel();RunLaunch3.cancel();
         }).setIsDone(()->{ return true;});
-        Command LaunchWOSort = new SequentialGroup(new ForceLaunchAuto(), StopLauncher);
+        Command LaunchWOSort = new SequentialGroup(new LaunchWithSort(), StopLauncher);
         PedroComponent.follower().setPose(new Pose(26.75, 130, Math.toRadians(141)));
         PedroComponent.follower().setMaxPower(maxPower);
         PedroComponent.follower().update();
@@ -126,9 +120,10 @@ public class BlueGoal extends AutoBase {
                  new ParallelGroup(
                             new SequentialGroup(
                                     new FollowPath(DriveToScorePreload, false),
+                                    new LambdaCommand().setStart(() -> {
+                                        CompVisionSubsystem.INSTANCE.setLLToOB();}).setUpdate(() -> {CompVisionSubsystem.INSTANCE.SearchForOb();}).setIsDone(() -> true).setStop((Interrupted)-> {CompVisionSubsystem.INSTANCE.stopLL();}),
                                     LaunchWOSort
                             )
-
                  ),
                  new ParallelGroup(
                          new SequentialGroup(

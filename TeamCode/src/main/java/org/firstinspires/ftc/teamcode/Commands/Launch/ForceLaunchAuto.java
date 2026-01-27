@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.ftc.ActiveOpMode;
 
-public class ForceLaunch extends Command {
+public class ForceLaunchAuto extends Command {
     enum Step{
         GetReady,
         WaitForReady,
@@ -23,6 +23,7 @@ public class ForceLaunch extends Command {
         ResetRight,
         WaitRight,
         Pause,
+        CheckForMiss,
         Done
 
     }
@@ -32,8 +33,9 @@ public class ForceLaunch extends Command {
     Timing.Timer reset = new Timing.Timer(250, TimeUnit.MILLISECONDS);
     Timing.Timer delay = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
     Timing.Timer ready = new Timing.Timer(300, TimeUnit.MILLISECONDS);
+    boolean Missed1= false;
 
-    public ForceLaunch() {
+    public ForceLaunchAuto() {
         requires(/* subsystems */);
         setInterruptible(true); // this is the default, so you don't need to specify
     }
@@ -47,6 +49,7 @@ public class ForceLaunch extends Command {
     public void start() {
         St = Step.GetReady;
         CompSorterSubsystem.INSTANCE.resetSorter();
+        Missed1 = false;
         // executed when the command begins
     }
 
@@ -124,9 +127,29 @@ public class ForceLaunch extends Command {
                     delay.start();
                 }
                 if(delay.done()) {
+                    if (CompSorterSubsystem.INSTANCE.sorterEmpty() || Missed1) {
+                        St = Step.Done;
+                    }else{
+                        Missed1 = true;
+                        St = Step.CheckForMiss;
+                    }
+                }
+                break;
+            case CheckForMiss:
+                if(CompSorterSubsystem.INSTANCE.leftDetected()){
+                    CompSorterSubsystem.INSTANCE.sendLeft();
+                    St = Step.WaitRight;
+                }else if(CompSorterSubsystem.INSTANCE.centerDetected()) {
+                    CompSorterSubsystem.INSTANCE.sendCenter();
+                    St = Step.WaitRight;
+                }else if (CompSorterSubsystem.INSTANCE.rightDetected()){
+                    CompSorterSubsystem.INSTANCE.sendRight();
+                    St = Step.WaitRight;
+                }else{
                     St = Step.Done;
                 }
                 break;
+
         }
         // executed on every update of the command
         ActiveOpMode.telemetry().addData("Step", St);

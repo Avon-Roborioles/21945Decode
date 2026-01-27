@@ -2,14 +2,31 @@ package org.firstinspires.ftc.teamcode.Commands.Intake;
 
 import org.firstinspires.ftc.teamcode.Subsystems.CompIntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompSorterSubsystem;
+import org.firstinspires.ftc.teamcode.Utility.Timing;
+
+import java.util.concurrent.TimeUnit;
 
 import dev.nextftc.core.commands.Command;
 
 
 public class IntakeToSorterCommand extends Command {
-    boolean full = false;
-    boolean done = false;
-    boolean beamBreakClear = false;
+    enum intakeSeq {
+        Intake,
+        CheckForFull,
+        Hug,
+        StopIntake,
+        CheckBB,
+        Outake,
+        ReleaseHug,
+        Wait,
+        CheckForFullAgain,
+        HugAgain,
+        Done
+
+    }
+    intakeSeq step;
+
+    Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
     public IntakeToSorterCommand() {
         requires(CompIntakeSubsystem.INSTANCE, CompSorterSubsystem.INSTANCE/* subsystems */);
         setInterruptible(true); // this is the default, so you don't need to specify
@@ -17,13 +34,13 @@ public class IntakeToSorterCommand extends Command {
 
     @Override
     public boolean isDone() {
-        return done; // whether or not the command is done
+        return step == intakeSeq.Done; // whether or not the command is done
     }
 
     @Override
     public void start() {
-        full = false;
-        done = false;
+        step = intakeSeq.Intake;
+
         CompSorterSubsystem.INSTANCE.resetSorter();
 
 
@@ -33,21 +50,59 @@ public class IntakeToSorterCommand extends Command {
 
     @Override
     public void update() {
-        if(!full) {
-            CompIntakeSubsystem.INSTANCE.intake();
-            full = CompSorterSubsystem.INSTANCE.sorterFull();
-        }else{
-            if(CompIntakeSubsystem.INSTANCE.intakeBBTripped()){
+        switch (step) {
+            case Intake:
+                CompIntakeSubsystem.INSTANCE.intake();
+                step = intakeSeq.CheckForFull;
+                break;
+            case CheckForFull:
+                if (CompSorterSubsystem.INSTANCE.sorterFull()) {
+                    step = intakeSeq.Hug;
+                }
+                break;
+            case Hug:
                 CompSorterSubsystem.INSTANCE.sortHug();
+                step = intakeSeq.StopIntake;
+                break;
+            case StopIntake:
+                CompIntakeSubsystem.INSTANCE.stopIntake();
+                step = intakeSeq.CheckBB;
+                break;
+            case CheckBB:
+                if (CompIntakeSubsystem.INSTANCE.intakeBBTripped()) {
+                    step = intakeSeq.Outake;
+                }else{
+                    step = intakeSeq.ReleaseHug;
+                }
+                break;
+            case Outake:
                 CompIntakeSubsystem.INSTANCE.outtake();
-            }else{
-                done = true;
-            }
-
-//            CompSorterSubsystem.INSTANCE.light();
+                if(!CompIntakeSubsystem.INSTANCE.intakeBBTripped()){
+                    step = intakeSeq.ReleaseHug;
+                }
+                break;
+            case ReleaseHug:
+                CompSorterSubsystem.INSTANCE.resetSorter();
+                step = intakeSeq.Wait;
+                wait.start();
+                break;
+            case Wait:
+                if (wait.done()) {
+                    step = intakeSeq.CheckForFullAgain;
+                }
+                break;
+            case CheckForFullAgain:
+                if (CompSorterSubsystem.INSTANCE.sorterFull()) {
+                    step = intakeSeq.HugAgain;
+                }else{
+                    CompIntakeSubsystem.INSTANCE.intake();
+                }
+                break;
+            case HugAgain:
+                CompSorterSubsystem.INSTANCE.sortHug();
+                step = intakeSeq.Done;
+                break;
         }
-        CompSorterSubsystem.INSTANCE.updateColor();
-//        CompSorterSubsystem.INSTANCE.getSorterTelemetryAdv();
 
         // executed on every update of the command
     }
@@ -58,9 +113,8 @@ public class IntakeToSorterCommand extends Command {
             CompSorterSubsystem.INSTANCE.sortHug();
         }
 
-        CompIntakeSubsystem.INSTANCE.stopIntake();
-//        CompStatusSubsystem.INSTANCE.updatePrism();
 
+        CompIntakeSubsystem.INSTANCE.stopIntake();
         // executed when the command ends
     }
 }

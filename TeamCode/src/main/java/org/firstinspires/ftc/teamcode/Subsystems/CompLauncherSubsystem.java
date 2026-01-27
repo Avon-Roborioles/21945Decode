@@ -183,7 +183,7 @@ public class CompLauncherSubsystem implements Subsystem {
         return (angle/ maxHoodAngle)*maxHoodPWM;
     }
     private double distanceToSpeed(double distance){
-        return (distance * 5.1113) + 583.13;
+        return (distance * 4.7709) + 625;
     }
     private double distanceToHoodAngle(double distance){
         return  - (Math.pow(distance, 2) * 0.0004) + (distance * 0.439) - 10.137;
@@ -222,7 +222,7 @@ public class CompLauncherSubsystem implements Subsystem {
         if (ActiveOpMode.isStarted()) {
             if (!(speedTarget < 250)) {
                 launcherControlSystem.setGoal(new KineticState(0, speedTarget));
-                launcherMotorGroup.setPower(launcherControlSystem.calculate(launcherMotorGroup.getState())*0.25);
+                launcherMotorGroup.setPower(launcherControlSystem.calculate(launcherMotorGroup.getState()));
             } else {
                 launcherMotorGroup.setPower(0);
             }
@@ -230,7 +230,7 @@ public class CompLauncherSubsystem implements Subsystem {
             hoodServo.setPosition(angleToServo(hoodAngleTarget));
 
         }
-//        getLauncherTelemetryAdv();
+        getLauncherTelemetryAdv();
     }
     //Telemetry
     public void getLauncherTelemetryAdv(){

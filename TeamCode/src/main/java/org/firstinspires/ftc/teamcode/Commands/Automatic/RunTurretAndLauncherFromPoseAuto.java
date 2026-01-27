@@ -11,20 +11,21 @@ import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.ActiveOpMode;
 
 
-public class RunTurretAndLauncherFromHeading extends Command {
+public class RunTurretAndLauncherFromPoseAuto extends Command {
 
     Pose botPose;
     double distanceToGoal;
     boolean redAlliance;
     double turretFieldAngleRad;
 
-    static Pose redGoal = new Pose(0,144);
-//static Pose redGoal = new Pose(0,144);
+    static Pose redGoal = new Pose(144,144);
+
     static Pose blueGoal = new Pose(0,144);
     Pose goal;
 
-    public RunTurretAndLauncherFromHeading(boolean redAlliance) {
+    public RunTurretAndLauncherFromPoseAuto(boolean redAlliance, Pose EndPose) {
         this.redAlliance = redAlliance;
+        this.botPose = EndPose;
         requires(CompTurretSubsystem.INSTANCE);
         setInterruptible(true); // this is the default, so you don't need to specify
     }
@@ -43,11 +44,13 @@ public class RunTurretAndLauncherFromHeading extends Command {
 
     @Override
     public void update() {
-        botPose = PedroComponent.follower().getPose();
+        if (!PedroComponent.follower().isBusy()){
+            botPose = PedroComponent.follower().getPose();
+        }
         distanceToGoal = Math.hypot((goal.getX()- botPose.getX()), (goal.getY()-botPose.getY()));
         turretFieldAngleRad = Math.atan2((goal.getY()- botPose.getY()), (goal.getX()- botPose.getX()) + PedroComponent.follower().getAngularVelocity()* CompStatusSubsystem.INSTANCE.getLoopTimeSeconds());
 
-        CompTurretSubsystem.INSTANCE.turnTurretToFieldAngle(turretFieldAngleRad);
+        CompTurretSubsystem.INSTANCE.turnTurretToFieldAngleAuto(turretFieldAngleRad, botPose.getHeading());
         CompLauncherSubsystem.INSTANCE.RunLauncherFromDistance(distanceToGoal);
         ActiveOpMode.telemetry().addLine("-------------- RunTurretAndLauncherFromHeading Telemetry: --------------");
         ActiveOpMode.telemetry().addData("redAlliance", redAlliance);

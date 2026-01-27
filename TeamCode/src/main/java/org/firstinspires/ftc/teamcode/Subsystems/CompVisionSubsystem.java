@@ -94,7 +94,7 @@ public class CompVisionSubsystem implements Subsystem {
         lLTiltAngle = 0;
     }
     public void SearchForOb(){
-        llTiltToAngle(0);
+        llTiltToAngle(10);
         update();
         if (latestResult != null) {
             //may need to sort in case multiple tags can be seen

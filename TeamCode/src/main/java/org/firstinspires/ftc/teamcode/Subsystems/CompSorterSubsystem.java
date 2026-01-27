@@ -197,13 +197,13 @@ public class CompSorterSubsystem implements Subsystem {
             .requires()
             .setInterruptible(false);
     // put hardware, commands, etc here
-    private boolean leftDetected(){
+    public boolean leftDetected(){
         return (sortCSL.getDistance(DistanceUnit.MM)<70 );
     }
-    private boolean centerDetected(){
+    public boolean centerDetected(){
         return (sortCSC.getDistance(DistanceUnit.MM)<80 );
     }
-    private boolean rightDetected(){
+    public boolean rightDetected(){
         return (sortCSR.getDistance(DistanceUnit.MM)<42);
     }
 
