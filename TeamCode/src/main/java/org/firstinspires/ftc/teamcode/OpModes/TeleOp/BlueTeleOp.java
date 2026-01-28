@@ -36,7 +36,8 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 import dev.nextftc.hardware.driving.DriverControlledCommand;
 
 @TeleOp
-public class CompIshOPMode extends NextFTCOpMode {
+public class BlueTeleOp extends NextFTCOpMode {
+    Pose holdPose;
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
     {
@@ -50,7 +51,7 @@ public class CompIshOPMode extends NextFTCOpMode {
 
     @Override
     public void onInit() {
-        PedroComponent.follower().setPose(new Pose(72,72,(3*Math.PI)/2));
+        PedroComponent.follower().setPose(new Pose(62,10.25,(3*Math.PI)/2));
 //        PedroComponent.follower().setPose(new Pose(26.75, 130, Math.toRadians(141)));
 
 

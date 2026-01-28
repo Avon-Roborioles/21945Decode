@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Utility.TrapezoidProfileElement;
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
 import dev.nextftc.control.feedback.PIDCoefficients;
+import dev.nextftc.control.feedforward.BasicFeedforwardParameters;
 import dev.nextftc.control.interpolators.InterpolatorElement;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.LambdaCommand;
@@ -35,18 +36,20 @@ public class CompTurretSubsystem implements Subsystem {
     private final OctoQuadFWv3.EncoderDataBlock data = new OctoQuadFWv3.EncoderDataBlock();
     double maxPower = 1;
     double power = 0;
-    double leftLimit = -100;
-    double rightLimit = 160;
+    double leftLimit = -140;
+    double rightLimit = 130;
     boolean turretOn = true;
 
     public static double kp=0.008;
     public static double kI=0.00000000000;
-    public static double kD = 0.03;
-    public static double kps=0.005;
-    public static double kIs=0.000000000005;
-    public static double kDs = 0.015;
+    public static double kD = 0.02;
+    public static double kps=0.004;
+    public static double kIs=0;//0.00000000004;
+    public static double kDs = 0.042;
+    public static double kF = 0.1;
 
     private PIDCoefficients coefficients = new PIDCoefficients(kp,kI,kD);
+    private BasicFeedforwardParameters parameters = new BasicFeedforwardParameters(0,0,kF);
 
     double lastSetPoint = 0;
     double kv = 0.09;
@@ -55,6 +58,7 @@ public class CompTurretSubsystem implements Subsystem {
 
     // put hardware, commands, etc here
     public MotorEx turretMotorEx = new MotorEx("Turret Motor").reversed();
+
     public VoltageCompensatingMotor turretMotor = new VoltageCompensatingMotor( turretMotorEx , 0.25, 13 );
     private InterpolatorElement interpolator = new TrapezoidProfileElement(new TrapezoidProfileConstraints(20, 10));
 
@@ -144,6 +148,12 @@ public class CompTurretSubsystem implements Subsystem {
 
 
         turretTargetPosDeg = - Math.toDegrees(fieldAngleRad - turretZeroHeadingRad);
+        if(turretTargetPosDeg<leftLimit- 20){
+            turretTargetPosDeg= rightLimit;
+
+        }else if(turretTargetPosDeg>rightLimit+20){
+            turretTargetPosDeg= leftLimit;
+        }
 
     }
 
@@ -158,9 +168,10 @@ public class CompTurretSubsystem implements Subsystem {
 
     @Override
     public void initialize() {
+        turretMotorEx.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretControlSystem = ControlSystem.builder()
                 .posSquID(coefficients)
-                .basicFF(0,0,0.1)
+                .basicFF(parameters)
                 .build();
         Octo = ActiveOpMode.hardwareMap().get(OctoQuadFWv3.class, "OctoQuad");
         Octo.resetEverything();
@@ -198,6 +209,12 @@ public class CompTurretSubsystem implements Subsystem {
                 turretTargetPosDeg= ( 160 + (turretTargetPosDeg+200));
             }
             // 200 Hard limit
+            if(turretTargetPosDeg<leftLimit){
+                turretTargetPosDeg= leftLimit;
+
+            }else if(turretTargetPosDeg>rightLimit){
+                turretTargetPosDeg= rightLimit;
+            }
 //            if(turretTargetPosDeg>100){
 //                turretTargetPosDeg= (-160 + (turretTargetPosDeg-200));
 //            }else if(turretTargetPosDeg<-200){
@@ -218,12 +235,14 @@ public class CompTurretSubsystem implements Subsystem {
         lastSetPoint = turretTargetPosDeg;
         if (Math.abs(turretPos- turretTargetPosDeg) <30){
             coefficients.kD=kDs;
-            coefficients.kI=kIs;
+            coefficients.kI=kIs;//nick was here
             coefficients.kP=kps;
+            parameters.kS=kF;
         }else{
             coefficients.kD=kD;
             coefficients.kI=kI;
             coefficients.kP=kp;
+            parameters.kS=kF;
         }
         // periodic logic (runs every loop)
     }
@@ -240,13 +259,6 @@ public class CompTurretSubsystem implements Subsystem {
 
 
 
-    }
-
-    public void turnTurretOff(){
-        turretOn = false;
-    }
-    public void turnTurretOn(){
-        turretOn = true;
     }
 
 
