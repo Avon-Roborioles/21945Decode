@@ -5,6 +5,7 @@ import com.pedropathing.geometry.Pose;
 import org.firstinspires.ftc.teamcode.Subsystems.CompLauncherSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompStatusSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompTurretSubsystem;
+import org.firstinspires.ftc.teamcode.Utility.Timing;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.extensions.pedro.PedroComponent;
@@ -17,6 +18,7 @@ public class RunTurretAndLauncherFromPoseAuto extends Command {
     double distanceToGoal;
     boolean redAlliance;
     double turretFieldAngleRad;
+    Timing.Timer startDelay = new Timing.Timer(500);
 
     static Pose redGoal = new Pose(144,144);
 
@@ -38,13 +40,14 @@ public class RunTurretAndLauncherFromPoseAuto extends Command {
     @Override
     public void start() {
         goal = redAlliance ? redGoal : blueGoal;
+        startDelay.start();
 
         // executed when the command begins
     }
 
     @Override
     public void update() {
-        if (!PedroComponent.follower().isBusy()){
+        if (!PedroComponent.follower().isBusy() && startDelay.done()){
             botPose = PedroComponent.follower().getPose();
         }
         distanceToGoal = Math.hypot((goal.getX()- botPose.getX()), (goal.getY()-botPose.getY()));

@@ -11,12 +11,14 @@ import org.firstinspires.ftc.teamcode.Subsystems.CompStatusSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompTurretSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompVisionSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.LauncherSubsystemGroup;
+import org.firstinspires.ftc.teamcode.Utility.PosStorage;
 import org.firstinspires.ftc.teamcode.Utility.Storage;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.extensions.pedro.PedroComponent;
+import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
@@ -34,10 +36,12 @@ public abstract class AutoBase extends Storage {
         );
     }
     @Override public void onUpdate () {
-        memory.lastPose = PedroComponent.follower().getPose();
-
-        telemetry.addData("Bot Pose", memory.lastPose);
-
+        if(ActiveOpMode.isStarted() && !ActiveOpMode.isStopRequested()){
+            if(PedroComponent.follower().getPose() != null){
+                PosStorage.memory.lastPose = PedroComponent.follower().getPose();
+            }
+            telemetry.addData("last Pos",  PosStorage.memory.lastPose);
+        }
         telemetry.update();
 
 

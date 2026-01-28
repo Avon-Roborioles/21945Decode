@@ -18,8 +18,7 @@ public class RunTurretAndLauncherFromHeading extends Command {
     boolean redAlliance;
     double turretFieldAngleRad;
 
-    static Pose redGoal = new Pose(0,144);
-//static Pose redGoal = new Pose(0,144);
+    static Pose redGoal = new Pose(144,144);
     static Pose blueGoal = new Pose(0,144);
     Pose goal;
 

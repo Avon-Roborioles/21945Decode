@@ -183,10 +183,10 @@ public class CompLauncherSubsystem implements Subsystem {
         return (angle/ maxHoodAngle)*maxHoodPWM;
     }
     private double distanceToSpeed(double distance){
-        return (distance * 4.7709) + 625;
+        return (distance * 4.9538) + 613.02;
     }
     private double distanceToHoodAngle(double distance){
-        return  - (Math.pow(distance, 2) * 0.0004) + (distance * 0.439) - 10.137;
+        return  - (Math.pow(distance, 2) * 0.0004) + (distance * 0.4349) - 10.137;
     }
 
     public void RunLauncherFromDistance(double distance){

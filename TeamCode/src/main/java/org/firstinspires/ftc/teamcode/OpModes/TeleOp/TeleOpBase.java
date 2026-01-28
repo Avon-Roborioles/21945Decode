@@ -18,9 +18,13 @@ import org.firstinspires.ftc.teamcode.Subsystems.CompStatusSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompTurretSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompVisionSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.LauncherSubsystemGroup;
+import org.firstinspires.ftc.teamcode.Utility.PosStorage;
 import org.firstinspires.ftc.teamcode.Utility.Prism.GoBildaPrismDriver;
 import org.firstinspires.ftc.teamcode.Utility.Storage;
+import org.firstinspires.ftc.teamcode.Utility.Timing;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+
+import java.util.concurrent.TimeUnit;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.SequentialGroup;
@@ -29,13 +33,16 @@ import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.extensions.pedro.PedroDriverControlled;
+import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.ftc.components.BulkReadComponent;
 import dev.nextftc.hardware.driving.DriverControlledCommand;
 
 public abstract class TeleOpBase extends Storage {
     Pose holdPose;
+    Pose Botpose;
     DriverControlledCommand driverControlled;
+    Timing.Timer waitTimer = new Timing.Timer(100, TimeUnit.MILLISECONDS);
 
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
@@ -50,8 +57,7 @@ public abstract class TeleOpBase extends Storage {
 
     @Override
     public void onInit() {
-//        PedroComponent.follower().setPose(new Pose(62,10.25,(3*Math.PI)/2));
-//        PerunPoseSelect(telemetry);
+
         initPoseSelect();
 
 
@@ -63,15 +69,22 @@ public abstract class TeleOpBase extends Storage {
 
     @Override
     public void onWaitForStart() {
+
+        waitTimer.start();
         runPoseSelect();
-        PedroComponent.follower().setPose(Storage.memory.lastPose);
-        panelsTelemetry.update(telemetry);
+        while (!waitTimer.done()&& !ActiveOpMode.isStopRequested()){
+            telemetry.update();
+        }
+
+
+
 
 
     }
 
     @Override
     public void onStartButtonPressed() {
+
         Command launchWithoutSort = new LaunchWithOutSort();
         Command launchWithSort = new LaunchWithSort();
         Command intakeToSorter = new IntakeToSorterCommand();
@@ -84,6 +97,8 @@ public abstract class TeleOpBase extends Storage {
                 new LambdaCommand().setStart(runTurretAndLauncherFromHeading::cancel).setIsDone(() -> true),
                 new LambdaCommand().setStart(launchWithSort::cancel).setIsDone(() -> true));
         runTurretFromJoystick.schedule();
+        PedroComponent.follower().setPose( PosStorage.memory.lastPose);
+        PedroComponent.follower().setHeading( PosStorage.memory.lastPose.getHeading());
 
 
         driverControlled = driveCommand();
@@ -141,12 +156,22 @@ public abstract class TeleOpBase extends Storage {
 
     @Override
     public void onUpdate() {
-        memory.lastPose = PedroComponent.follower().getPose();
+        Botpose = PedroComponent.follower().getPose();
+
+        if(ActiveOpMode.isStarted() && !ActiveOpMode.isStopRequested()){
+            if(Botpose!= null){
+                PosStorage.memory.lastPose = PedroComponent.follower().getPose();
+            }
+            telemetry.addData("last Pos",  PosStorage.memory.lastPose);
+        }
+
+        telemetry.addData("BotPose", Botpose);
         panelsTelemetry.update(telemetry);
     }
 
     @Override
     public void onStop() {
+
         CompStatusSubsystem.INSTANCE.returnToDefault();
         CompStatusSubsystem.INSTANCE.prism.clearAllAnimations();
         CompStatusSubsystem.INSTANCE.prism.loadAnimationsFromArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_0);

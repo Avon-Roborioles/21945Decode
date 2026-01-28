@@ -16,7 +16,7 @@ public class RedTeleOp extends TeleOpBase {
         return new PedroDriverControlled(
                 Gamepads.gamepad1().leftStickY().negate(),
                 Gamepads.gamepad1().leftStickX().negate(),
-                Gamepads.gamepad1().rightStickX(),
+                Gamepads.gamepad1().rightStickX().negate(),
                 false
         );
     }

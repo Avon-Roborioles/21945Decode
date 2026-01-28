@@ -3,11 +3,13 @@ package org.firstinspires.ftc.teamcode.Utility;
 import static java.lang.Math.PI;
 import com.pedropathing.geometry.Pose;
 import dev.nextftc.bindings.Button;
+import dev.nextftc.core.components.BindingsComponent;
+import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.ftc.NextFTCOpMode;
 
 public abstract class Storage  extends NextFTCOpMode {
-    Button d_up, d_down, d_left, d_right, a;
+    Button  a;
     double currentMenuY = 0;
     double currentMenuX = 1;
     double menuMaxY = 2;
@@ -15,106 +17,100 @@ public abstract class Storage  extends NextFTCOpMode {
     double menuMinY = 0;
     double menuMinX = 1;
     String currentSet = null;
-    public static class memory {
-        public static Pose lastPose = new Pose(72, 72, Math.toDegrees(270));
-    }
+
 
     public void initPoseSelect(){
-        d_up = Gamepads.gamepad1().dpadUp();
-        d_down = Gamepads.gamepad1().dpadDown();
-        d_left = Gamepads.gamepad1().dpadLeft();
-        d_right = Gamepads.gamepad1().dpadRight();
+
         a = Gamepads.gamepad1().a();
     }
 
     public void runPoseSelect(){
         telemetry.clear();
-        d_up.whenBecomesTrue(()->{currentMenuY++;});
-        d_down.whenBecomesTrue(()->{currentMenuY--;});
-        d_right.whenBecomesTrue(()->{currentMenuX++;});
-        d_left.whenBecomesTrue(()->{currentMenuX--;});
+        if(Gamepads.gamepad1().dpadUp().get()){
+            currentMenuY++;
+        }
+        if(Gamepads.gamepad1().dpadDown().get()){
+            currentMenuY--;
+        }
+        if(Gamepads.gamepad1().dpadLeft().get()){
+            currentMenuX++;
+        }
+        if (Gamepads.gamepad1().dpadRight().get()){
+            currentMenuX--;
+        }
 
-//        if(d_up.whenBecomesTrue()){
-//            currentMenuY++;
-//        }else if(d_down.get()){
-//            currentMenuY--;
-//        }
-//        if(d_left.get()){
-//            currentMenuX--;
-//        }else if(d_right.get()){
-//            currentMenuX++;
-//        }
+
         if(currentMenuY > menuMaxY){
-            currentMenuY = menuMinY;
-        }else if(currentMenuY < menuMinY){
             currentMenuY = menuMaxY;
+        }else if(currentMenuY < menuMinY){
+            currentMenuY = menuMinY;
         }
         if(currentMenuX > menuMaxX){
-            currentMenuX = menuMinX;
-        }else if(currentMenuX < menuMinX){
             currentMenuX = menuMaxX;
+        }else if(currentMenuX < menuMinX){
+            currentMenuX = menuMinX;
         }
 
 
         switch ((int) currentMenuY){
             case 0:
                 telemetry.addLine("Option: Use Current Pose");
-                telemetry.addData("Current Set", currentSet);
-                telemetry.addData("Y", currentMenuY);
-                telemetry.addData("X", currentMenuX);
                 break;
             case 1:
                 if(currentMenuX == 1){
                     if (a.get()){
-                       memory.lastPose = new Pose(72,72, Math.toDegrees(270));
+                        PosStorage.memory.lastPose = new Pose(72,72, Math.toRadians(270));
                        currentSet = "Center Field With Intake Toward Audience";
                     }
                     telemetry.addLine("Center Field With Intake Toward Audience");
                 } else if(currentMenuX == 2) {
                     if (a.get()){
-                        memory.lastPose = new Pose(62,10.25,(3*Math.PI)/2);
+                        PosStorage.memory.lastPose = new Pose(62,10.25,(3*Math.PI)/2);
                         currentSet = "Blue Goal Side Small Triangle";
                     }
                     telemetry.addLine("Blue Goal Side Small Triangle");
                 }else {
                     if (a.get()){
-                        memory.lastPose = new Pose(133,9,Math.toDegrees(270));
+                        PosStorage.memory.lastPose = new Pose(133.5,10.25,Math.toRadians(270));
                         currentSet = "Blue Human Player Zone Intake Towards Audience";
                     }
                     telemetry.addLine("Blue Human Player Zone Intake Towards Audience");
 
                 }
-                telemetry.addData("Current Set", currentSet);
-                telemetry.addData("Y", currentMenuY);
-                telemetry.addData("X", currentMenuX);
+
                 break;
             case 2:
                 if(currentMenuX == 1){
                     if (a.get()){
-                        memory.lastPose = new Pose(72,72, Math.toDegrees(270));
+                        PosStorage.memory.lastPose = new Pose(72,72, Math.toRadians(270));
                         currentSet = "Center Field With Intake Toward Audience";
                     }
                     telemetry.addLine("Center Field With Intake Toward Audience");
                 } else if(currentMenuX == 2) {
                     if (a.get()){
-                        memory.lastPose = new Pose(62,10.25,(3*Math.PI)/2);
+                        PosStorage.memory.lastPose = new Pose(62,10.25,(3*Math.PI)/2).mirror();
                         currentSet = "Red Goal Side Small Triangle";
                     }
                     telemetry.addLine("Red Goal Side Small Triangle");
                 } else {
                     if (a.get()){
-                        memory.lastPose = new Pose(9,9,Math.toDegrees(270));
+                        PosStorage.memory.lastPose = new Pose(9.5,10.25,Math.toRadians(270));
                         currentSet = "Red Human Player Zone Intake Towards Audience";
                     }
                 telemetry.addLine("Red Human Player Zone Intake Towards Audience");
 
             }
-                telemetry.addData("Current Set", currentSet);
-                telemetry.addData("Y", currentMenuY);
-                telemetry.addData("X", currentMenuX);
                 break;
 
         }
+        telemetry.addData("Current Set", currentSet);
+        telemetry.addData("Y", currentMenuY);
+        telemetry.addData("X", currentMenuX);
+        telemetry.addData("lastPose",  PosStorage.memory.lastPose);
+        PedroComponent.follower().setPose( PosStorage.memory.lastPose);
+        PedroComponent.follower().setHeading( PosStorage.memory.lastPose.getHeading());
+        telemetry.addData("BotPose", PedroComponent.follower().getPose());
+        telemetry.update();
 
 
 

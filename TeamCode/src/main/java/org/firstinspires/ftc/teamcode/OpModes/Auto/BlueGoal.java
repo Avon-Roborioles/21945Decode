@@ -59,7 +59,7 @@ public class BlueGoal extends AutoBase {
     public void buildPaths () {
         DriveToScorePreload = new Path(new BezierLine(startingPos, scorePreload));
         DriveToScorePreload.setLinearHeadingInterpolation(startingPos.getHeading(), scorePreload.getHeading());
-        DriveToScorePreload.setTimeoutConstraint(5000);
+        DriveToScorePreload.setTimeoutConstraint(4000);
 
         DriveToPickUp1 = new Path(new BezierLine(scorePreload, toPickUp1));
         DriveToPickUp1.setLinearHeadingInterpolation(scorePreload.getHeading(), toPickUp1.getHeading());
@@ -122,7 +122,7 @@ public class BlueGoal extends AutoBase {
         buildPaths();
         runAuto = new SequentialGroup(
                 new LambdaCommand().setStart(()->{RunLaunchPre.schedule();}).setIsDone(()->{ return true;}),
-                new Delay(0.5),
+                new Delay(0.25),
                  new ParallelGroup(
                             new SequentialGroup(
                                     new FollowPath(DriveToScorePreload, false),
@@ -151,7 +151,7 @@ public class BlueGoal extends AutoBase {
                  new ParallelGroup(
                          new SequentialGroup(
                                  new FollowPath(DriveToPickUp2),
-                                 new InstantCommand(()->{ PedroComponent.follower().setMaxPower(0.4);}),
+                                 new InstantCommand(()->{ PedroComponent.follower().setMaxPower(0.35);}),
                                  new FollowPath(DrivePickUp2)),
                          Intake
                  ),

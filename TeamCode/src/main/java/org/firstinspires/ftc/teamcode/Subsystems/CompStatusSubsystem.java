@@ -253,12 +253,7 @@ public class CompStatusSubsystem implements Subsystem {
 
 
         if(ActiveOpMode.isStarted()){
-            if (1e3/statistics.getMean()> 10){
-                setBeaconRed();
-            }else {
-                //green
-                beacon.setPosition(0.5);
-            }
+            beacon.setPosition(0.5);
         }else {
             //blue
             beacon.setPosition(0.6);
