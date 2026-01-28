@@ -189,13 +189,7 @@ public class BlueGoal extends AutoBase {
         );
        runAuto.schedule();
     }
-    @Override public void onUpdate () {
-        telemetry.addData("Bot Pose", PedroComponent.follower().getPose());
 
-        telemetry.update();
-
-
-    }
     @Override public void onStop () {}
 
 
