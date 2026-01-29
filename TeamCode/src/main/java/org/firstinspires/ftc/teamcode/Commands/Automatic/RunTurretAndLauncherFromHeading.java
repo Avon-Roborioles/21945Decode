@@ -19,8 +19,11 @@ public class RunTurretAndLauncherFromHeading extends Command {
     double turretFieldAngleRad;
 
     static Pose redGoal = new Pose(144,144);
+    static Pose RedGoalAngle = new Pose(133, 133);
     static Pose blueGoal = new Pose(0,144);
+    static Pose BlueGoalAngle = new Pose(8, 134);
     Pose goal;
+    Pose goalAngle;
 
     public RunTurretAndLauncherFromHeading(boolean redAlliance) {
         this.redAlliance = redAlliance;
@@ -36,6 +39,7 @@ public class RunTurretAndLauncherFromHeading extends Command {
     @Override
     public void start() {
         goal = redAlliance ? redGoal : blueGoal;
+        goalAngle = redAlliance ? RedGoalAngle : BlueGoalAngle;
 
         // executed when the command begins
     }
@@ -44,16 +48,16 @@ public class RunTurretAndLauncherFromHeading extends Command {
     public void update() {
         botPose = PedroComponent.follower().getPose();
         distanceToGoal = Math.hypot((goal.getX()- botPose.getX()), (goal.getY()-botPose.getY()));
-        turretFieldAngleRad = Math.atan2((goal.getY()- botPose.getY()), (goal.getX()- botPose.getX()) + PedroComponent.follower().getAngularVelocity()* CompStatusSubsystem.INSTANCE.getLoopTimeSeconds());
+        turretFieldAngleRad = Math.atan2((goalAngle.getY()- botPose.getY()), (goalAngle.getX()- botPose.getX()) + PedroComponent.follower().getAngularVelocity()* CompStatusSubsystem.INSTANCE.getLoopTimeSeconds());
 
         CompTurretSubsystem.INSTANCE.turnTurretToFieldAngle(turretFieldAngleRad);
         CompLauncherSubsystem.INSTANCE.RunLauncherFromDistance(distanceToGoal);
-        ActiveOpMode.telemetry().addLine("-------------- RunTurretAndLauncherFromHeading Telemetry: --------------");
-        ActiveOpMode.telemetry().addData("redAlliance", redAlliance);
-        ActiveOpMode.telemetry().addData("BotPose", botPose);
-        ActiveOpMode.telemetry().addData("distanceToGoal", distanceToGoal);
-        ActiveOpMode.telemetry().addData("turretFieldAngleDeg", Math.toDegrees(turretFieldAngleRad));
-
+//        ActiveOpMode.telemetry().addLine("-------------- RunTurretAndLauncherFromHeading Telemetry: --------------");
+//        ActiveOpMode.telemetry().addData("redAlliance", redAlliance);
+//        ActiveOpMode.telemetry().addData("BotPose", botPose);
+//        ActiveOpMode.telemetry().addData("distanceToGoal", distanceToGoal);
+//        ActiveOpMode.telemetry().addData("turretFieldAngleDeg", Math.toDegrees(turretFieldAngleRad));
+//
 
         // executed on every update of the command
     }

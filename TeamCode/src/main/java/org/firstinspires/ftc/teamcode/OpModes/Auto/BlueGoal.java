@@ -30,10 +30,10 @@ import dev.nextftc.extensions.pedro.PedroComponent;
 public class BlueGoal extends AutoBase {
     Path DriveToScorePreload, DriveToPickUp1, DrivePickUp1, DriveToScore1, DriveToPickUp2, DrivePickUp2, DriveToScore2, DriveToPickUp3, DrivePickUp3, DriveToScore3, DriveEndDrive;
     Pose startingPos = new Pose(26.75, 130, Math.toRadians(141));
-    Pose scorePreload = new Pose(54, 120, Math.toRadians(270));
+    Pose scorePreload = new Pose(54, 114, Math.toRadians(280));
     Pose toPickUp1 = new Pose(46, 84, Math.toRadians(180));
-    Pose pickUp1 = new Pose(22, 84, Math.toRadians(180));
-    Pose toScore1 = new Pose(56, 78, Math.toRadians(270));
+    Pose pickUp1 = new Pose(22, 78, Math.toRadians(180));
+    Pose toScore1 = new Pose(56, 79, Math.toRadians(270));
     Pose toPickUp2 = new Pose( 44, 60, Math.toRadians(180));
     Pose toPickUp2CP = new Pose(57, 58);
     Pose pickUp2 = new Pose(22, 60, Math.toRadians(180));
@@ -42,9 +42,8 @@ public class BlueGoal extends AutoBase {
     Pose toPickUp3 = new Pose(44,35.5 , Math.toRadians(180));
     Pose toPickUp3CP = new Pose(50, 33);
     Pose pickUp3 = new Pose(22, 35.5, Math.toRadians(180));
-    Pose toScore3 = new Pose(56,78 , Math.toRadians(270));
+    Pose toScore3 = new Pose(56,110 , Math.toRadians(270));
     Pose toScore3CP = new Pose(50, 38);
-    Pose endPos = new Pose(60,64, Math.toRadians(270));
     double maxPower = 1;
 
 
@@ -92,8 +91,8 @@ public class BlueGoal extends AutoBase {
         DriveToScore3.setLinearHeadingInterpolation(pickUp3.getHeading(), toScore3.getHeading());
         DriveToScore3.setTimeoutConstraint(1500);
 
-        DriveEndDrive = new Path(new BezierLine(toScore3, endPos));
-        DriveEndDrive.setLinearHeadingInterpolation(toScore3.getHeading(), endPos.getHeading());
+//        DriveEndDrive = new Path(new BezierLine(toScore3, endPos));
+//        DriveEndDrive.setLinearHeadingInterpolation(toScore3.getHeading(), endPos.getHeading());
 
 
     }
@@ -181,10 +180,7 @@ public class BlueGoal extends AutoBase {
                          new LambdaCommand().setStart(()->{RunLaunch3.schedule();}).setIsDone(()->{ return true;}),
                          Intake
                  ),
-                 new ParallelGroup(
-                        new FollowPath(DriveEndDrive),
-                        StopLauncher
-                 )
+                StopLauncher
 
         );
        runAuto.schedule();

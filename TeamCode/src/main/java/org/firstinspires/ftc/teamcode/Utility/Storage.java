@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.Utility;
 import static java.lang.Math.PI;
 import com.pedropathing.geometry.Pose;
 import dev.nextftc.bindings.Button;
+import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.Gamepads;
@@ -17,9 +19,11 @@ public abstract class Storage  extends NextFTCOpMode {
     double menuMinY = 0;
     double menuMinX = 1;
     String currentSet = null;
+    Pose testPose;
 
 
     public void initPoseSelect(){
+        testPose = PedroComponent.follower().poseTracker.getPose();
 
         a = Gamepads.gamepad1().a();
     }
@@ -107,6 +111,7 @@ public abstract class Storage  extends NextFTCOpMode {
         telemetry.addData("Y", currentMenuY);
         telemetry.addData("X", currentMenuX);
         telemetry.addData("lastPose",  PosStorage.memory.lastPose);
+        telemetry.addData("test Pose", testPose);
         PedroComponent.follower().setPose( PosStorage.memory.lastPose);
         PedroComponent.follower().setHeading( PosStorage.memory.lastPose.getHeading());
         telemetry.addData("BotPose", PedroComponent.follower().getPose());

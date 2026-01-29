@@ -183,13 +183,21 @@ public class CompLauncherSubsystem implements Subsystem {
         return (angle/ maxHoodAngle)*maxHoodPWM;
     }
     private double distanceToSpeed(double distance){
-        return (distance * 4.9538) + 613.02;
+        return (distance * 4.8092) + 653.24;
     }
     private double distanceToHoodAngle(double distance){
-        return  - (Math.pow(distance, 2) * 0.0004) + (distance * 0.4349) - 10.137;
+        return   (Math.pow(distance, 2) * -0.0027) + (distance * 0.8495) - 21.433;
     }
 
     public void RunLauncherFromDistance(double distance){
+//        ActiveOpMode.telemetry().addLine("-------------- For Nick: --------------");
+//        ActiveOpMode.telemetry().addData("Recommended Speed", distanceToSpeed(distance));
+//        ActiveOpMode.telemetry().addData("Recommended Angle", distanceToHoodAngle(distance));
+//        ActiveOpMode.telemetry().addData("Distance", distance);
+//        ActiveOpMode.telemetry().addData("Current Angle", hoodAngleTarget);
+//        ActiveOpMode.telemetry().addData("Current Speed", getMotorSpeed());
+
+
         speedTarget = distanceToSpeed(distance);
         hoodAngleTarget = distanceToHoodAngle(distance);
     }

@@ -5,6 +5,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.LambdaCommand;
@@ -77,7 +78,7 @@ public class CompVisionSubsystem implements Subsystem {
         angle = angle - minLLAngle;// make it positive
         angle = angle/(maxLLAngle-minLLAngle);
 
-
+        lLTiltAngle = angle;
         LLTilt.setPosition((angle*(maxLLPWM-minLLPWM))+minLLPWM);
 
     }
@@ -121,17 +122,22 @@ public class CompVisionSubsystem implements Subsystem {
         limelight.close();
     }
     public void setReLocalizingPipeline(){
+        llTiltToAngle(30);
+        lLTiltAngle = 30;
         limelight.stop();
         limelight.pipelineSwitch(reLocalizingPipeline);
         limelight.start();
+        limelight.updateRobotOrientation(PedroComponent.follower().getHeading());
+
     }
     public void reLocalizeWithLimeLight(){
         update();
+        getLLTelemetryAdv();
         if(latestResult != null){
             if(latestResult.isValid()) {
-//                PedroComponent.follower().setX(latestResult.getBotpose().getPosition().x);
-//                PedroComponent.follower().setY(latestResult.getBotpose().getPosition().y);
-//                PedroComponent.follower().setHeading(latestResult.getBotpose().getOrientation().getYaw(AngleUnit.RADIANS));
+                PedroComponent.follower().setX(latestResult.getBotpose().getPosition().toUnit(DistanceUnit.INCH).x+72);
+                PedroComponent.follower().setY(latestResult.getBotpose().getPosition().toUnit(DistanceUnit.INCH).y+72);
+                PedroComponent.follower().setHeading(latestResult.getBotpose().getOrientation().getYaw(AngleUnit.RADIANS) + Math.PI/2);
             }
         }
     }
@@ -196,6 +202,7 @@ public class CompVisionSubsystem implements Subsystem {
         if (latestResult != null) {
             ActiveOpMode.telemetry().addData("Target Visible", latestResult.isValid());
             if (latestResult.isValid()) {
+                ActiveOpMode.telemetry().addData("BotPose", latestResult.getBotpose());
 
 
                 ActiveOpMode.telemetry().addData("Yaw to Goal", latestResult.getTx());

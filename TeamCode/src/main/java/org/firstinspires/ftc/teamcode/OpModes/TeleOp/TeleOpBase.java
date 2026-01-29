@@ -5,10 +5,12 @@ import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.Pose;
 
 import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromHeading;
+import org.firstinspires.ftc.teamcode.Commands.HumanPlayerReset;
 import org.firstinspires.ftc.teamcode.Commands.Intake.IntakeToSorterCommand;
 import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunch;
 import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchWithOutSort;
 import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchWithSort;
+import org.firstinspires.ftc.teamcode.Commands.ReLocalizeWithLLCommand;
 import org.firstinspires.ftc.teamcode.Commands.Turret.TurretJoystickCommand;
 import org.firstinspires.ftc.teamcode.Subsystems.CompIntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.CompLauncherSubsystem;
@@ -28,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.SequentialGroup;
+import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
@@ -91,6 +94,8 @@ public abstract class TeleOpBase extends Storage {
         Command runTurretAndLauncherFromHeading = new RunTurretAndLauncherFromHeading(RedAlliance());
         Command runTurretFromJoystick = new TurretJoystickCommand(Gamepads.gamepad2().rightStickX());
         Command forceLaunch = new ForceLaunch();
+
+        Command ReLocalize = new ReLocalizeWithLLCommand();
         Command eStop = new SequentialGroup(CompLauncherSubsystem.INSTANCE.StopLauncher, CompIntakeSubsystem.INSTANCE.StopIntake, CompLauncherSubsystem.INSTANCE.HoodDown(), new LambdaCommand().setStart(intakeToSorter::cancel).setIsDone(() -> true),
                 new LambdaCommand().setStart(forceLaunch::cancel).setIsDone(() -> true),
                 new LambdaCommand().setStart(runTurretFromJoystick::cancel).setIsDone(() -> true),
@@ -107,7 +112,7 @@ public abstract class TeleOpBase extends Storage {
         driverControlled.schedule();
 
         Gamepads.gamepad1().circle().whenBecomesTrue(launchWithoutSort).whenBecomesFalse(new LambdaCommand().setStart(launchWithoutSort::cancel).setIsDone(() -> true));
-        Gamepads.gamepad1().square();
+        Gamepads.gamepad1().square().whenBecomesTrue(new HumanPlayerReset(RedAlliance()));
         Gamepads.gamepad1().triangle().whenBecomesTrue(CompPTOSubsystem.INSTANCE.engage).whenBecomesFalse(CompPTOSubsystem.INSTANCE.disengage);
         Gamepads.gamepad1().cross().whenBecomesTrue(runTurretAndLauncherFromHeading).whenBecomesFalse(new LambdaCommand().setStart(() -> {runTurretAndLauncherFromHeading.cancel();runTurretFromJoystick.schedule();}).setIsDone(() -> true));;
         Gamepads.gamepad1().dpadUp();
@@ -132,7 +137,7 @@ public abstract class TeleOpBase extends Storage {
         Gamepads.gamepad2().cross().toggleOnBecomesTrue().whenBecomesTrue(runTurretAndLauncherFromHeading).whenBecomesFalse(new LambdaCommand().setStart(() -> {runTurretAndLauncherFromHeading.cancel();runTurretFromJoystick.schedule();}).setIsDone(() -> true));;
         Gamepads.gamepad2().dpadUp().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.SpeedUp);
         Gamepads.gamepad2().dpadDown().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.SpeedDown);
-        Gamepads.gamepad2().dpadLeft();
+        Gamepads.gamepad2().dpadLeft().toggleOnBecomesTrue().whenBecomesTrue(new InstantCommand(()->{ReLocalize.schedule();}));
         Gamepads.gamepad2().dpadRight();
         Gamepads.gamepad2().leftStickX();
         Gamepads.gamepad2().leftStickX();
