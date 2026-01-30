@@ -192,9 +192,9 @@ public class CompVisionSubsystem implements Subsystem {
         // periodic logic (runs every loop)
 //        getLLTelemetryAdv();
 //        getLLTiltTelemetryAdv();
-        if(ActiveOpMode.isStarted()){
-            llTiltToAngle(lLTiltAngle);
-        }
+//        if(ActiveOpMode.isStarted()){
+//            llTiltToAngle(lLTiltAngle);
+//        }
     }
     public void getLLTelemetryAdv(){
         update();

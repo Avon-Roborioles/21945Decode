@@ -30,7 +30,7 @@ import dev.nextftc.extensions.pedro.PedroComponent;
 public class BlueGoal extends AutoBase {
     Path DriveToScorePreload, DriveToPickUp1, DrivePickUp1, DriveToScore1, DriveToPickUp2, DrivePickUp2, DriveToScore2, DriveToPickUp3, DrivePickUp3, DriveToScore3, DriveEndDrive;
     Pose startingPos = new Pose(26.75, 130, Math.toRadians(141));
-    Pose scorePreload = new Pose(54, 114, Math.toRadians(280));
+    Pose scorePreload = new Pose(54, 114, Math.toRadians(270));
     Pose toPickUp1 = new Pose(46, 84, Math.toRadians(180));
     Pose pickUp1 = new Pose(22, 78, Math.toRadians(180));
     Pose toScore1 = new Pose(56, 79, Math.toRadians(270));
@@ -106,7 +106,7 @@ public class BlueGoal extends AutoBase {
     @Override public void onStartButtonPressed (){
 
 //
-        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(false, scorePreload);
+        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(false, new Pose(scorePreload.getX()+4, scorePreload.getY()+4, Math.toRadians(290)));
         Command RunLaunch1 = new RunTurretAndLauncherFromPoseAuto(false, toScore1);
         Command RunLaunch2 = new RunTurretAndLauncherFromPoseAuto(false, toScore2);
         Command RunLaunch3 = new RunTurretAndLauncherFromPoseAuto(false, toScore3);

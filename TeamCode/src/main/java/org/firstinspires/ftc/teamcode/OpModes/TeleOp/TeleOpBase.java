@@ -155,7 +155,7 @@ public abstract class TeleOpBase extends Storage {
         Gamepads.gamepad2().share();
         Gamepads.gamepad2().ps().toggleOnBecomesTrue().whenTrue(new LambdaCommand().setStart(() -> {CompVisionSubsystem.INSTANCE.setLLToOB();}).setUpdate(() -> {CompVisionSubsystem.INSTANCE.SearchForOb();}).setIsDone(() -> true).setStop((Interrupted)-> {CompVisionSubsystem.INSTANCE.stopLL();}));
         Gamepads.gamepad2().touchpad().whenBecomesTrue(eStop);
-        Command start = new SequentialGroup(CompSorterSubsystem.INSTANCE.wake, CompSorterSubsystem.INSTANCE.resetSorter, CompPTOSubsystem.INSTANCE.disengage);
+        Command start = new SequentialGroup(CompSorterSubsystem.INSTANCE.wake, CompSorterSubsystem.INSTANCE.resetSorter, CompPTOSubsystem.INSTANCE.disengage, CompVisionSubsystem.INSTANCE.down);
         start.schedule();
     }
 
