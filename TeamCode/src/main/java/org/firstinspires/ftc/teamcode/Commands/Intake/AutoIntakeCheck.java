@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import dev.nextftc.core.commands.Command;
 
-public class AutoIntake extends Command {
+public class AutoIntakeCheck extends Command {
     enum intakeSeq {
         Intake,
         CheckForFull,
@@ -25,12 +25,12 @@ public class AutoIntake extends Command {
     }
     intakeSeq step;
     Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
-    public AutoIntake() {
+    public AutoIntakeCheck() {
         requires(CompIntakeSubsystem.INSTANCE/* subsystems */);
         setInterruptible(true); // this is the default, so you don't need to specify
     }
 
-    Timing.Timer end = new Timing.Timer(3500, TimeUnit.MILLISECONDS);
+    Timing.Timer end = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
 
     @Override
     public boolean isDone() {return step == intakeSeq.Done|| end.done();// whether or not the command is done
@@ -39,7 +39,7 @@ public class AutoIntake extends Command {
     @Override
     public void start() {
         end.start();
-        step =intakeSeq.Intake;
+        step = intakeSeq.Intake;
 
         CompSorterSubsystem.INSTANCE.resetSorter();
 

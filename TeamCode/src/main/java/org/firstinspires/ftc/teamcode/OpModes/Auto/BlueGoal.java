@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromHeading;
 import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromPoseAuto;
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntake;
+import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntakeCheck;
 import org.firstinspires.ftc.teamcode.Commands.Intake.IntakeToSorterCommand;
 import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunch;
 import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunchAuto;
@@ -32,7 +33,7 @@ public class BlueGoal extends AutoBase {
     Pose startingPos = new Pose(26.75, 130, Math.toRadians(141));
     Pose scorePreload = new Pose(54, 114, Math.toRadians(270));
     Pose toPickUp1 = new Pose(46, 84, Math.toRadians(180));
-    Pose pickUp1 = new Pose(22, 78, Math.toRadians(180));
+    Pose pickUp1 = new Pose(22, 78, Math.toRadians(170));
     Pose toScore1 = new Pose(56, 79, Math.toRadians(270));
     Pose toPickUp2 = new Pose( 44, 60, Math.toRadians(180));
     Pose toPickUp2CP = new Pose(57, 58);
@@ -58,17 +59,19 @@ public class BlueGoal extends AutoBase {
     public void buildPaths () {
         DriveToScorePreload = new Path(new BezierLine(startingPos, scorePreload));
         DriveToScorePreload.setLinearHeadingInterpolation(startingPos.getHeading(), scorePreload.getHeading());
-        DriveToScorePreload.setTimeoutConstraint(4000);
+        DriveToScorePreload.setTimeoutConstraint(1500);
 
         DriveToPickUp1 = new Path(new BezierLine(scorePreload, toPickUp1));
         DriveToPickUp1.setLinearHeadingInterpolation(scorePreload.getHeading(), toPickUp1.getHeading());
 
+
         DrivePickUp1 = new Path(new BezierLine(toPickUp1, pickUp1));
         DrivePickUp1.setLinearHeadingInterpolation(toPickUp1.getHeading(), pickUp1.getHeading());
+        DrivePickUp1.setTimeoutConstraint(1000);
 
         DriveToScore1 = new Path(new BezierLine(pickUp1, toScore1));
         DriveToScore1.setLinearHeadingInterpolation(pickUp1.getHeading(), toScore1.getHeading());
-        DriveToScore1.setTimeoutConstraint(1500);
+        DriveToScore1.setTimeoutConstraint(750);
 
 
         DriveToPickUp2 = new Path(new BezierCurve(toScore1, toPickUp2CP, toPickUp2));
@@ -89,7 +92,7 @@ public class BlueGoal extends AutoBase {
 
         DriveToScore3 = new Path(new BezierCurve(pickUp3, toScore3CP, toScore3));
         DriveToScore3.setLinearHeadingInterpolation(pickUp3.getHeading(), toScore3.getHeading());
-        DriveToScore3.setTimeoutConstraint(1500);
+        DriveToScore3.setTimeoutConstraint(1000);
 
 //        DriveEndDrive = new Path(new BezierLine(toScore3, endPos));
 //        DriveEndDrive.setLinearHeadingInterpolation(toScore3.getHeading(), endPos.getHeading());
@@ -112,6 +115,7 @@ public class BlueGoal extends AutoBase {
         Command RunLaunch3 = new RunTurretAndLauncherFromPoseAuto(false, toScore3);
 
         Command Intake = new AutoIntake();
+        Command IntakeCheck = new AutoIntakeCheck();
         Command StopLauncher = new LambdaCommand().setStart(()->{RunLaunchPre.cancel();RunLaunch1.cancel();RunLaunch2.cancel();RunLaunch3.cancel();
         }).setIsDone(()->{ return true;});
         Command LaunchWOSort = new SequentialGroup(new ForceLaunchAuto(), StopLauncher);
@@ -121,15 +125,16 @@ public class BlueGoal extends AutoBase {
         buildPaths();
         runAuto = new SequentialGroup(
                 new LambdaCommand().setStart(()->{RunLaunchPre.schedule();}).setIsDone(()->{ return true;}),
-                new Delay(0.25),
+                new Delay(0.125),
                  new ParallelGroup(
                             new SequentialGroup(
                                     new FollowPath(DriveToScorePreload, false),
-                                    new Delay(0.25),
-                                    LaunchWOSort
+                                    new Delay(0.125)
+
                             )
 
                  ),
+                LaunchWOSort,
                  new ParallelGroup(
                          new SequentialGroup(
                                  new FollowPath(DriveToPickUp1),
@@ -141,12 +146,13 @@ public class BlueGoal extends AutoBase {
                          new SequentialGroup(
                                  new InstantCommand(()->{ PedroComponent.follower().setMaxPower(1);}),
                                  new FollowPath(DriveToScore1),
-                                 new Delay(0.25),
-                                 LaunchWOSort
+                                 new Delay(0.25)
+
                          ),
                          new LambdaCommand().setStart(()->{RunLaunch1.schedule();}).setIsDone(()->{ return true;}),
-                         Intake
+                         IntakeCheck
                  ),
+                LaunchWOSort,
                  new ParallelGroup(
                          new SequentialGroup(
                                  new FollowPath(DriveToPickUp2),
@@ -158,16 +164,16 @@ public class BlueGoal extends AutoBase {
                          new SequentialGroup(
                                  new InstantCommand(()->{ PedroComponent.follower().setMaxPower(maxPower);}),
                                  new FollowPath(DriveToScore2),
-                                 new Delay(0.25),
-                                 LaunchWOSort
+                                 new Delay(0.25)
                          ),
                          new LambdaCommand().setStart(()->{RunLaunch2.schedule();}).setIsDone(()->{ return true;}),
-                         Intake
+                         IntakeCheck
                  ),
+                LaunchWOSort,
                  new ParallelGroup(
                          new SequentialGroup(
                                  new FollowPath(DriveToPickUp3),
-                                 new InstantCommand(()->{ PedroComponent.follower().setMaxPower(0.4);}),
+                                 new InstantCommand(()->{ PedroComponent.follower().setMaxPower(0.35);}),
                                  new FollowPath(DrivePickUp3)),
                          Intake
                  ),
@@ -175,11 +181,12 @@ public class BlueGoal extends AutoBase {
                          new SequentialGroup(
                                  new InstantCommand(()->{ PedroComponent.follower().setMaxPower(maxPower);}),
                                  new FollowPath(DriveToScore3),
-                                 LaunchWOSort
+                                 new Delay(0.25)
                          ),
                          new LambdaCommand().setStart(()->{RunLaunch3.schedule();}).setIsDone(()->{ return true;}),
-                         Intake
+                         IntakeCheck
                  ),
+                LaunchWOSort,
                 StopLauncher
 
         );
