@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFro
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntake;
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntakeCheck;
 import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunchAuto;
+import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunchAutoSlow;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
@@ -20,23 +21,22 @@ import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 
 @Autonomous
-public class BlueGoal12Ball extends AutoBase {
-    Path DriveToScorePreload, DriveToPickUp1, DrivePickUp1, DriveToScore1, DriveToPickUp2, DrivePickUp2, DriveToScore2, DriveToPickUp3, DrivePickUp3, DriveToScore3, DriveEndDrive;
-    Pose startingPos = new Pose(26.75, 130, Math.toRadians(141));
-    Pose scorePreload = new Pose(54, 114, Math.toRadians(270));
-    Pose toPickUp1 = new Pose(46, 84, Math.toRadians(180));
-    Pose pickUp1 = new Pose(22, 78, Math.toRadians(170));
-    Pose toScore1 = new Pose(56, 79, Math.toRadians(270));
+public class BlueBack9Ball extends AutoBase {
+    Path DriveToScorePreload, DriveToPickUp1, DrivePickUp1, DriveToScore1, DriveToPickUp2, DrivePickUp2, DriveToScore2, EndDrive;
+
+    Pose startingPos = new Pose(56.65, 10.25, Math.toRadians(270));
+    Pose scorePreload = new Pose(58, 26, Math.toRadians(270));
+    Pose toPickUp1 = new Pose(44, 35.5, Math.toRadians(180));
+    Pose toPickUp1Cp = new Pose(64, 37);
+    Pose pickUp1 = new Pose(18, 35.4, Math.toRadians(180));
+    Pose toScore1 = new Pose(58, 26, Math.toRadians(270));
+    Pose toScore1Cp = new Pose(59, 40);
     Pose toPickUp2 = new Pose( 44, 60, Math.toRadians(180));
     Pose toPickUp2CP = new Pose(57, 58);
-    Pose pickUp2 = new Pose(22, 60, Math.toRadians(180));
-    Pose toScore2 = new Pose(56, 78, Math.toRadians(270));
-    Pose toScore2CP = new Pose(51, 61);
-    Pose toPickUp3 = new Pose(44,35.5 , Math.toRadians(180));
-    Pose toPickUp3CP = new Pose(50, 33);
-    Pose pickUp3 = new Pose(22, 35.5, Math.toRadians(180));
-    Pose toScore3 = new Pose(56,110 , Math.toRadians(270));
-    Pose toScore3CP = new Pose(50, 38);
+    Pose pickUp2 = new Pose(18, 60, Math.toRadians(180));
+    Pose toScore2 = new Pose(58, 26, Math.toRadians(270));
+    Pose toScore2CP = new Pose(59, 66);
+    Pose endPos = new Pose(60, 38, Math.toRadians(270));
     double maxPower = 1;
 
 
@@ -51,43 +51,49 @@ public class BlueGoal12Ball extends AutoBase {
     public void buildPaths () {
         DriveToScorePreload = new Path(new BezierLine(startingPos, scorePreload));
         DriveToScorePreload.setLinearHeadingInterpolation(startingPos.getHeading(), scorePreload.getHeading());
-        DriveToScorePreload.setTimeoutConstraint(1000);
 
-        DriveToPickUp1 = new Path(new BezierLine(scorePreload, toPickUp1));
+
+        DriveToPickUp1 = new Path(new BezierCurve(scorePreload, toPickUp1Cp, toPickUp1));
         DriveToPickUp1.setLinearHeadingInterpolation(scorePreload.getHeading(), toPickUp1.getHeading());
 
 
         DrivePickUp1 = new Path(new BezierLine(toPickUp1, pickUp1));
         DrivePickUp1.setLinearHeadingInterpolation(toPickUp1.getHeading(), pickUp1.getHeading());
-        DrivePickUp1.setTimeoutConstraint(1000);
+        DrivePickUp1.setTimeoutConstraint(2000);
 
-        DriveToScore1 = new Path(new BezierLine(pickUp1, toScore1));
+        DriveToScore1 = new Path(new BezierCurve(pickUp1, toScore1Cp, toScore1));
         DriveToScore1.setLinearHeadingInterpolation(pickUp1.getHeading(), toScore1.getHeading());
-        DriveToScore1.setTimeoutConstraint(750);
-
+        DriveToScore1.setTimeoutConstraint(1000);
 
         DriveToPickUp2 = new Path(new BezierCurve(toScore1, toPickUp2CP, toPickUp2));
         DriveToPickUp2.setLinearHeadingInterpolation(toScore1.getHeading(), toPickUp2.getHeading());
+        DriveToPickUp2.setTimeoutConstraint(2000);
 
         DrivePickUp2 = new Path(new BezierLine(toPickUp2, pickUp2));
         DrivePickUp2.setLinearHeadingInterpolation(toPickUp2.getHeading(), pickUp2.getHeading());
+        DrivePickUp2.setTimeoutConstraint(2000);
 
         DriveToScore2 = new Path(new BezierCurve(pickUp2, toScore2CP, toScore2));
         DriveToScore2.setLinearHeadingInterpolation(pickUp2.getHeading(), toScore2.getHeading());
-        DriveToScore2.setTimeoutConstraint(1500);
+        DriveToScore2.setTimeoutConstraint(1000);
 
-        DriveToPickUp3 = new Path(new BezierCurve(toScore2, toPickUp3CP, toPickUp3));
-        DriveToPickUp3.setLinearHeadingInterpolation(toScore2.getHeading(), toPickUp3.getHeading());
 
-        DrivePickUp3 = new Path(new BezierLine(toPickUp3, pickUp3));
-        DrivePickUp3.setLinearHeadingInterpolation(toPickUp3.getHeading(), pickUp3.getHeading());
+        EndDrive = new Path(new BezierLine(toScore2, endPos));
+        EndDrive.setLinearHeadingInterpolation(toScore2.getHeading(), endPos.getHeading());
+        EndDrive.setTimeoutConstraint(2000);
 
-        DriveToScore3 = new Path(new BezierCurve(pickUp3, toScore3CP, toScore3));
-        DriveToScore3.setLinearHeadingInterpolation(pickUp3.getHeading(), toScore3.getHeading());
-        DriveToScore3.setTimeoutConstraint(1000);
 
-//        DriveEndDrive = new Path(new BezierLine(toScore3, endPos));
-//        DriveEndDrive.setLinearHeadingInterpolation(toScore3.getHeading(), endPos.getHeading());
+
+
+
+
+
+
+
+
+
+
+
 
 
     }
@@ -101,39 +107,31 @@ public class BlueGoal12Ball extends AutoBase {
     @Override public void onStartButtonPressed (){
 
 //
-        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(false, new Pose(scorePreload.getX()+4, scorePreload.getY()+4, Math.toRadians(290)));
-        Command RunLaunch1 = new RunTurretAndLauncherFromPoseAuto(false, toScore1);
-        Command RunLaunch2 = new RunTurretAndLauncherFromPoseAuto(false, toScore2);
-        Command RunLaunch3 = new RunTurretAndLauncherFromPoseAuto(false, toScore3);
+        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(false, new Pose(scorePreload.getX(), scorePreload.getY(), scorePreload.getHeading()));
+        Command RunLaunch1 = new RunTurretAndLauncherFromPoseAuto(false,new Pose(toScore1.getX(), toScore1.getY(), toScore1.getHeading()));
+        Command RunLaunch2 = new RunTurretAndLauncherFromPoseAuto(false, new Pose(toScore2.getX(), toScore2.getY(), toScore2.getHeading()));
 
-        Command Intake1 = new AutoIntake(5000);
-        Command Intake2 = new AutoIntake(3500);
-        Command Intake3 = new AutoIntake(3000);
+        Command Intake1 = new AutoIntake(4000);
+        Command Intake2 = new AutoIntake(4000);
+
 
         Command IntakeCheck = new AutoIntakeCheck();
-        Command StopLauncher = new LambdaCommand().setStart(()->{RunLaunchPre.cancel();RunLaunch1.cancel();RunLaunch2.cancel();RunLaunch3.cancel();
+        Command StopLauncher = new LambdaCommand().setStart(()->{RunLaunchPre.cancel();RunLaunch1.cancel();RunLaunch2.cancel();
         }).setIsDone(()->{ return true;});
-        Command LaunchWOSort = new SequentialGroup(new ForceLaunchAuto(), StopLauncher);
+        Command LaunchWOSort = new SequentialGroup(new ForceLaunchAutoSlow(), StopLauncher);
         PedroComponent.follower().setPose(startingPos);
         PedroComponent.follower().setMaxPower(maxPower);
         PedroComponent.follower().update();
         buildPaths();
         runAuto = new SequentialGroup(
                 new LambdaCommand().setStart(()->{RunLaunchPre.schedule();}).setIsDone(()->{ return true;}),
-                new Delay(0.125),
-                 new ParallelGroup(
-                            new SequentialGroup(
-                                    new FollowPath(DriveToScorePreload, false),
-                                    new Delay(0.005)
-
-                            )
-
-                 ),
+                new Delay(1.75),
+                new FollowPath(DriveToScorePreload),
                 LaunchWOSort,
                  new ParallelGroup(
                          new SequentialGroup(
                                  new FollowPath(DriveToPickUp1),
-                                 new InstantCommand(()->{ PedroComponent.follower().setMaxPower(0.4);}),
+                                 new InstantCommand(()->{ PedroComponent.follower().setMaxPower(0.5);}),
                                  new FollowPath(DrivePickUp1)),
                          Intake1
                  ),
@@ -141,7 +139,7 @@ public class BlueGoal12Ball extends AutoBase {
                          new SequentialGroup(
                                  new InstantCommand(()->{ PedroComponent.follower().setMaxPower(1);}),
                                  new FollowPath(DriveToScore1),
-                                 new Delay(0.25)
+                                 new Delay(1.5)
 
                          ),
                          new LambdaCommand().setStart(()->{RunLaunch1.schedule();}).setIsDone(()->{ return true;}),
@@ -159,30 +157,14 @@ public class BlueGoal12Ball extends AutoBase {
                          new SequentialGroup(
                                  new InstantCommand(()->{ PedroComponent.follower().setMaxPower(maxPower);}),
                                  new FollowPath(DriveToScore2),
-                                 new Delay(0.25)
+                                 new Delay(1.5)
                          ),
                          new LambdaCommand().setStart(()->{RunLaunch2.schedule();}).setIsDone(()->{ return true;}),
                          IntakeCheck
                  ),
                 LaunchWOSort,
-                 new ParallelGroup(
-                         new SequentialGroup(
-                                 new FollowPath(DriveToPickUp3),
-                                 new InstantCommand(()->{ PedroComponent.follower().setMaxPower(0.35);}),
-                                 new FollowPath(DrivePickUp3)),
-                         Intake3
-                 ),
-                 new ParallelGroup(
-                         new SequentialGroup(
-                                 new InstantCommand(()->{ PedroComponent.follower().setMaxPower(maxPower);}),
-                                 new FollowPath(DriveToScore3),
-                                 new Delay(0.25)
-                         ),
-                         new LambdaCommand().setStart(()->{RunLaunch3.schedule();}).setIsDone(()->{ return true;}),
-                         IntakeCheck
-                 ),
-                LaunchWOSort,
-                StopLauncher
+                StopLauncher,
+                new FollowPath(EndDrive)
 
         );
        runAuto.schedule();

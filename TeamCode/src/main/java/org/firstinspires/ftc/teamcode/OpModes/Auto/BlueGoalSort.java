@@ -4,6 +4,7 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromPoseAuto;
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntake;
@@ -21,17 +22,18 @@ import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 
 @Autonomous
+@Disabled
 public class BlueGoalSort extends AutoBase {
     Path DriveToScorePreload, DriveToPickUp1, DrivePickUp1, DriveToScore1, DriveToPickUp2, DrivePickUp2, DriveToScore2, DriveToPickUp3, DrivePickUp3, DriveToScore3, DriveEndDrive;
     Pose startingPos = new Pose(26.75, 130, Math.toRadians(141));
     Pose scorePreload = new Pose(58, 100, Math.toRadians(80));
     Pose toPickUp1 = new Pose(44, 84, Math.toRadians(180));
     Pose pickUp1 = new Pose(22, 84, Math.toRadians(180));
-    Pose toScore1 = new Pose(57, 80, Math.toRadians(270));
+    Pose toScore1 = new Pose(58, 100, Math.toRadians(270));
     Pose toPickUp2 = new Pose( 44, 60, Math.toRadians(180));
     Pose toPickUp2CP = new Pose(57, 58);
     Pose pickUp2 = new Pose(22, 60, Math.toRadians(180));
-    Pose toScore2 = new Pose(60, 70, Math.toRadians(270));
+    Pose toScore2 = new Pose(58, 1, Math.toRadians(270));
     Pose toScore2CP = new Pose(51, 61);
     Pose toPickUp3 = new Pose(44,35.5 , Math.toRadians(180));
     Pose toPickUp3CP = new Pose(50, 33);

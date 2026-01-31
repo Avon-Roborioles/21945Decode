@@ -100,7 +100,7 @@ public class BlueGoal9Ball extends AutoBase {
         Command StopLauncher = new LambdaCommand().setStart(()->{RunLaunchPre.cancel();RunLaunch1.cancel();RunLaunch2.cancel();
         }).setIsDone(()->{ return true;});
         Command LaunchWOSort = new SequentialGroup(new ForceLaunchAuto(), StopLauncher);
-        PedroComponent.follower().setPose(new Pose(26.75, 130, Math.toRadians(141)));
+        PedroComponent.follower().setPose(startingPos);
         PedroComponent.follower().setMaxPower(maxPower);
         PedroComponent.follower().update();
         buildPaths();
