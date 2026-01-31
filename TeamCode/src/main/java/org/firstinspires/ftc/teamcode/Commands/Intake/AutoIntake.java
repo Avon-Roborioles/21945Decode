@@ -25,12 +25,13 @@ public class AutoIntake extends Command {
     }
     intakeSeq step;
     Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
-    public AutoIntake() {
+    public AutoIntake(long Time) {
+        end = new Timing.Timer(Time, TimeUnit.MILLISECONDS);
         requires(CompIntakeSubsystem.INSTANCE/* subsystems */);
         setInterruptible(true); // this is the default, so you don't need to specify
     }
 
-    Timing.Timer end = new Timing.Timer(3500, TimeUnit.MILLISECONDS);
+    Timing.Timer end;
 
     @Override
     public boolean isDone() {return step == intakeSeq.Done|| end.done();// whether or not the command is done

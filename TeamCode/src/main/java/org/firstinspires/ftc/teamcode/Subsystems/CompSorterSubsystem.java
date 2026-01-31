@@ -200,12 +200,23 @@ public class CompSorterSubsystem implements Subsystem {
     public boolean leftDetected(){
         return (sortCSL.getDistance(DistanceUnit.MM)<70 );
     }
+    public boolean leftDetectedDumb(){
+        return (sortCSL.getNormalizedColors().alpha > 0.64);
+    }
+
     public boolean centerDetected(){
         return (sortCSC.getDistance(DistanceUnit.MM)<80 );
+    }
+    public boolean centerDetectedDumb(){
+        return (sortCSC.getNormalizedColors().alpha > 0.113);
     }
     public boolean rightDetected(){
         return (sortCSR.getDistance(DistanceUnit.MM)<42);
     }
+    public boolean rightDetectedDumb(){
+        return (sortCSR.getNormalizedColors().alpha > 0.190);
+    }
+
 
     public SlotDetection leftSlot(){
         updateColor();
@@ -285,6 +296,9 @@ public class CompSorterSubsystem implements Subsystem {
     }
     public boolean sorterFull(){
         return (leftDetected()) && (centerDetected()) && (rightDetected());
+    }
+    public boolean sorterFullDumb(){
+        return (leftDetectedDumb() && centerDetectedDumb() && rightDetectedDumb());
     }
     public boolean sorterEmpty(){
         return !leftDetected() && !centerDetected() && !rightDetected();

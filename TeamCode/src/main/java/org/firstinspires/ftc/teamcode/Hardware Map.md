@@ -29,6 +29,7 @@ I3: "Prism"
 
 Digital: 
 D6: "IntakeBB"
+D4: "IntakeBB2"
 
 Analog:
 A2: "FloodGate"

@@ -30,7 +30,7 @@ public class AutoIntakeCheck extends Command {
         setInterruptible(true); // this is the default, so you don't need to specify
     }
 
-    Timing.Timer end = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
+    Timing.Timer end = new Timing.Timer(1500, TimeUnit.MILLISECONDS);
 
     @Override
     public boolean isDone() {return step == intakeSeq.Done|| end.done();// whether or not the command is done
@@ -54,7 +54,7 @@ public class AutoIntakeCheck extends Command {
                 step = intakeSeq.CheckForFull;
                 break;
             case CheckForFull:
-                if (CompSorterSubsystem.INSTANCE.sorterFull()) {
+                if (CompSorterSubsystem.INSTANCE.sorterFullDumb()) {
                     step = intakeSeq.Hug;
                 }
                 break;
@@ -68,7 +68,7 @@ public class AutoIntakeCheck extends Command {
                 break;
             case CheckBB:
                 CompIntakeSubsystem.INSTANCE.outtake();
-                if (CompIntakeSubsystem.INSTANCE.intakeBBTripped()) {
+                if (CompIntakeSubsystem.INSTANCE.intakeBBTripped() || CompIntakeSubsystem.INSTANCE.intakeBB2Tripped()) {
                     step = intakeSeq.Outake;
                 }else{
                     step = intakeSeq.ReleaseHug;
@@ -92,7 +92,7 @@ public class AutoIntakeCheck extends Command {
                 }
                 break;
             case CheckForFullAgain:
-                if (CompSorterSubsystem.INSTANCE.sorterFull()) {
+                if (CompSorterSubsystem.INSTANCE.sorterFullDumb()) {
                     step = intakeSeq.HugAgain;
                     CompIntakeSubsystem.INSTANCE.outtake();
                 }else{

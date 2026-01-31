@@ -114,7 +114,10 @@ public class BlueGoal extends AutoBase {
         Command RunLaunch2 = new RunTurretAndLauncherFromPoseAuto(false, toScore2);
         Command RunLaunch3 = new RunTurretAndLauncherFromPoseAuto(false, toScore3);
 
-        Command Intake = new AutoIntake();
+        Command Intake1 = new AutoIntake(4000);
+        Command Intake2 = new AutoIntake(3500);
+        Command Intake3 = new AutoIntake(3000);
+
         Command IntakeCheck = new AutoIntakeCheck();
         Command StopLauncher = new LambdaCommand().setStart(()->{RunLaunchPre.cancel();RunLaunch1.cancel();RunLaunch2.cancel();RunLaunch3.cancel();
         }).setIsDone(()->{ return true;});
@@ -138,9 +141,9 @@ public class BlueGoal extends AutoBase {
                  new ParallelGroup(
                          new SequentialGroup(
                                  new FollowPath(DriveToPickUp1),
-                                 new InstantCommand(()->{ PedroComponent.follower().setMaxPower(0.5);}),
+                                 new InstantCommand(()->{ PedroComponent.follower().setMaxPower(0.35);}),
                                  new FollowPath(DrivePickUp1)),
-                         Intake
+                         Intake1
                  ),
                  new ParallelGroup(
                          new SequentialGroup(
@@ -158,7 +161,7 @@ public class BlueGoal extends AutoBase {
                                  new FollowPath(DriveToPickUp2),
                                  new InstantCommand(()->{ PedroComponent.follower().setMaxPower(0.35);}),
                                  new FollowPath(DrivePickUp2)),
-                         Intake
+                         Intake2
                  ),
                  new ParallelGroup(
                          new SequentialGroup(
@@ -175,7 +178,7 @@ public class BlueGoal extends AutoBase {
                                  new FollowPath(DriveToPickUp3),
                                  new InstantCommand(()->{ PedroComponent.follower().setMaxPower(0.35);}),
                                  new FollowPath(DrivePickUp3)),
-                         Intake
+                         Intake3
                  ),
                  new ParallelGroup(
                          new SequentialGroup(

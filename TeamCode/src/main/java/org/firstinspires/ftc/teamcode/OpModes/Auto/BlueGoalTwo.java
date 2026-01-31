@@ -104,7 +104,7 @@ public class BlueGoalTwo extends AutoBase {
     @Override
     public void onInit() {
         Command RunLaunch = new RunTurretAndLauncherFromHeading(false);
-        Command Intake = new AutoIntake();
+        Command Intake = new AutoIntake(3500);
         Command StopLauncher = new LambdaCommand().setStart(()->{RunLaunch.cancel();}).setIsDone(()->{ return true;});
         Command LaunchWOSort = new SequentialGroup(new ForceLaunch(), StopLauncher);
         PedroComponent.follower().setPose(StartingPoint);
@@ -114,7 +114,7 @@ public class BlueGoalTwo extends AutoBase {
                 new ParallelGroup(
                         new SequentialGroup(
                                 new FollowPath(CollectBalls),
-                        new AutoIntake()
+                        new AutoIntake(3500)
                 ),
                 new ParallelGroup(
                         new SequentialGroup(
@@ -127,7 +127,7 @@ public class BlueGoalTwo extends AutoBase {
                 ),
                 new ParallelGroup(new SequentialGroup(
                         new FollowPath(CollectBalls2),
-                        new AutoIntake()
+                        new AutoIntake(3500)
                 ), new ParallelGroup(
                         new SequentialGroup(
                                 new FollowPath(DriveToLine2),
@@ -139,7 +139,7 @@ public class BlueGoalTwo extends AutoBase {
                 ), new ParallelGroup(
                         new SequentialGroup(
                                 new FollowPath(CollectBalls3),
-                                new AutoIntake()
+                                new AutoIntake(2500)
                         ),
                         new ParallelGroup(
                                 new SequentialGroup(

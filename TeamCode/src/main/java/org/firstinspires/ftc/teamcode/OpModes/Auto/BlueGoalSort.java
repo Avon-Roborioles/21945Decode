@@ -106,7 +106,7 @@ public class BlueGoalSort extends AutoBase {
         Command RunLaunch2 = new RunTurretAndLauncherFromPoseAuto(false, toScore2);
         Command RunLaunch3 = new RunTurretAndLauncherFromPoseAuto(false, toScore3);
 
-        Command Intake = new AutoIntake();
+        Command Intake = new AutoIntake(4000);
         Command StopLauncher = new LambdaCommand().setStart(()->{RunLaunchPre.cancel();RunLaunch1.cancel();RunLaunch2.cancel();RunLaunch3.cancel();
         }).setIsDone(()->{ return true;});
         Command LaunchWOSort = new SequentialGroup(new LaunchWithSort(), StopLauncher);

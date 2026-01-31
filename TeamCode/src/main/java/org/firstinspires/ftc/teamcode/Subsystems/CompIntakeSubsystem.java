@@ -16,7 +16,7 @@ public class CompIntakeSubsystem implements Subsystem {
     private double intakeSpeed = -1;
 
     // put hardware, commands, etc here
-    private DigitalChannel intakeBeamBreak;
+    private DigitalChannel intakeBeamBreak, intakeBB2;
     public MotorEx intakeMotor = new MotorEx("Intake Motor");
 
     public Command Intake = new SetPower(intakeMotor, intakeSpeed);
@@ -35,6 +35,9 @@ public class CompIntakeSubsystem implements Subsystem {
     public boolean intakeBBTripped(){
         return intakeBeamBreak.getState();
     }
+    public boolean intakeBB2Tripped(){
+        return intakeBB2.getState();
+    }
 
 
 
@@ -42,7 +45,9 @@ public class CompIntakeSubsystem implements Subsystem {
     public void initialize() {
         // initialization logic (runs on init)
         intakeBeamBreak = ActiveOpMode.hardwareMap().get(DigitalChannel.class, "IntakeBB");
+        intakeBB2 = ActiveOpMode.hardwareMap().get(DigitalChannel.class, "IntakeBB2");
         intakeBeamBreak.setMode(DigitalChannel.Mode.INPUT);
+        intakeBB2.setMode(DigitalChannel.Mode.INPUT);
 
         intakeMotor.setPower(0);
     }
