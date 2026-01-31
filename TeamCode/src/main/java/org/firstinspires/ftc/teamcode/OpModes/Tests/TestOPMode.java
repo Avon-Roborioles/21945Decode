@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.OpModes.Tests;
 
 
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.Pose;
@@ -34,8 +35,10 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 import dev.nextftc.hardware.driving.DriverControlledCommand;
 
 @TeleOp
-@Disabled
+//@Disabled
+@Configurable
 public class TestOPMode extends NextFTCOpMode {
+    public static long pwmTarget = 1000;
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
@@ -139,7 +142,7 @@ public class TestOPMode extends NextFTCOpMode {
         telemetry.addData("Distance to Goal", Math.hypot((0-PedroComponent.follower().getPose().getX()), (144-PedroComponent.follower().getPose().getY())));
 
         panelsTelemetry.update(telemetry);
-        CompStatusSubsystem.INSTANCE.sorterLight.schedule();
+        CompStatusSubsystem.INSTANCE.setPrismToPWM(pwmTarget);
 
     }
 

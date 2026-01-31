@@ -55,6 +55,7 @@ M2: "Turret Motor"
 M3: "Intake Motor"
 
 Servos:
+S3: "PrismPWM"
 S4: "LL Tilt"
 S5: "Beacon"
 

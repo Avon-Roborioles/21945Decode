@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.OpModes.Tests;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -7,8 +8,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Utility.Prism.GoBildaPrismDriver;
 import org.firstinspires.ftc.teamcode.Utility.Prism.PrismAnimations;
 @TeleOp(name="Set Lights", group="Setup")
-@Disabled
+//@Disabled
+@Configurable
 public class SetLightsOPMode extends LinearOpMode {
+    public static long pwmTarget = 1000;
     GoBildaPrismDriver prism;
 
     PrismAnimations.Snakes purpleSnakes = new PrismAnimations.Snakes();
@@ -25,27 +28,15 @@ public class SetLightsOPMode extends LinearOpMode {
     PrismAnimations.Solid offMiddleFront = new PrismAnimations.Solid();
     PrismAnimations.Solid offRight = new PrismAnimations.Solid();
 
-
+    //0 - Purple Snakes
+    //1 - PGP
 
 
     @Override
     public void runOpMode() throws InterruptedException {
-        prism = hardwareMap.get(GoBildaPrismDriver.class,"Prism");
-        prism.setStripLength(36);
-        prism.enableDefaultBootArtboard(true);
-        prism.setDefaultBootArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_0);
-
-
-
-
-
-
-
-
 
 
         waitForStart();
-        prism.loadAnimationsFromArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_0);
 
 
 

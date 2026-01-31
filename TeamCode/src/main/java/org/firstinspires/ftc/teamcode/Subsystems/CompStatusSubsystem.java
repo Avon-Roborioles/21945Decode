@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchDevice;
+import com.qualcomm.robotcore.hardware.PWMOutputEx;
+import com.qualcomm.robotcore.hardware.PwmControl;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.MovingStatistics;
@@ -30,6 +33,7 @@ public class CompStatusSubsystem implements Subsystem {
     private AnalogInput floodgate ;
     private ServoImplEx beacon;
     public GoBildaPrismDriver prism;
+    public ServoImplEx prismPwm;
     private CStatus left = CStatus.NULL;
     private CStatus center = CStatus.NULL;
     private CStatus right = CStatus.NULL;
@@ -73,15 +77,6 @@ public class CompStatusSubsystem implements Subsystem {
         PGP,
         GPP,
         NULL,
-        UPG,
-        PUG,
-        PPU,
-        UGP,
-        PUP,
-        PGU,
-        UPP,
-        GUP,
-        GPU,
         EPG,
         PEG,
         PPE,
@@ -208,6 +203,8 @@ public class CompStatusSubsystem implements Subsystem {
         floodgate = ActiveOpMode.hardwareMap().get(AnalogInput.class, "FloodGate");
         beacon = ActiveOpMode.hardwareMap().get(ServoImplEx.class, "Beacon");
         prism = ActiveOpMode.hardwareMap().get(GoBildaPrismDriver.class, "Prism");
+        prismPwm = ActiveOpMode.hardwareMap().get(ServoImplEx.class, "PrismPWM");
+        prismPwm.setPwmRange(new PwmControl.PwmRange(500,2500));
         controlHubVoltageSensor = ActiveOpMode.hardwareMap().get(VoltageSensor.class, "Control Hub");
         buildAnimations();
         prism.setStripLength(36);
@@ -346,6 +343,23 @@ public class CompStatusSubsystem implements Subsystem {
     }
     public void setBeaconWhite(){
         beacon.setPosition(1);
+    }
+    public void setPrismToPWM(long PWM){
+        if(PWM< 500){
+            PWM = 500;
+        }else if(PWM>2500){
+            PWM = 2500;
+        }
+        prismPwm.setPosition(PWM/2500.0);
+
+    }
+    public void setPrismOrange(){
+        setPrismToPWM(800);
+
+    }
+    public void setPrismGreen(){
+        setPrismToPWM(1100);
+
     }
 
     public void setLeftPurple(){
