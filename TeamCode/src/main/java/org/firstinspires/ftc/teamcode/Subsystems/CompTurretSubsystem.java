@@ -162,6 +162,10 @@ public class CompTurretSubsystem implements Subsystem {
         lastSetPoint = turretTargetPosDeg;
     }
 
+    public boolean TurretHappy(){
+        return turretControlSystem.isWithinTolerance(new KineticState(3));
+    }
+
 
 
 
@@ -256,6 +260,8 @@ public class CompTurretSubsystem implements Subsystem {
         ActiveOpMode.telemetry().addData("Turret Error", Math.abs(turretPos- turretTargetPosDeg));
         ActiveOpMode.telemetry().addData("Turret Target", turretTargetPosDeg);
         ActiveOpMode.telemetry().addData("Turret Field Angle Goal", turretFieldAngleGoalDeg);
+        ActiveOpMode.telemetry().addData("Turret Happy", TurretHappy());
+
 
 
 

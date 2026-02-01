@@ -361,6 +361,10 @@ public class CompStatusSubsystem implements Subsystem {
         setPrismToPWM(1100);
 
     }
+    public void setPrismNorm(){
+        setPrismToPWM(501);
+
+    }
 
     public void setLeftPurple(){
         if(!(left == CStatus.PURPLE)) {
@@ -544,4 +548,6 @@ public class CompStatusSubsystem implements Subsystem {
             .setIsDone(() -> delay.done()) // Returns if the command has finished
             .requires()
             .setInterruptible(false);
+
+
 }

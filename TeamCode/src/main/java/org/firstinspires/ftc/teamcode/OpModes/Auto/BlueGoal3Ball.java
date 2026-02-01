@@ -18,7 +18,7 @@ import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 
-@Autonomous
+@Autonomous (group = "Blue Goal", preselectTeleOp = "BlueTeleOp")
 public class BlueGoal3Ball extends AutoBase {
     Path DriveToScorePreload, DriveToPickUp1, DrivePickUp1, DriveToScore1, DriveToPickUp2, DrivePickUp2, DriveToScore2, DriveToPickUp3, DrivePickUp3, DriveToScore3, DriveEndDrive;
     Pose startingPos = new Pose(26.75, 130, Math.toRadians(141));
@@ -63,7 +63,7 @@ public class BlueGoal3Ball extends AutoBase {
         Command StopLauncher = new LambdaCommand().setStart(()->{RunLaunchPre.cancel();
         }).setIsDone(()->{ return true;});
         Command LaunchWOSort = new SequentialGroup(new ForceLaunchAuto(), StopLauncher);
-        PedroComponent.follower().setPose(new Pose(26.75, 130, Math.toRadians(141)));
+        PedroComponent.follower().setPose(startingPos);
         PedroComponent.follower().setMaxPower(maxPower);
         PedroComponent.follower().update();
         buildPaths();

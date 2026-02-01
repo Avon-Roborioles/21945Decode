@@ -35,7 +35,7 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 import dev.nextftc.hardware.driving.DriverControlledCommand;
 
 @TeleOp
-//@Disabled
+@Disabled
 @Configurable
 public class TestOPMode extends NextFTCOpMode {
     public static long pwmTarget = 1000;

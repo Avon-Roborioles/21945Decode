@@ -52,6 +52,11 @@ public class RunTurretAndLauncherFromHeading extends Command {
 
         CompTurretSubsystem.INSTANCE.turnTurretToFieldAngle(turretFieldAngleRad);
         CompLauncherSubsystem.INSTANCE.RunLauncherFromDistance(distanceToGoal);
+        if(CompTurretSubsystem.INSTANCE.TurretHappy() && CompLauncherSubsystem.INSTANCE.LaunchReady()){
+            CompStatusSubsystem.INSTANCE.setPrismGreen();
+        }else {
+            CompStatusSubsystem.INSTANCE.setPrismOrange();
+        }
 //        ActiveOpMode.telemetry().addLine("-------------- RunTurretAndLauncherFromHeading Telemetry: --------------");
 //        ActiveOpMode.telemetry().addData("redAlliance", redAlliance);
 //        ActiveOpMode.telemetry().addData("BotPose", botPose);
@@ -67,6 +72,7 @@ public class RunTurretAndLauncherFromHeading extends Command {
 
         CompLauncherSubsystem.INSTANCE.HoodDown().schedule();
         CompLauncherSubsystem.INSTANCE.StopLauncher.schedule();
+        CompStatusSubsystem.INSTANCE.setPrismNorm();
 
 
         // executed when the command ends

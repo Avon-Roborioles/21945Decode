@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode.OpModes.Auto;
-import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
@@ -19,14 +18,14 @@ import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 
-@Autonomous (group = "Blue Goal", preselectTeleOp = "BlueTeleOp")
-public class BlueGoal6Ball extends AutoBase {
+@Autonomous (group = "Red Goal", preselectTeleOp = "RedTeleOp")
+public class RedGoal6Ball extends AutoBase {
     Path DriveToScorePreload, DriveToPickUp1, DrivePickUp1, DriveToScore1, DriveToPickUp2, DrivePickUp2, DriveToScore2, DriveToPickUp3, DrivePickUp3, DriveToScore3, DriveEndDrive;
-    Pose startingPos = new Pose(26.75, 130, Math.toRadians(141));
-    Pose scorePreload = new Pose(54, 114, Math.toRadians(270));
-    Pose toPickUp1 = new Pose(46, 84, Math.toRadians(180));
-    Pose pickUp1 = new Pose(21, 78, Math.toRadians(170));
-    Pose toScore1 = new Pose(56, 110, Math.toRadians(270));
+    Pose startingPos = new Pose(26.75, 130, Math.toRadians(141)).mirror();
+    Pose scorePreload = new Pose(54, 114, Math.toRadians(270)).mirror();
+    Pose toPickUp1 = new Pose(46, 84, Math.toRadians(180)).mirror();
+    Pose pickUp1 = new Pose(21, 78, Math.toRadians(170)).mirror();
+    Pose toScore1 = new Pose(56, 110, Math.toRadians(270)).mirror();
 
     double maxPower = 1;
 
@@ -71,8 +70,8 @@ public class BlueGoal6Ball extends AutoBase {
     @Override public void onStartButtonPressed (){
 
 //
-        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(false, new Pose(scorePreload.getX()+4, scorePreload.getY()+4, Math.toRadians(290)));
-        Command RunLaunch1 = new RunTurretAndLauncherFromPoseAuto(false, toScore1);
+        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(true, new Pose(scorePreload.getX()-4, scorePreload.getY()-4, Math.toRadians(250)));
+        Command RunLaunch1 = new RunTurretAndLauncherFromPoseAuto(true, toScore1);
 
         Command Intake1 = new AutoIntake(6000);
         Command Intake2 = new AutoIntake(5000);

@@ -64,7 +64,11 @@ public class RunTurretAndLauncherFromPoseAuto extends Command {
         ActiveOpMode.telemetry().addData("BotPose", botPose);
         ActiveOpMode.telemetry().addData("distanceToGoal", distanceToGoal);
         ActiveOpMode.telemetry().addData("turretFieldAngleDeg", Math.toDegrees(turretFieldAngleRad));
-
+        if(CompTurretSubsystem.INSTANCE.TurretHappy() && CompLauncherSubsystem.INSTANCE.LaunchReady()){
+            CompStatusSubsystem.INSTANCE.setPrismGreen();
+        }else {
+            CompStatusSubsystem.INSTANCE.setPrismOrange();
+        }
 
         // executed on every update of the command
     }
@@ -74,6 +78,7 @@ public class RunTurretAndLauncherFromPoseAuto extends Command {
 
         CompLauncherSubsystem.INSTANCE.HoodDown().schedule();
         CompLauncherSubsystem.INSTANCE.StopLauncher.schedule();
+        CompStatusSubsystem.INSTANCE.setPrismNorm();
 
 
         // executed when the command ends

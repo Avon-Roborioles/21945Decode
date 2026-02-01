@@ -1,29 +1,24 @@
 package org.firstinspires.ftc.teamcode.OpModes.Auto;
-import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromPoseAuto;
-import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntake;
-import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntakeCheck;
 import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunchAutoSlow;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
-import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
-import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 
-@Autonomous (group = "Blue Back", preselectTeleOp = "BlueTeleOp")
-public class BlueBack3Ball extends AutoBase {
+@Autonomous (group = "Red Back", preselectTeleOp = "RedTeleOp")
+public class RedBack3Ball extends AutoBase {
     Path EndDrive;
-    Pose startingPos = new Pose(56.65, 10.25, Math.toRadians(270));
-    Pose endPos = new Pose(30, 12, Math.toRadians(270));
+    Pose startingPos = new Pose(56.65, 10.25, Math.toRadians(270)).mirror();
+    Pose endPos = new Pose(30, 12, Math.toRadians(270)).mirror();
     double maxPower = 1;
 
 
@@ -67,7 +62,7 @@ public class BlueBack3Ball extends AutoBase {
     @Override public void onStartButtonPressed (){
 
 //
-        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(false, new Pose(startingPos.getX()+5, startingPos.getY()+5, startingPos.getHeading()+Math.toRadians(1)));
+        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(true, new Pose(startingPos.getX()-5, startingPos.getY()-5, startingPos.getHeading()+Math.toRadians(-1)));
 
         Command StopLauncher = new LambdaCommand().setStart(()->{RunLaunchPre.cancel();
         }).setIsDone(()->{ return true;});

@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromPoseAuto;
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntake;
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntakeCheck;
-import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunchAuto;
 import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunchAutoSlow;
 
 import dev.nextftc.core.commands.Command;
@@ -20,23 +19,23 @@ import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 
-@Autonomous (group = "Blue Back", preselectTeleOp = "BlueTeleOp")
-public class BlueBack9Ball extends AutoBase {
+@Autonomous (group = "Red Back", preselectTeleOp = "RedTeleOp")
+public class RedBack9Ball extends AutoBase {
     Path DriveToScorePreload, DriveToPickUp1, DrivePickUp1, DriveToScore1, DriveToPickUp2, DrivePickUp2, DriveToScore2, EndDrive;
 
-    Pose startingPos = new Pose(56.65, 10.25, Math.toRadians(270));
-    Pose scorePreload = new Pose(58, 26, Math.toRadians(270));
-    Pose toPickUp1 = new Pose(44, 35.5, Math.toRadians(180));
-    Pose toPickUp1Cp = new Pose(64, 37);
-    Pose pickUp1 = new Pose(18, 35.4, Math.toRadians(180));
-    Pose toScore1 = new Pose(58, 26, Math.toRadians(270));
-    Pose toScore1Cp = new Pose(59, 40);
-    Pose toPickUp2 = new Pose( 44, 60, Math.toRadians(180));
-    Pose toPickUp2CP = new Pose(57, 58);
-    Pose pickUp2 = new Pose(18, 60, Math.toRadians(180));
-    Pose toScore2 = new Pose(58, 26, Math.toRadians(270));
-    Pose toScore2CP = new Pose(59, 66);
-    Pose endPos = new Pose(60, 38, Math.toRadians(270));
+    Pose startingPos = new Pose(56.65, 10.25, Math.toRadians(270)).mirror();
+    Pose scorePreload = new Pose(58, 26, Math.toRadians(270)).mirror();
+    Pose toPickUp1 = new Pose(44, 35.5, Math.toRadians(180)).mirror();
+    Pose toPickUp1Cp = new Pose(64, 37).mirror();
+    Pose pickUp1 = new Pose(18, 35.4, Math.toRadians(180)).mirror();
+    Pose toScore1 = new Pose(58, 26, Math.toRadians(270)).mirror();
+    Pose toScore1Cp = new Pose(59, 40).mirror();
+    Pose toPickUp2 = new Pose( 44, 60, Math.toRadians(180)).mirror();
+    Pose toPickUp2CP = new Pose(57, 58).mirror();
+    Pose pickUp2 = new Pose(18, 60, Math.toRadians(180)).mirror();
+    Pose toScore2 = new Pose(58, 26, Math.toRadians(270)).mirror();
+    Pose toScore2CP = new Pose(59, 66).mirror();
+    Pose endPos = new Pose(60, 38, Math.toRadians(270)).mirror();
     double maxPower = 1;
 
 
@@ -107,9 +106,9 @@ public class BlueBack9Ball extends AutoBase {
     @Override public void onStartButtonPressed (){
 
 //
-        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(false, new Pose(scorePreload.getX(), scorePreload.getY(), scorePreload.getHeading()));
-        Command RunLaunch1 = new RunTurretAndLauncherFromPoseAuto(false,new Pose(toScore1.getX(), toScore1.getY(), toScore1.getHeading()));
-        Command RunLaunch2 = new RunTurretAndLauncherFromPoseAuto(false, new Pose(toScore2.getX(), toScore2.getY(), toScore2.getHeading()));
+        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(true, new Pose(scorePreload.getX(), scorePreload.getY(), scorePreload.getHeading()));
+        Command RunLaunch1 = new RunTurretAndLauncherFromPoseAuto(true,new Pose(toScore1.getX(), toScore1.getY(), toScore1.getHeading()));
+        Command RunLaunch2 = new RunTurretAndLauncherFromPoseAuto(true, new Pose(toScore2.getX(), toScore2.getY(), toScore2.getHeading()));
 
         Command Intake1 = new AutoIntake(4000);
         Command Intake2 = new AutoIntake(4000);

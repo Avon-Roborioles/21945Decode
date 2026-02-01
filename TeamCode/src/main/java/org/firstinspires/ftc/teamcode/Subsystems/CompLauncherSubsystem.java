@@ -188,6 +188,9 @@ public class CompLauncherSubsystem implements Subsystem {
     private double distanceToHoodAngle(double distance){
         return   (Math.pow(distance, 2) * -0.0027) + (distance * 0.8495) - 21.433;
     }
+    public boolean LaunchReady(){
+        return Math.abs(launcherControlSystem.getLastMeasurement().getVelocity() - launcherControlSystem.getGoal().getVelocity()) < 60;
+    }
 
     public void RunLauncherFromDistance(double distance){
 //        ActiveOpMode.telemetry().addLine("-------------- For Nick: --------------");
@@ -251,6 +254,7 @@ public class CompLauncherSubsystem implements Subsystem {
         ActiveOpMode.telemetry().addData("Hood Angle", getServoAngle());
         ActiveOpMode.telemetry().addData("Hood Angle Target", hoodAngleTarget);
         ActiveOpMode.telemetry().addData("Hood PWM", hoodServo.getPosition());
+        ActiveOpMode.telemetry().addData("Launch Happy", LaunchReady());
 
     }
 

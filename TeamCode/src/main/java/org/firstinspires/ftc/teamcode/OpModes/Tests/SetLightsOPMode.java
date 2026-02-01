@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Utility.Prism.GoBildaPrismDriver;
 import org.firstinspires.ftc.teamcode.Utility.Prism.PrismAnimations;
 @TeleOp(name="Set Lights", group="Setup")
-//@Disabled
+@Disabled
 @Configurable
 public class SetLightsOPMode extends LinearOpMode {
     public static long pwmTarget = 1000;
