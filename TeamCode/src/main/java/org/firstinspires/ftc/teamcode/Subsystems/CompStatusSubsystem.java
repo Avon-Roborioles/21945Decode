@@ -207,6 +207,7 @@ public class CompStatusSubsystem implements Subsystem {
         prismPwm.setPwmRange(new PwmControl.PwmRange(500,2500));
         controlHubVoltageSensor = ActiveOpMode.hardwareMap().get(VoltageSensor.class, "Control Hub");
         buildAnimations();
+        buildAnimations();
         prism.setStripLength(36);
         prism.enableDefaultBootArtboard(true);
         prism.setDefaultBootArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_0);
@@ -362,7 +363,7 @@ public class CompStatusSubsystem implements Subsystem {
 
     }
     public void setPrismNorm(){
-        setPrismToPWM(501);
+        setPrismToPWM(503);
 
     }
 
@@ -381,7 +382,7 @@ public class CompStatusSubsystem implements Subsystem {
     public void setLeftError(){
         if(!(left == CStatus.ERROR)) {
             left = CStatus.ERROR;
-            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0, errorLeft);
+            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0, errorLeft);
         }
     }
 

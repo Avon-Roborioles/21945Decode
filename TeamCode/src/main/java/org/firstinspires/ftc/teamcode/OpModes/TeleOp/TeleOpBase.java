@@ -126,7 +126,7 @@ public abstract class TeleOpBase extends Storage {
         Gamepads.gamepad1().leftBumper().whenBecomesTrue(intakeToSorter);
         Gamepads.gamepad1().rightBumper().whenTrue(CompIntakeSubsystem.INSTANCE.Outtake).whenBecomesFalse(CompIntakeSubsystem.INSTANCE.StopIntake);
         Gamepads.gamepad1().options();
-        Gamepads.gamepad1().share();
+        Gamepads.gamepad1().share().whenBecomesTrue(new LambdaCommand().setStart(() -> {CompStatusSubsystem.INSTANCE.setPrismNorm();}));
         Gamepads.gamepad1().ps().whenBecomesTrue(new LambdaCommand().setStart(() -> {PedroComponent.follower().setPose(new Pose(PedroComponent.follower().getPose().getX(),PedroComponent.follower().getPose().getY(),(3*Math.PI)/2));}).setIsDone(() -> true));;
         Gamepads.gamepad1().touchpad().whenBecomesTrue(eStop);
 
@@ -137,7 +137,7 @@ public abstract class TeleOpBase extends Storage {
         Gamepads.gamepad2().cross().toggleOnBecomesTrue().whenBecomesTrue(runTurretAndLauncherFromHeading).whenBecomesFalse(new LambdaCommand().setStart(() -> {runTurretAndLauncherFromHeading.cancel();runTurretFromJoystick.schedule();}).setIsDone(() -> true));;
         Gamepads.gamepad2().dpadUp().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.SpeedUp);
         Gamepads.gamepad2().dpadDown().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.SpeedDown);
-        Gamepads.gamepad2().dpadLeft().toggleOnBecomesTrue().whenBecomesTrue(new InstantCommand(()->{ReLocalize.schedule();}));
+//        Gamepads.gamepad2().dpadLeft().toggleOnBecomesTrue().whenBecomesTrue(new InstantCommand(()->{ReLocalize.schedule();}));
         Gamepads.gamepad2().dpadRight();
         Gamepads.gamepad2().leftStickX();
         Gamepads.gamepad2().leftStickX();
