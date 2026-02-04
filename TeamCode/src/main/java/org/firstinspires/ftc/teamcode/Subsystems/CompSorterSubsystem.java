@@ -21,9 +21,9 @@ public class CompSorterSubsystem implements Subsystem {
 
     private double hugPos = 0.075;
 
-    private double lDown = 0.02;
-    private double rDown = 0.035;
-    private double cDown = 0.035;
+    private double lDown = 0.025;
+    private double rDown = 0.04;
+    private double cDown = 0.045;
     private double lUp = lDown+0.5;
     private double rUp = rDown+ 0.5;
     private double cUp = cDown+ 0.5;

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
+import com.pedropathing.control.LowPassFilter;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Utility.TrapezoidProfileElement;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
+import dev.nextftc.control.builder.FilterBuilder;
 import dev.nextftc.control.feedback.PIDCoefficients;
 import dev.nextftc.control.feedforward.BasicFeedforwardParameters;
 import dev.nextftc.control.interpolators.InterpolatorElement;
@@ -20,6 +22,7 @@ import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.ActiveOpMode;
+import dev.nextftc.functionalInterfaces.Configurator;
 import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.impl.VoltageCompensatingMotor;
 @Configurable
@@ -170,12 +173,16 @@ public class CompTurretSubsystem implements Subsystem {
 
 
 
+
+
     @Override
     public void initialize() {
         turretMotorEx.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretControlSystem = ControlSystem.builder()
                 .posSquID(coefficients)
                 .basicFF(parameters)
+//                .posFilter()
+
                 .build();
         Octo = ActiveOpMode.hardwareMap().get(OctoQuadFWv3.class, "OctoQuad");
         Octo.resetEverything();
