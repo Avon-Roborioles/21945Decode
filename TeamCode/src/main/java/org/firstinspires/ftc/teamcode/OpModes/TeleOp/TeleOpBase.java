@@ -92,7 +92,7 @@ public abstract class TeleOpBase extends Storage {
         Command launchWithSort = new LaunchWithSort();
         Command intakeToSorter = new IntakeToSorterCommand();
         Command runTurretAndLauncherFromHeading = new RunTurretAndLauncherFromHeading(RedAlliance());
-        Command runTurretFromJoystick = new TurretJoystickCommand(Gamepads.gamepad2().rightStickX());
+        Command runTurretFromJoystick = new TurretJoystickCommand(Gamepads.gamepad2().rightStickX(), Gamepads.gamepad2().leftStickX());
         Command forceLaunch = new ForceLaunch();
 
         Command ReLocalize = new ReLocalizeWithLLCommand();

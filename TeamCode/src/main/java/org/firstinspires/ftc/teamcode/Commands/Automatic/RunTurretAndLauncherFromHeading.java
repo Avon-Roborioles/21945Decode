@@ -18,12 +18,14 @@ public class RunTurretAndLauncherFromHeading extends Command {
     boolean redAlliance;
     double turretFieldAngleRad;
 
+
     static Pose redGoal = new Pose(144,144);
     static Pose RedGoalAngle = new Pose(133, 133);
     static Pose blueGoal = new Pose(0,144);
     static Pose BlueGoalAngle = new Pose(8, 134);
     Pose goal;
     Pose goalAngle;
+    double shotTime = 01;
 
     public RunTurretAndLauncherFromHeading(boolean redAlliance) {
         this.redAlliance = redAlliance;
@@ -47,8 +49,10 @@ public class RunTurretAndLauncherFromHeading extends Command {
     @Override
     public void update() {
         botPose = PedroComponent.follower().getPose();
-        distanceToGoal = Math.hypot((goal.getX()- botPose.getX()), (goal.getY()-botPose.getY()));
-        turretFieldAngleRad = Math.atan2((goalAngle.getY()- botPose.getY()), (goalAngle.getX()- botPose.getX()) + PedroComponent.follower().getAngularVelocity()* CompStatusSubsystem.INSTANCE.getLoopTimeSeconds());
+        PedroComponent.follower().getVelocity().getXComponent();
+        PedroComponent.follower().getVelocity().getYComponent();
+        distanceToGoal = Math.hypot((goal.getX()- botPose.getX()-PedroComponent.follower().getVelocity().getXComponent()*shotTime), (goal.getY()-botPose.getY() - PedroComponent.follower().getVelocity().getYComponent()*shotTime));
+        turretFieldAngleRad = Math.atan2((goalAngle.getY()- botPose.getY() - PedroComponent.follower().getVelocity().getYComponent()*shotTime), (goalAngle.getX()- botPose.getX() - PedroComponent.follower().getVelocity().getXComponent()*shotTime) + PedroComponent.follower().getAngularVelocity()* CompStatusSubsystem.INSTANCE.getLoopTimeSeconds());
 
         CompTurretSubsystem.INSTANCE.turnTurretToFieldAngle(turretFieldAngleRad);
         CompLauncherSubsystem.INSTANCE.RunLauncherFromDistance(distanceToGoal);

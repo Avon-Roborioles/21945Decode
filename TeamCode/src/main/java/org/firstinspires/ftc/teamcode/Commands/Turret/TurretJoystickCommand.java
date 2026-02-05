@@ -6,10 +6,11 @@ import dev.nextftc.bindings.Range;
 import dev.nextftc.core.commands.Command;
 
 public class TurretJoystickCommand extends Command {
-    Range input;
+    Range input, input2;
 
-    public TurretJoystickCommand(Range input) {
+    public TurretJoystickCommand(Range input, Range input2 ) {
         this.input = input;
+        this.input2 = input2;
         requires(CompTurretSubsystem.INSTANCE);
         setInterruptible(true);
     }
@@ -26,7 +27,7 @@ public class TurretJoystickCommand extends Command {
 
     @Override
     public void update() {
-        CompTurretSubsystem.INSTANCE.moveTurretJoystick(input.get());
+        CompTurretSubsystem.INSTANCE.moveTurretJoystick(input.get(), input2.get());
         // executed on every update of the command
     }
 

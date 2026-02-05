@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
-import com.pedropathing.control.LowPassFilter;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 
@@ -13,7 +12,6 @@ import org.firstinspires.ftc.teamcode.Utility.TrapezoidProfileElement;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
-import dev.nextftc.control.builder.FilterBuilder;
 import dev.nextftc.control.feedback.PIDCoefficients;
 import dev.nextftc.control.feedforward.BasicFeedforwardParameters;
 import dev.nextftc.control.interpolators.InterpolatorElement;
@@ -22,7 +20,6 @@ import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.ActiveOpMode;
-import dev.nextftc.functionalInterfaces.Configurator;
 import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.impl.VoltageCompensatingMotor;
 @Configurable
@@ -43,19 +40,38 @@ public class CompTurretSubsystem implements Subsystem {
     double rightLimit = 130;
     boolean turretOn = true;
 
-    public static double kp=0.008;
+    public static double kp=0.005;
     public static double kI=0.00000000000;
-    public static double kD = 0.02;
-    public static double kps=0.004;
-    public static double kIs=0;//0.00000000004;
-    public static double kDs = 0.042;
-    public static double kF = 0.1;
+    public static double kD = 0.005;
+    public static double kF = 0;
+    public static double threshold = 0;
+    public static double kS = -0.02;
+    public static double kSM = -0.02;
+    public static double kSFP = -0.02;
+    public static double kSFN = -0.02;
+    public static double negThres = -30;
+    public static double posThres = 30;
+
+    public static double thresh1 = -114;
+    public static double kS1 = -0.14;//-end to -114
+    public static double thresh2 = -80;
+    public static double kS2 = -0.12;//-114 to -80
+    public static double thresh3 = -15;
+    public static double kS3 = -0.09;//-80 to -15
+    public static double thresh4 = 20;
+    public static double kS4 = -0.09;//-15 to 20
+    public static double thresh5 = 40;
+    public static double kS5 = -0.15;
+
+
+
+
 
     private PIDCoefficients coefficients = new PIDCoefficients(kp,kI,kD);
     private BasicFeedforwardParameters parameters = new BasicFeedforwardParameters(0,0,kF);
 
     double lastSetPoint = 0;
-    double kv = 0.09;
+    public static double kv = 0.0;
 
     private CompTurretSubsystem() {}
 
@@ -67,6 +83,7 @@ public class CompTurretSubsystem implements Subsystem {
 
 
     private ControlSystem turretControlSystem;
+    private ControlSystem smallTurretSystem;
 
     public double getRotatePositionRaw(){
         return turretMotor.getCurrentPosition();
@@ -160,8 +177,11 @@ public class CompTurretSubsystem implements Subsystem {
 
     }
 
-    public void moveTurretJoystick(double joystickValue){
+    public void moveTurretJoystick(double joystickValue, double joystick2){
         turretTargetPosDeg += joystickValue *2.5;
+        if (Math.abs(joystick2) > 0.1){
+            turretTargetPosDeg = calculatePos()+ joystick2 * 10;
+        }
         lastSetPoint = turretTargetPosDeg;
     }
 
@@ -184,6 +204,8 @@ public class CompTurretSubsystem implements Subsystem {
 //                .posFilter()
 
                 .build();
+
+
         Octo = ActiveOpMode.hardwareMap().get(OctoQuadFWv3.class, "OctoQuad");
         Octo.resetEverything();
         interpolator.reset();
@@ -212,6 +234,7 @@ public class CompTurretSubsystem implements Subsystem {
     public void periodic() {
         calculatePos();
 
+
         if(!ActiveOpMode.opModeInInit()){
             //400 Degree Flip
             if(turretTargetPosDeg>200){
@@ -226,35 +249,39 @@ public class CompTurretSubsystem implements Subsystem {
             }else if(turretTargetPosDeg>rightLimit){
                 turretTargetPosDeg= rightLimit;
             }
-//            if(turretTargetPosDeg>100){
-//                turretTargetPosDeg= (-160 + (turretTargetPosDeg-200));
-//            }else if(turretTargetPosDeg<-200){
-//                turretTargetPosDeg= ( 160 + (turretTargetPosDeg+200));
-//            }
-
             turretControlSystem.setGoal(new KineticState(turretTargetPosDeg));
-            power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)) + ( kv * (turretTargetPosDeg - lastSetPoint));
-            if ((Math.abs(power) > 0.1) && turretOn){
-                turretMotor.setPower(power*maxPower);
-            }else{
-                turretMotor.setPower(0);
-            }
-        }else{
-            turretTargetPosDeg = turretPos;
-        }
-        getTurretTelemetryAdv();
-        lastSetPoint = turretTargetPosDeg;
-        if (Math.abs(turretPos- turretTargetPosDeg) <30){
-            coefficients.kD=kDs;
-            coefficients.kI=kIs;//nick was here
-            coefficients.kP=kps;
-            parameters.kS=kF;
-        }else{
             coefficients.kD=kD;
             coefficients.kI=kI;
             coefficients.kP=kp;
             parameters.kS=kF;
+
+            
+            if (turretPos < thresh1){
+                kS = kS1;
+            }else if (turretPos< thresh2){
+                kS = kS2;
+            }else if(turretPos< thresh3){
+                kS = kS3;
+            }else if(turretPos< thresh4){
+                kS = kS4;
+            }else if (turretPos> thresh5){
+                kS = kS5;
+            }
+//            power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)) + ( kv * (turretTargetPosDeg - lastSetPoint)) + Math.signum(turretPos-turretTargetPosDeg)* kS;
+            power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)) ;
+            power += Math.signum(turretPos-turretTargetPosDeg)* kS;
+
+            if (turretOn){
+                turretMotor.setPower(power*maxPower );
+            }else{
+                turretMotor.setPower(0);
+            }
+        }else{
+            turretTargetPosDeg = calculatePos();
         }
+        getTurretTelemetryAdv();
+        lastSetPoint = turretTargetPosDeg;
+
         // periodic logic (runs every loop)
     }
     public void getTurretTelemetryAdv(){
