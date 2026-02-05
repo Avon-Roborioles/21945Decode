@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Commands.Automatic;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.geometry.Pose;
 
 import org.firstinspires.ftc.teamcode.Subsystems.CompLauncherSubsystem;
@@ -10,7 +11,7 @@ import dev.nextftc.core.commands.Command;
 import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.ActiveOpMode;
 
-
+@Configurable
 public class RunTurretAndLauncherFromHeading extends Command {
 
     Pose botPose;
@@ -20,12 +21,12 @@ public class RunTurretAndLauncherFromHeading extends Command {
 
 
     static Pose redGoal = new Pose(144,144);
-    static Pose RedGoalAngle = new Pose(133, 133);
+    static Pose RedGoalAngle = new Pose(136, 134);
     static Pose blueGoal = new Pose(0,144);
     static Pose BlueGoalAngle = new Pose(8, 134);
     Pose goal;
     Pose goalAngle;
-    double shotTime = 01;
+    public static double shotTime = 0.85;
 
     public RunTurretAndLauncherFromHeading(boolean redAlliance) {
         this.redAlliance = redAlliance;

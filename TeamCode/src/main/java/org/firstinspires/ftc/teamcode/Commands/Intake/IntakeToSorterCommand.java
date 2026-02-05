@@ -56,7 +56,7 @@ public class IntakeToSorterCommand extends Command {
                 step = intakeSeq.CheckForFull;
                 break;
             case CheckForFull:
-                if (CompSorterSubsystem.INSTANCE.sorterFull()) {
+                if (CompSorterSubsystem.INSTANCE.sorterFull() || CompSorterSubsystem.INSTANCE.sorterFullDumb()) {
                     step = intakeSeq.Hug;
                 }
                 break;

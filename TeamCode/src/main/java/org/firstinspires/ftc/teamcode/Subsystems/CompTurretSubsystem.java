@@ -40,28 +40,27 @@ public class CompTurretSubsystem implements Subsystem {
     double rightLimit = 130;
     boolean turretOn = true;
 
-    public static double kp=0.005;
+    public static double kp=0.002;
     public static double kI=0.00000000000;
-    public static double kD = 0.005;
+    public static double kD = 0.0015;
     public static double kF = 0;
-    public static double threshold = 0;
     public static double kS = -0.02;
-    public static double kSM = -0.02;
-    public static double kSFP = -0.02;
-    public static double kSFN = -0.02;
-    public static double negThres = -30;
-    public static double posThres = 30;
 
     public static double thresh1 = -114;
-    public static double kS1 = -0.14;//-end to -114
+    public static double kS1 = -0.1;//-end to -114
     public static double thresh2 = -80;
-    public static double kS2 = -0.12;//-114 to -80
+    public static double kS2 = -0.05;//-114 to -80
     public static double thresh3 = -15;
-    public static double kS3 = -0.09;//-80 to -15
+    public static double kS3 = -0.075;//-80 to -15
     public static double thresh4 = 20;
-    public static double kS4 = -0.09;//-15 to 20
-    public static double thresh5 = 40;
-    public static double kS5 = -0.15;
+    public static double kS4 = -0.04;//-15 to 20
+    public static double thresh5 = 35;
+    public static double kS5 = -0.09;
+    public static double thresh6 = 85;
+    public static double kS6 = -0.12;
+    public static double kS7 = -0.17;
+
+
 
 
 
@@ -264,8 +263,12 @@ public class CompTurretSubsystem implements Subsystem {
                 kS = kS3;
             }else if(turretPos< thresh4){
                 kS = kS4;
-            }else if (turretPos> thresh5){
+            }else if (turretPos<  thresh5){
                 kS = kS5;
+            }else if (turretPos < thresh6){
+                kS = kS6;
+            }else{
+                kS = kS7;
             }
 //            power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)) + ( kv * (turretTargetPosDeg - lastSetPoint)) + Math.signum(turretPos-turretTargetPosDeg)* kS;
             power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)) ;
