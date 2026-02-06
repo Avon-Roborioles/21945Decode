@@ -43,6 +43,7 @@ public class AutoIntake extends Command {
         step =intakeSeq.Intake;
 
         CompSorterSubsystem.INSTANCE.resetSorter();
+        CompIntakeSubsystem.INSTANCE.intake();
 
         // executed when the command begins
     }

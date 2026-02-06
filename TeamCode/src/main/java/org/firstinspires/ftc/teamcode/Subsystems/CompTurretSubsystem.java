@@ -55,10 +55,10 @@ public class CompTurretSubsystem implements Subsystem {
     public static double thresh4 = 20;
     public static double kS4 = -0.04;//-15 to 20
     public static double thresh5 = 35;
-    public static double kS5 = -0.09;
+    public static double kS5 = -0.09;//20 to 35
     public static double thresh6 = 85;
-    public static double kS6 = -0.12;
-    public static double kS7 = -0.17;
+    public static double kS6 = -0.12;//35 to 85
+    public static double kS7 = -0.17;//85 to end
 
 
 
