@@ -37,6 +37,9 @@ public class CompSorterSubsystem implements Subsystem {
     private NormalizedRGBA leftColor;
     private NormalizedRGBA centerColor;
     private NormalizedRGBA rightColor;
+    private boolean leftDetect = false;
+    private boolean centerDetect = false;
+    private boolean rightDetect = false;
 
     Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
     Timing.Timer reset = new Timing.Timer(200, TimeUnit.MILLISECONDS);
@@ -198,20 +201,24 @@ public class CompSorterSubsystem implements Subsystem {
             .setInterruptible(false);
     // put hardware, commands, etc here
     public boolean leftDetected(){
-        return (sortCSL.getDistance(DistanceUnit.MM)<70 );
+        leftDetect = sortCSL.getDistance(DistanceUnit.MM)<70;
+        return leftDetect;
     }
     public boolean leftDetectedDumb(){
+
         return (sortCSL.getNormalizedColors().alpha > 0.64);
     }
 
     public boolean centerDetected(){
-        return (sortCSC.getDistance(DistanceUnit.MM)<80 );
+        centerDetect = sortCSC.getDistance(DistanceUnit.MM)<80;
+        return centerDetect;
     }
     public boolean centerDetectedDumb(){
         return (sortCSC.getNormalizedColors().alpha > 0.113);
     }
     public boolean rightDetected(){
-        return (sortCSR.getDistance(DistanceUnit.MM)<42);
+        rightDetect = sortCSR.getDistance(DistanceUnit.MM)<42;
+        return rightDetect;
     }
     public boolean rightDetectedDumb(){
         return (sortCSR.getNormalizedColors().alpha > 0.190);
@@ -295,7 +302,38 @@ public class CompSorterSubsystem implements Subsystem {
 
     }
     public boolean sorterFull(){
-        return (leftDetected()) && (centerDetected()) && (rightDetected());
+        leftDetected();
+        rightDetected();
+        centerDetected();
+        if (!leftDetect && !centerDetect && !rightDetect){
+            CompStatusSubsystem.INSTANCE.setPrismOff();
+
+        }else if(leftDetect && !centerDetect && !rightDetect){
+            CompStatusSubsystem.INSTANCE.setPrismLeftOn();
+
+        }else if(!leftDetect && centerDetect && !rightDetect){
+            CompStatusSubsystem.INSTANCE.setPrismCenterOn();
+
+        }else if(!leftDetect && !centerDetect && rightDetect){
+            CompStatusSubsystem.INSTANCE.setPrismRightOn();
+
+        }else if(leftDetect && centerDetect && !rightDetect){
+            CompStatusSubsystem.INSTANCE.setPrismLeftAndCenterOn();
+
+        }else if(!leftDetect && centerDetect && rightDetect){
+            CompStatusSubsystem.INSTANCE.setPrismRightAndCenterOn();
+
+        }else if(leftDetect && !centerDetect && rightDetect){
+            CompStatusSubsystem.INSTANCE.setPrismLeftAndRightOn();
+
+        }else if(leftDetect && centerDetect && rightDetect){
+            CompStatusSubsystem.INSTANCE.setPrismLeftAndRightAndCenterOn();
+
+        }
+
+
+
+        return (leftDetect) && (rightDetect) && (centerDetect);
     }
     public boolean sorterFullDumb(){
         return (leftDetectedDumb() && centerDetectedDumb() && rightDetectedDumb());

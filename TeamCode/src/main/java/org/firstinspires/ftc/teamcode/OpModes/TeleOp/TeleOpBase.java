@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.Pose;
+import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
 
 import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromHeading;
 import org.firstinspires.ftc.teamcode.Commands.HumanPlayerReset;
@@ -38,6 +39,7 @@ import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.extensions.pedro.PedroDriverControlled;
 import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.ftc.Gamepads;
+import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 import dev.nextftc.hardware.driving.DriverControlledCommand;
 
@@ -50,6 +52,7 @@ public abstract class TeleOpBase extends Storage {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
     {
+
         addComponents(
                 new SubsystemComponent(CompLauncherSubsystem.INSTANCE, CompIntakeSubsystem.INSTANCE, CompSorterSubsystem.INSTANCE, CompPTOSubsystem.INSTANCE, CompTurretSubsystem.INSTANCE, CompVisionSubsystem.INSTANCE, CompStatusSubsystem.INSTANCE, LauncherSubsystemGroup.INSTANCE),
                 new PedroComponent(Constants::createFollower),
@@ -60,6 +63,8 @@ public abstract class TeleOpBase extends Storage {
 
     @Override
     public void onInit() {
+        ActiveOpMode.telemetry().clear();
+
 
         initPoseSelect();
 
@@ -77,7 +82,9 @@ public abstract class TeleOpBase extends Storage {
         runPoseSelect();
         while (!waitTimer.done()&& !ActiveOpMode.isStopRequested()){
             telemetry.update();
+            telemetry.update();
         }
+
 
 
 
@@ -181,7 +188,6 @@ public abstract class TeleOpBase extends Storage {
         CompStatusSubsystem.INSTANCE.prism.clearAllAnimations();
         CompStatusSubsystem.INSTANCE.prism.loadAnimationsFromArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_0);
         telemetry.addLine("Done");
-
 
     }
 }

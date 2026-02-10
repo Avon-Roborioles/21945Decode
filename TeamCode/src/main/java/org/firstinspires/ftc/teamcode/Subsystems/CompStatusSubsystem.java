@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchDevice;
 import com.qualcomm.robotcore.hardware.PWMOutputEx;
@@ -21,10 +22,11 @@ import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
-
+@Configurable
 public class CompStatusSubsystem implements Subsystem {
     public static final CompStatusSubsystem INSTANCE = new CompStatusSubsystem();
     private CompStatusSubsystem() {}
+    public static double pwmTarget = 0;
 
 
     int brightness = 10 ;
@@ -62,6 +64,23 @@ public class CompStatusSubsystem implements Subsystem {
     PrismAnimations.Solid errorMiddleBack = new PrismAnimations.Solid();
     PrismAnimations.Solid errorMiddleFront = new PrismAnimations.Solid();
     PrismAnimations.Solid errorRight = new PrismAnimations.Solid();
+
+    PrismAnimations.Solid leftSL = new PrismAnimations.Solid();
+    PrismAnimations.Solid leftSB = new PrismAnimations.Solid();
+    PrismAnimations.Solid leftSR = new PrismAnimations.Solid();
+    PrismAnimations.Solid leftSF = new PrismAnimations.Solid();
+    PrismAnimations.Solid rightSL = new PrismAnimations.Solid();
+    PrismAnimations.Solid rightSB = new PrismAnimations.Solid();
+    PrismAnimations.Solid rightSR = new PrismAnimations.Solid();
+    PrismAnimations.Solid rightSF = new PrismAnimations.Solid();
+    PrismAnimations.Solid centerSL = new PrismAnimations.Solid();
+    PrismAnimations.Solid centerSB = new PrismAnimations.Solid();
+    PrismAnimations.Solid centerSR = new PrismAnimations.Solid();
+    PrismAnimations.Solid centerSF = new PrismAnimations.Solid();
+
+
+
+
 
     Timing.Timer delay = new Timing.Timer(3000, TimeUnit.MILLISECONDS);
     private enum CStatus{
@@ -194,6 +213,74 @@ public class CompStatusSubsystem implements Subsystem {
         errorMiddleFront.setPrimaryColor(255,128,0);
         errorMiddleFront.setStartIndex(30);
         errorMiddleFront.setStopIndex(36);
+
+        leftSL.setBrightness(brightness);
+        leftSL.setPrimaryColor(0, 225, 0);
+        leftSL.setStartIndex(0);
+        leftSL.setStopIndex(3);
+
+        leftSB.setBrightness(brightness);
+        leftSB.setPrimaryColor(0, 225, 0);
+        leftSB.setStartIndex(12);
+        leftSB.setStopIndex(13);
+
+        leftSR.setBrightness(brightness);
+        leftSR.setPrimaryColor(0, 225, 0);
+        leftSR.setStartIndex(26);
+        leftSR.setStopIndex(29);
+
+        leftSF.setBrightness(brightness);
+        leftSF.setPrimaryColor(0, 225, 0);
+        leftSF.setStartIndex(34);
+        leftSF.setStopIndex(35);
+
+        centerSL.setBrightness(brightness);
+        centerSL.setPrimaryColor(0, 225, 0);
+        centerSL.setStartIndex(4);
+        centerSL.setStopIndex(7);
+
+        centerSB.setBrightness(brightness);
+        centerSB.setPrimaryColor(0, 225, 0);
+        centerSB.setStartIndex(14);
+        centerSB.setStopIndex(15);
+
+        centerSR.setBrightness(brightness);
+        centerSR.setPrimaryColor(0, 225, 0);
+        centerSR.setStartIndex(22);
+        centerSR.setStopIndex(25);
+
+        centerSF.setBrightness(brightness);
+        centerSF.setPrimaryColor(0, 225, 0);
+        centerSF.setStartIndex(32);
+        centerSF.setStopIndex(33);
+
+        rightSL.setBrightness(brightness);
+        rightSL.setPrimaryColor(0, 225, 0);
+        rightSL.setStartIndex(8);
+        rightSL.setStopIndex(11);
+
+        rightSB.setBrightness(brightness);
+        rightSB.setPrimaryColor(0, 225, 0);
+        rightSB.setStartIndex(16);
+        rightSB.setStopIndex(17);
+
+        rightSR.setBrightness(brightness);
+        rightSR.setPrimaryColor(0, 225, 0);
+        rightSR.setStartIndex(18);
+        rightSR.setStopIndex(21);
+
+        rightSF.setBrightness(brightness);
+        rightSF.setPrimaryColor(0, 225, 0);
+        rightSF.setStartIndex(30);
+        rightSF.setStopIndex(31);
+
+
+
+
+
+
+
+
     }
 
 
@@ -207,7 +294,6 @@ public class CompStatusSubsystem implements Subsystem {
         prismPwm.setPwmRange(new PwmControl.PwmRange(500,2500));
         controlHubVoltageSensor = ActiveOpMode.hardwareMap().get(VoltageSensor.class, "Control Hub");
         buildAnimations();
-        buildAnimations();
         prism.setStripLength(36);
         prism.enableDefaultBootArtboard(true);
         prism.setDefaultBootArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_0);
@@ -219,7 +305,88 @@ public class CompStatusSubsystem implements Subsystem {
         purpleSnakes.setDirection(Direction.Forward);
         prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,purpleSnakes);
         prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_0);
+
         currentOBPattern = OBPattern.NULL;
+
+        setUpLights();
+        setPrismNorm();
+
+
+
+
+    }
+    public void setUpLights(){
+//        prism.clearAllAnimations();
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,greenLeft);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,greenRight);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,greenMiddleBack);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,greenMiddleFront);
+//        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_1);
+//
+//        prism.clearAllAnimations();
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,leftSL);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,leftSF);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,leftSB);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,leftSR);
+//        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_2);
+//
+//        prism.clearAllAnimations();
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,rightSL);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,rightSF);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,rightSB);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,rightSR);
+//        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_3);
+
+//        prism.clearAllAnimations();
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,centerSL);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,centerSF);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,centerSB);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,centerSR);
+//        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_4);
+
+//        prism.clearAllAnimations();
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,leftSL);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,leftSF);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,leftSB);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,leftSR);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_4,rightSL);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_5,rightSF);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_6,rightSB);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_7,rightSR);
+//        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_5);
+
+//        prism.clearAllAnimations();
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,centerSL);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,centerSF);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,centerSB);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,centerSR);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_4,rightSL);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_5,rightSF);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_6,rightSB);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_7,rightSR);
+//        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_6);
+//
+//        prism.clearAllAnimations();
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,leftSL);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,leftSF);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,leftSB);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,leftSR);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_4,centerSL);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_5,centerSF);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_6,centerSB);
+//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_7, centerSR);
+//        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_7);
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -249,7 +416,7 @@ public class CompStatusSubsystem implements Subsystem {
         }
         prevTime = curTime;
 
-
+//        setPrismToPWM((long) pwmTarget);
         if(ActiveOpMode.isStarted()){
             beacon.setPosition(0.5);
         }else {
@@ -351,20 +518,45 @@ public class CompStatusSubsystem implements Subsystem {
         }else if(PWM>2500){
             PWM = 2500;
         }
-        prismPwm.setPosition(PWM/2500.0);
+        PWM = PWM-500;
+        prismPwm.setPosition(PWM/2000.0);
 
     }
     public void setPrismOrange(){
-        setPrismToPWM(800);
+        setPrismToPWM(1115);
 
     }
     public void setPrismGreen(){
-        setPrismToPWM(1100);
+        setPrismToPWM(1400);
 
     }
     public void setPrismNorm(){
         setPrismToPWM(503);
 
+    }
+    public void setPrismOff(){
+        setPrismToPWM(1060);
+    }
+    public void setPrismLeftOn(){
+        setPrismToPWM(525);
+    }
+    public void setPrismRightOn(){
+        setPrismToPWM(535);
+    }
+    public void setPrismCenterOn(){
+        setPrismToPWM(545);
+    }
+    public void setPrismLeftAndRightOn(){
+        setPrismToPWM(555);
+    }
+    public void setPrismLeftAndCenterOn(){
+        setPrismToPWM(575);
+    }
+    public void setPrismRightAndCenterOn(){
+        setPrismToPWM(565);
+    }
+    public void setPrismLeftAndRightAndCenterOn(){
+        setPrismToPWM(515);
     }
 
     public void setLeftPurple(){

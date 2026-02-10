@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Utility.Prism.PrismAnimations;
 public class SetLightsOPMode extends LinearOpMode {
     public static long pwmTarget = 1000;
     GoBildaPrismDriver prism;
+    double test = 1;
 
     PrismAnimations.Snakes purpleSnakes = new PrismAnimations.Snakes();
     PrismAnimations.Solid purpleLeft = new PrismAnimations.Solid();
@@ -28,6 +29,10 @@ public class SetLightsOPMode extends LinearOpMode {
     PrismAnimations.Solid offMiddleFront = new PrismAnimations.Solid();
     PrismAnimations.Solid offRight = new PrismAnimations.Solid();
 
+    {
+      test = 3;
+    }
+
     //0 - Purple Snakes
     //1 - PGP
 
@@ -37,6 +42,11 @@ public class SetLightsOPMode extends LinearOpMode {
 
 
         waitForStart();
+        while(opModeIsActive()&&!isStopRequested()){
+            test = 2;
+            telemetry.addData("test", test);
+            telemetry.update();
+        }
 
 
 

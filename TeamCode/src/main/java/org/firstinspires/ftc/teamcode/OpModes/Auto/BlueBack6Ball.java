@@ -83,8 +83,8 @@ public class BlueBack6Ball extends AutoBase {
         DriveToScore2 = new Path(new BezierLine(getToGrab2At2, toScore2));
         DriveToScore2.setLinearHeadingInterpolation(getToGrab2At2.getHeading(), toScore2.getHeading());
 
-        EndDrive = new Path(new BezierLine(toScore2, endPos));
-        EndDrive.setLinearHeadingInterpolation(toScore2.getHeading(), endPos.getHeading());
+        EndDrive = new Path(new BezierLine(toScore1, endPos));
+        EndDrive.setLinearHeadingInterpolation(toScore1.getHeading(), endPos.getHeading());
         EndDrive.setTimeoutConstraint(2000);
 
 
@@ -151,22 +151,22 @@ public class BlueBack6Ball extends AutoBase {
                  ),
                 new Delay(1.5),
                 LaunchWOSort,
-                new SequentialGroup(
-                        new FollowPath(DriveToPickUp2),
-                        new InstantCommand(()->{ PedroComponent.follower().setMaxPower(0.5);})
-                ),
-                new LambdaCommand().setStart(()->{Intake2.start();}).setIsDone(()->{ return true;}),
-                new FollowPath(DrivePickUp2),
-                new Delay(0.25),
-                new FollowPath(DriveBack),
-                new Delay(0.25),
-                new FollowPath(DriveToPickUp2At2),
-                new Delay(0.25),
-                new InstantCommand(()->{ PedroComponent.follower().setMaxPower(1);}),
-                new LambdaCommand().setStart(()->{RunLaunch2.schedule();}).setIsDone(()->{ return true;}),
-                new FollowPath(DriveToScore2),
-                new Delay(0.25),
-                LaunchWOSort,
+//                new SequentialGroup(
+//                        new FollowPath(DriveToPickUp2),
+//                        new InstantCommand(()->{ PedroComponent.follower().setMaxPower(0.5);})
+//                ),
+//                new LambdaCommand().setStart(()->{Intake2.start();}).setIsDone(()->{ return true;}),
+//                new FollowPath(DrivePickUp2),
+//                new Delay(0.25),
+//                new FollowPath(DriveBack),
+//                new Delay(0.25),
+//                new FollowPath(DriveToPickUp2At2),
+//                new Delay(0.25),
+//                new InstantCommand(()->{ PedroComponent.follower().setMaxPower(1);}),
+//                new LambdaCommand().setStart(()->{RunLaunch2.schedule();}).setIsDone(()->{ return true;}),
+//                new FollowPath(DriveToScore2),
+//                new Delay(0.25),
+//                LaunchWOSort,
                 new FollowPath(EndDrive)
 
 

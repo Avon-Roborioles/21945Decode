@@ -20,22 +20,21 @@ import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 
 @Autonomous (group = "Red Goal", preselectTeleOp = "RedTeleOp")
-public class RedGoal12Ball extends AutoBase {
-    Path DriveToScorePreload, DriveToPickUp1, DrivePickUp1, DriveToScore1, DriveToPickUp2, DrivePickUp2, DriveToScore2, DriveToPickUp3, DrivePickUp3, DriveToScore3, DriveDumpGate;
+public class RedGoal12BallOld extends AutoBase {
+    Path DriveToScorePreload, DriveToPickUp1, DrivePickUp1, DriveToScore1, DriveToPickUp2, DrivePickUp2, DriveToScore2, DriveToPickUp3, DrivePickUp3, DriveToScore3, DriveEndDrive;
     Pose startingPos = new Pose(26.75, 130, Math.toRadians(141)).mirror();
     Pose scorePreload = new Pose(54, 114, Math.toRadians(270)).mirror();
     Pose toPickUp1 = new Pose(46, 84, Math.toRadians(180)).mirror();
-    Pose pickUp1 = new Pose(20, 79, Math.toRadians(180)).mirror();
-    Pose dumpGate = new Pose(18, 79, Math.toRadians(180)).mirror();
+    Pose pickUp1 = new Pose(22, 78, Math.toRadians(170)).mirror();
     Pose toScore1 = new Pose(56, 79, Math.toRadians(270)).mirror();
-    Pose toPickUp2 = new Pose( 44, 62, Math.toRadians(180)).mirror();
+    Pose toPickUp2 = new Pose( 44, 60, Math.toRadians(180)).mirror();
     Pose toPickUp2CP = new Pose(57, 58).mirror();
-    Pose pickUp2 = new Pose(18, 60, Math.toRadians(180)).mirror();
+    Pose pickUp2 = new Pose(22, 60, Math.toRadians(180)).mirror();
     Pose toScore2 = new Pose(56, 78, Math.toRadians(270)).mirror();
     Pose toScore2CP = new Pose(51, 61).mirror();
     Pose toPickUp3 = new Pose(44,35.5 , Math.toRadians(180)).mirror();
     Pose toPickUp3CP = new Pose(50, 33).mirror();
-    Pose pickUp3 = new Pose(18, 35.5, Math.toRadians(180)).mirror();
+    Pose pickUp3 = new Pose(22, 35.5, Math.toRadians(180)).mirror();
     Pose toScore3 = new Pose(56,110 , Math.toRadians(270)).mirror();
     Pose toScore3CP = new Pose(50, 38).mirror();
     double maxPower = 1;
@@ -52,8 +51,7 @@ public class RedGoal12Ball extends AutoBase {
     public void buildPaths () {
         DriveToScorePreload = new Path(new BezierLine(startingPos, scorePreload));
         DriveToScorePreload.setLinearHeadingInterpolation(startingPos.getHeading(), scorePreload.getHeading());
-        DriveToScorePreload.setTimeoutConstraint(5000);
-        DriveToScorePreload.setHeadingConstraint(Math.toRadians(1));
+        DriveToScorePreload.setTimeoutConstraint(1000);
 
         DriveToPickUp1 = new Path(new BezierLine(scorePreload, toPickUp1));
         DriveToPickUp1.setLinearHeadingInterpolation(scorePreload.getHeading(), toPickUp1.getHeading());
@@ -63,11 +61,8 @@ public class RedGoal12Ball extends AutoBase {
         DrivePickUp1.setLinearHeadingInterpolation(toPickUp1.getHeading(), pickUp1.getHeading());
         DrivePickUp1.setTimeoutConstraint(1000);
 
-        DriveDumpGate = new Path(new BezierLine(pickUp1, dumpGate));
-        DriveDumpGate.setLinearHeadingInterpolation(pickUp1.getHeading(), dumpGate.getHeading());
-
-        DriveToScore1 = new Path(new BezierLine(dumpGate, toScore1));
-        DriveToScore1.setLinearHeadingInterpolation(dumpGate.getHeading(), toScore1.getHeading());
+        DriveToScore1 = new Path(new BezierLine(pickUp1, toScore1));
+        DriveToScore1.setLinearHeadingInterpolation(pickUp1.getHeading(), toScore1.getHeading());
         DriveToScore1.setTimeoutConstraint(750);
 
 
@@ -106,7 +101,7 @@ public class RedGoal12Ball extends AutoBase {
     @Override public void onStartButtonPressed (){
 
 //
-        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(true, new Pose(scorePreload.getX(), scorePreload.getY(), scorePreload.getHeading()- Math.toRadians(25)));
+        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(true, new Pose(scorePreload.getX()-4, scorePreload.getY()-4, Math.toRadians(250)));
         Command RunLaunch1 = new RunTurretAndLauncherFromPoseAuto(true, toScore1);
         Command RunLaunch2 = new RunTurretAndLauncherFromPoseAuto(true, toScore2);
         Command RunLaunch3 = new RunTurretAndLauncherFromPoseAuto(true, toScore3);
@@ -129,7 +124,7 @@ public class RedGoal12Ball extends AutoBase {
                  new ParallelGroup(
                             new SequentialGroup(
                                     new FollowPath(DriveToScorePreload, false),
-                                    new Delay(0.1)
+                                    new Delay(0.005)
 
                             )
 
@@ -138,12 +133,10 @@ public class RedGoal12Ball extends AutoBase {
                  new ParallelGroup(
                          new SequentialGroup(
                                  new FollowPath(DriveToPickUp1),
-                                 new InstantCommand(()->{ PedroComponent.follower().setMaxPower(0.7);}),
+                                 new InstantCommand(()->{ PedroComponent.follower().setMaxPower(0.4);}),
                                  new FollowPath(DrivePickUp1)),
                          Intake1
                  ),
-                 new FollowPath(DriveDumpGate),
-                 new Delay(1),
                  new ParallelGroup(
                          new SequentialGroup(
                                  new InstantCommand(()->{ PedroComponent.follower().setMaxPower(1);}),
@@ -158,7 +151,7 @@ public class RedGoal12Ball extends AutoBase {
                  new ParallelGroup(
                          new SequentialGroup(
                                  new FollowPath(DriveToPickUp2),
-                                 new InstantCommand(()->{ PedroComponent.follower().setMaxPower(0.7);}),
+                                 new InstantCommand(()->{ PedroComponent.follower().setMaxPower(0.35);}),
                                  new FollowPath(DrivePickUp2)),
                          Intake2
                  ),
@@ -166,7 +159,7 @@ public class RedGoal12Ball extends AutoBase {
                          new SequentialGroup(
                                  new InstantCommand(()->{ PedroComponent.follower().setMaxPower(maxPower);}),
                                  new FollowPath(DriveToScore2),
-                                 new Delay(0.5)
+                                 new Delay(0.25)
                          ),
                          new LambdaCommand().setStart(()->{RunLaunch2.schedule();}).setIsDone(()->{ return true;}),
                          IntakeCheck
@@ -175,7 +168,7 @@ public class RedGoal12Ball extends AutoBase {
                  new ParallelGroup(
                          new SequentialGroup(
                                  new FollowPath(DriveToPickUp3),
-                                 new InstantCommand(()->{ PedroComponent.follower().setMaxPower(0.7);}),
+                                 new InstantCommand(()->{ PedroComponent.follower().setMaxPower(0.35);}),
                                  new FollowPath(DrivePickUp3)),
                          Intake3
                  ),
@@ -183,7 +176,7 @@ public class RedGoal12Ball extends AutoBase {
                          new SequentialGroup(
                                  new InstantCommand(()->{ PedroComponent.follower().setMaxPower(maxPower);}),
                                  new FollowPath(DriveToScore3),
-                                 new Delay(.5)
+                                 new Delay(0.25)
                          ),
                          new LambdaCommand().setStart(()->{RunLaunch3.schedule();}).setIsDone(()->{ return true;}),
                          IntakeCheck
