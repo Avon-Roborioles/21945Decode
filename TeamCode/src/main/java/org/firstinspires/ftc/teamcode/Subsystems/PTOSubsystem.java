@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
-import com.qualcomm.robotcore.hardware.Servo;
-
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.utility.LambdaCommand;
@@ -10,9 +8,9 @@ import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.impl.ServoEx;
 import dev.nextftc.hardware.positionable.SetPosition;
 
-public class CompPTOSubsystem implements Subsystem {
-    public static final CompPTOSubsystem INSTANCE = new CompPTOSubsystem();
-    private CompPTOSubsystem() {}
+public class PTOSubsystem implements Subsystem {
+    public static final PTOSubsystem INSTANCE = new PTOSubsystem();
+    private PTOSubsystem() {}
     double lUp = 0.85;
     double lDown = 0.05;
     double rUp = 0.85;

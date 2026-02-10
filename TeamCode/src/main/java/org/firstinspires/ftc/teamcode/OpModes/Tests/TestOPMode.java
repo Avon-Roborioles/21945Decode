@@ -6,33 +6,18 @@ import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.Pose;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
-import org.firstinspires.ftc.teamcode.Commands.Intake.IntakeToSorterCommand;
-import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchWithOutSort;
-import org.firstinspires.ftc.teamcode.Subsystems.CompIntakeSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompLauncherSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompPTOSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompSorterSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompStatusSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompTurretSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompVisionSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.LauncherSubsystemGroup;
+import org.firstinspires.ftc.teamcode.Subsystems.StatusSubsystem;
 import org.firstinspires.ftc.teamcode.Utility.Prism.GoBildaPrismDriver;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-import dev.nextftc.core.commands.Command;
-import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.extensions.pedro.PedroComponent;
-import dev.nextftc.extensions.pedro.PedroDriverControlled;
-import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
-import dev.nextftc.hardware.driving.DriverControlledCommand;
 
 @TeleOp
 //@Disabled
@@ -45,7 +30,7 @@ public class TestOPMode extends NextFTCOpMode {
 
     {
         addComponents(
-                new SubsystemComponent( CompStatusSubsystem.INSTANCE),
+                new SubsystemComponent( StatusSubsystem.INSTANCE),
                 new PedroComponent(Constants::createFollower),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
@@ -63,7 +48,7 @@ public class TestOPMode extends NextFTCOpMode {
     @Override
     public void onWaitForStart() {
         panelsTelemetry.update(telemetry);
-        CompStatusSubsystem.INSTANCE.setPrismNorm();
+        StatusSubsystem.INSTANCE.setPrismNorm();
 
 
     }
@@ -81,15 +66,15 @@ public class TestOPMode extends NextFTCOpMode {
 
 
 
-        CompStatusSubsystem.INSTANCE.setPrismToPWM(pwmTarget);
+        StatusSubsystem.INSTANCE.setPrismToPWM(pwmTarget);
 
     }
 
     @Override
     public void onStop() {
-        CompStatusSubsystem.INSTANCE.returnToDefault();
-        CompStatusSubsystem.INSTANCE.prism.clearAllAnimations();
-        CompStatusSubsystem.INSTANCE.prism.loadAnimationsFromArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_0);
+        StatusSubsystem.INSTANCE.returnToDefault();
+        StatusSubsystem.INSTANCE.prism.clearAllAnimations();
+        StatusSubsystem.INSTANCE.prism.loadAnimationsFromArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_0);
         telemetry.addLine("Done");
 
 

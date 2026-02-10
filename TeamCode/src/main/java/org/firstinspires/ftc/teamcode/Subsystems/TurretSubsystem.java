@@ -23,8 +23,8 @@ import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.impl.VoltageCompensatingMotor;
 @Configurable
-public class CompTurretSubsystem implements Subsystem {
-    public static final CompTurretSubsystem INSTANCE = new CompTurretSubsystem();
+public class TurretSubsystem implements Subsystem {
+    public static final TurretSubsystem INSTANCE = new TurretSubsystem();
     OctoQuadFWv3 Octo;
     private double turretPos = 0;
     private static final double DEGREES_PER_US = (410.67 / 1024.0);
@@ -38,7 +38,7 @@ public class CompTurretSubsystem implements Subsystem {
     double power = 0;
     double leftLimit = -140;
     double rightLimit = 130;
-    boolean turretOn = true;
+    boolean turretOn = false;
 
     public static double kp=0.002;
     public static double kI=0.00000000000;
@@ -72,7 +72,7 @@ public class CompTurretSubsystem implements Subsystem {
     double lastSetPoint = 0;
     public static double kv = 0.0;
 
-    private CompTurretSubsystem() {}
+    private TurretSubsystem() {}
 
     // put hardware, commands, etc here
     public MotorEx turretMotorEx = new MotorEx("Turret Motor").reversed();
@@ -188,6 +188,13 @@ public class CompTurretSubsystem implements Subsystem {
         return turretControlSystem.isWithinTolerance(new KineticState(3));
     }
 
+    public void turnTurretOn(){
+        turretOn = true;
+    }
+    public void turnTurretOff(){
+        turretOn = false;
+    }
+
 
 
 
@@ -223,7 +230,7 @@ public class CompTurretSubsystem implements Subsystem {
         coefficients.kI=kI;
         coefficients.kP=kp;
         coefficients.kD=kD;
-        turretOn = true;
+        turretOn = false;
 
 
         // initialization logic (runs on init)
@@ -274,7 +281,7 @@ public class CompTurretSubsystem implements Subsystem {
             power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)) ;
             power += Math.signum(turretPos-turretTargetPosDeg)* kS;
 
-            if (turretOn){
+            if (turretOn && Math.abs(power) > 0.05){
                 turretMotor.setPower(power*maxPower );
             }else{
                 turretMotor.setPower(0);

@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.Commands.Launch;
 
-import org.firstinspires.ftc.teamcode.Subsystems.CompSorterSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompStatusSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.StatusSubsystem;
 import org.firstinspires.ftc.teamcode.Utility.Timing;
 
 import java.util.concurrent.TimeUnit;
@@ -41,8 +41,8 @@ public class LaunchWithSort extends Command {
     }
 
 
-    CompSorterSubsystem.SlotDetection left, right, center;
-    CompStatusSubsystem.OBPattern sorterPattern;
+    SorterSubsystem.SlotDetection left, right, center;
+    StatusSubsystem.OBPattern sorterPattern;
     Color first, middle, last;
 
 
@@ -71,12 +71,12 @@ public class LaunchWithSort extends Command {
 
     @Override
     public void start() {
-        CompSorterSubsystem.INSTANCE.resetSorter();
+        SorterSubsystem.INSTANCE.resetSorter();
         St = Step.GetReady;
         firstLaunch = Slot.Null;
 
 
-        sorterPattern = CompStatusSubsystem.INSTANCE.getCurrentOBPattern();
+        sorterPattern = StatusSubsystem.INSTANCE.getCurrentOBPattern();
         switch (sorterPattern){
             case PPG:
                 first = Color.PURPLE;
@@ -108,7 +108,7 @@ public class LaunchWithSort extends Command {
 
         switch (St) {
             case GetReady:
-                CompSorterSubsystem.INSTANCE.resetSorter();
+                SorterSubsystem.INSTANCE.resetSorter();
                 ready.start();
                 St = Step.WaitForReady;
                 break;
@@ -118,9 +118,9 @@ public class LaunchWithSort extends Command {
                 }
                 break;
             case Ready:
-                left = CompSorterSubsystem.INSTANCE.leftSlot();
-                right = CompSorterSubsystem.INSTANCE.rightSlot();
-                center = CompSorterSubsystem.INSTANCE.centerSlot();
+                left = SorterSubsystem.INSTANCE.leftSlot();
+                right = SorterSubsystem.INSTANCE.rightSlot();
+                center = SorterSubsystem.INSTANCE.centerSlot();
                 St = Step.LaunchFirst;
 
                 break;
@@ -140,7 +140,7 @@ public class LaunchWithSort extends Command {
                 }
                 break;
             case ResetFirst:
-                CompSorterSubsystem.INSTANCE.resetSorter();
+                SorterSubsystem.INSTANCE.resetSorter();
                 if(reset.done()){
                     St = Step.CheckForMissFirst;
                 }
@@ -148,25 +148,25 @@ public class LaunchWithSort extends Command {
             case CheckForMissFirst:
                 switch (firstLaunch){
                     case Left:
-                        if(CompSorterSubsystem.INSTANCE.leftSlot() == CompSorterSubsystem.SlotDetection.EMPTY){
+                        if(SorterSubsystem.INSTANCE.leftSlot() == SorterSubsystem.SlotDetection.EMPTY){
                             St = Step.LaunchMiddle;
-                            left = CompSorterSubsystem.SlotDetection.LAUNCHED;
+                            left = SorterSubsystem.SlotDetection.LAUNCHED;
                         }else {
                             St = Step.LaunchFirst;
                         }
                         break;
                     case Right:
-                        if(CompSorterSubsystem.INSTANCE.rightSlot() == CompSorterSubsystem.SlotDetection.EMPTY){
+                        if(SorterSubsystem.INSTANCE.rightSlot() == SorterSubsystem.SlotDetection.EMPTY){
                             St = Step.LaunchMiddle;
-                            right = CompSorterSubsystem.SlotDetection.LAUNCHED;
+                            right = SorterSubsystem.SlotDetection.LAUNCHED;
                         }else {
                             St = Step.LaunchFirst;
                         }
                         break;
                     case Center:
-                        if(CompSorterSubsystem.INSTANCE.centerSlot() == CompSorterSubsystem.SlotDetection.EMPTY){
+                        if(SorterSubsystem.INSTANCE.centerSlot() == SorterSubsystem.SlotDetection.EMPTY){
                             St = Step.LaunchMiddle;
-                            center = CompSorterSubsystem.SlotDetection.LAUNCHED;
+                            center = SorterSubsystem.SlotDetection.LAUNCHED;
                         }else {
                             St = Step.LaunchFirst;
                         }
@@ -190,7 +190,7 @@ public class LaunchWithSort extends Command {
                 }
                 break;
             case ResetMiddle:
-                CompSorterSubsystem.INSTANCE.resetSorter();
+                SorterSubsystem.INSTANCE.resetSorter();
                 if(reset.done()){
                     St = Step.CheckForMissMiddle;
                 }
@@ -198,26 +198,26 @@ public class LaunchWithSort extends Command {
             case CheckForMissMiddle:
                 switch (firstLaunch){
                     case Left:
-                        if(CompSorterSubsystem.INSTANCE.leftSlot() == CompSorterSubsystem.SlotDetection.EMPTY){
-                            left = CompSorterSubsystem.SlotDetection.LAUNCHED;
+                        if(SorterSubsystem.INSTANCE.leftSlot() == SorterSubsystem.SlotDetection.EMPTY){
+                            left = SorterSubsystem.SlotDetection.LAUNCHED;
                         }else {
-                            left = CompSorterSubsystem.INSTANCE.leftSlot();
+                            left = SorterSubsystem.INSTANCE.leftSlot();
                             St = Step.LaunchMiddle;
                         }
                         break;
                     case Right:
-                        if(CompSorterSubsystem.INSTANCE.rightSlot() == CompSorterSubsystem.SlotDetection.EMPTY){
-                            right = CompSorterSubsystem.SlotDetection.LAUNCHED;
+                        if(SorterSubsystem.INSTANCE.rightSlot() == SorterSubsystem.SlotDetection.EMPTY){
+                            right = SorterSubsystem.SlotDetection.LAUNCHED;
                         }else {
-                            right = CompSorterSubsystem.INSTANCE.rightSlot();
+                            right = SorterSubsystem.INSTANCE.rightSlot();
                             St = Step.LaunchMiddle;
                         }
                         break;
                     case Center:
-                        if(CompSorterSubsystem.INSTANCE.centerSlot() == CompSorterSubsystem.SlotDetection.EMPTY){
-                            center = CompSorterSubsystem.SlotDetection.LAUNCHED;
+                        if(SorterSubsystem.INSTANCE.centerSlot() == SorterSubsystem.SlotDetection.EMPTY){
+                            center = SorterSubsystem.SlotDetection.LAUNCHED;
                         }else {
-                            center = CompSorterSubsystem.INSTANCE.centerSlot();
+                            center = SorterSubsystem.INSTANCE.centerSlot();
                             St = Step.LaunchMiddle;
                         }
                         break;
@@ -225,25 +225,25 @@ public class LaunchWithSort extends Command {
                 }
                 switch (middleLaunch){
                     case Left:
-                        if(CompSorterSubsystem.INSTANCE.leftSlot() == CompSorterSubsystem.SlotDetection.EMPTY){
+                        if(SorterSubsystem.INSTANCE.leftSlot() == SorterSubsystem.SlotDetection.EMPTY){
                             St = Step.LaunchLast;
-                            left = CompSorterSubsystem.SlotDetection.LAUNCHED;
+                            left = SorterSubsystem.SlotDetection.LAUNCHED;
                         }else {
                             St = Step.LaunchMiddle;
                         }
                         break;
                     case Right:
-                        if(CompSorterSubsystem.INSTANCE.rightSlot() == CompSorterSubsystem.SlotDetection.EMPTY){
+                        if(SorterSubsystem.INSTANCE.rightSlot() == SorterSubsystem.SlotDetection.EMPTY){
                             St = Step.LaunchLast;
-                            right = CompSorterSubsystem.SlotDetection.LAUNCHED;
+                            right = SorterSubsystem.SlotDetection.LAUNCHED;
                         }else {
                             St = Step.LaunchMiddle;
                         }
                         break;
                     case Center:
-                        if(CompSorterSubsystem.INSTANCE.centerSlot() == CompSorterSubsystem.SlotDetection.EMPTY){
+                        if(SorterSubsystem.INSTANCE.centerSlot() == SorterSubsystem.SlotDetection.EMPTY){
                             St = Step.LaunchLast;
-                            center = CompSorterSubsystem.SlotDetection.LAUNCHED;
+                            center = SorterSubsystem.SlotDetection.LAUNCHED;
                         }else {
                             St = Step.LaunchMiddle;
                         }
@@ -266,20 +266,20 @@ public class LaunchWithSort extends Command {
                 }
                 break;
             case ResetLast:
-                CompSorterSubsystem.INSTANCE.resetSorter();
+                SorterSubsystem.INSTANCE.resetSorter();
                 if(reset.done()){
                     St = Step.CheckForMissLast;
                 }
                 break;
             case CheckForMissLast:
-                left = CompSorterSubsystem.INSTANCE.leftSlot();
-                right = CompSorterSubsystem.INSTANCE.rightSlot();
-                center = CompSorterSubsystem.INSTANCE.centerSlot();
-                if(!(left == CompSorterSubsystem.SlotDetection.EMPTY)){
+                left = SorterSubsystem.INSTANCE.leftSlot();
+                right = SorterSubsystem.INSTANCE.rightSlot();
+                center = SorterSubsystem.INSTANCE.centerSlot();
+                if(!(left == SorterSubsystem.SlotDetection.EMPTY)){
                     St = Step.LaunchLast;
-                }else if (!(right == CompSorterSubsystem.SlotDetection.EMPTY)){
+                }else if (!(right == SorterSubsystem.SlotDetection.EMPTY)){
                     St = Step.LaunchLast;
-                }else if (!(center == CompSorterSubsystem.SlotDetection.EMPTY)){
+                }else if (!(center == SorterSubsystem.SlotDetection.EMPTY)){
                     St = Step.LaunchLast;
                 }else {
                     St = Step.Done;
@@ -291,240 +291,240 @@ public class LaunchWithSort extends Command {
 
     @Override
     public void stop(boolean interrupted) {
-        CompSorterSubsystem.INSTANCE.resetSorter();
+        SorterSubsystem.INSTANCE.resetSorter();
         // executed when the command ends
     }
 
     private void launchPurpleFirst(){
-        if(center == CompSorterSubsystem.SlotDetection.PURPLE){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+        if(center == SorterSubsystem.SlotDetection.PURPLE){
+            SorterSubsystem.INSTANCE.sendCenter();
             firstLaunch = Slot.Center;
             wait.start();
-        }else if (left == CompSorterSubsystem.SlotDetection.PURPLE){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+        }else if (left == SorterSubsystem.SlotDetection.PURPLE){
+            SorterSubsystem.INSTANCE.sendLeft();
             firstLaunch = Slot.Left;
             wait.start();
-        }else if (right == CompSorterSubsystem.SlotDetection.PURPLE){
-            CompSorterSubsystem.INSTANCE.sendRight();
+        }else if (right == SorterSubsystem.SlotDetection.PURPLE){
+            SorterSubsystem.INSTANCE.sendRight();
             firstLaunch = Slot.Right;
             wait.start();
-        }else if (center == CompSorterSubsystem.SlotDetection.UNKNOWN){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+        }else if (center == SorterSubsystem.SlotDetection.UNKNOWN){
+            SorterSubsystem.INSTANCE.sendCenter();
             firstLaunch = Slot.Center;
             wait.start();
-        }else if (left == CompSorterSubsystem.SlotDetection.UNKNOWN){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+        }else if (left == SorterSubsystem.SlotDetection.UNKNOWN){
+            SorterSubsystem.INSTANCE.sendLeft();
             firstLaunch = Slot.Left;
             wait.start();
-        }else if (right == CompSorterSubsystem.SlotDetection.UNKNOWN){
-            CompSorterSubsystem.INSTANCE.sendRight();
+        }else if (right == SorterSubsystem.SlotDetection.UNKNOWN){
+            SorterSubsystem.INSTANCE.sendRight();
             firstLaunch = Slot.Right;
             wait.start();
-        }else if (!(center == CompSorterSubsystem.SlotDetection.GREEN)){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+        }else if (!(center == SorterSubsystem.SlotDetection.GREEN)){
+            SorterSubsystem.INSTANCE.sendCenter();
             firstLaunch = Slot.Center;
             wait.start();
-        }else if (!(left == CompSorterSubsystem.SlotDetection.GREEN)){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+        }else if (!(left == SorterSubsystem.SlotDetection.GREEN)){
+            SorterSubsystem.INSTANCE.sendLeft();
             firstLaunch = Slot.Left;
             wait.start();
-        }else if (!(right == CompSorterSubsystem.SlotDetection.GREEN)){
-            CompSorterSubsystem.INSTANCE.sendRight();
+        }else if (!(right == SorterSubsystem.SlotDetection.GREEN)){
+            SorterSubsystem.INSTANCE.sendRight();
             firstLaunch = Slot.Right;
             wait.start();
         }
     }
     private void launchGreenFirst(){
-        if(center == CompSorterSubsystem.SlotDetection.GREEN){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+        if(center == SorterSubsystem.SlotDetection.GREEN){
+            SorterSubsystem.INSTANCE.sendCenter();
             firstLaunch = Slot.Center;
             wait.start();
-        }else if (left == CompSorterSubsystem.SlotDetection.GREEN){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+        }else if (left == SorterSubsystem.SlotDetection.GREEN){
+            SorterSubsystem.INSTANCE.sendLeft();
             firstLaunch = Slot.Left;
             wait.start();
-        }else if (right == CompSorterSubsystem.SlotDetection.GREEN){
-            CompSorterSubsystem.INSTANCE.sendRight();
+        }else if (right == SorterSubsystem.SlotDetection.GREEN){
+            SorterSubsystem.INSTANCE.sendRight();
             firstLaunch = Slot.Right;
             wait.start();
-        }else if (center == CompSorterSubsystem.SlotDetection.UNKNOWN){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+        }else if (center == SorterSubsystem.SlotDetection.UNKNOWN){
+            SorterSubsystem.INSTANCE.sendCenter();
             firstLaunch = Slot.Center;
             wait.start();
-        }else if (left == CompSorterSubsystem.SlotDetection.UNKNOWN){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+        }else if (left == SorterSubsystem.SlotDetection.UNKNOWN){
+            SorterSubsystem.INSTANCE.sendLeft();
             firstLaunch = Slot.Left;
             wait.start();
-        }else if (right == CompSorterSubsystem.SlotDetection.UNKNOWN){
-            CompSorterSubsystem.INSTANCE.sendRight();
+        }else if (right == SorterSubsystem.SlotDetection.UNKNOWN){
+            SorterSubsystem.INSTANCE.sendRight();
             firstLaunch = Slot.Right;
             wait.start();
-        }else if (!(center == CompSorterSubsystem.SlotDetection.PURPLE)){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+        }else if (!(center == SorterSubsystem.SlotDetection.PURPLE)){
+            SorterSubsystem.INSTANCE.sendCenter();
             firstLaunch = Slot.Center;
             wait.start();
-        }else if (!(left == CompSorterSubsystem.SlotDetection.PURPLE)){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+        }else if (!(left == SorterSubsystem.SlotDetection.PURPLE)){
+            SorterSubsystem.INSTANCE.sendLeft();
             firstLaunch = Slot.Left;
             wait.start();
-        }else if (!(right == CompSorterSubsystem.SlotDetection.PURPLE)){
-            CompSorterSubsystem.INSTANCE.sendRight();
+        }else if (!(right == SorterSubsystem.SlotDetection.PURPLE)){
+            SorterSubsystem.INSTANCE.sendRight();
             firstLaunch = Slot.Right;
             wait.start();
         }
     }
     private void launchPurpleMiddle(){
-        if(center == CompSorterSubsystem.SlotDetection.PURPLE){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+        if(center == SorterSubsystem.SlotDetection.PURPLE){
+            SorterSubsystem.INSTANCE.sendCenter();
             middleLaunch = Slot.Center;
             wait.start();
-        }else if (left == CompSorterSubsystem.SlotDetection.PURPLE){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+        }else if (left == SorterSubsystem.SlotDetection.PURPLE){
+            SorterSubsystem.INSTANCE.sendLeft();
             middleLaunch = Slot.Left;
             wait.start();
-        }else if (right == CompSorterSubsystem.SlotDetection.PURPLE){
-            CompSorterSubsystem.INSTANCE.sendRight();
+        }else if (right == SorterSubsystem.SlotDetection.PURPLE){
+            SorterSubsystem.INSTANCE.sendRight();
             middleLaunch = Slot.Right;
             wait.start();
-        }else if (center == CompSorterSubsystem.SlotDetection.UNKNOWN){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+        }else if (center == SorterSubsystem.SlotDetection.UNKNOWN){
+            SorterSubsystem.INSTANCE.sendCenter();
             middleLaunch = Slot.Center;
             wait.start();
-        }else if (left == CompSorterSubsystem.SlotDetection.UNKNOWN){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+        }else if (left == SorterSubsystem.SlotDetection.UNKNOWN){
+            SorterSubsystem.INSTANCE.sendLeft();
             middleLaunch = Slot.Left;
             wait.start();
-        }else if (right == CompSorterSubsystem.SlotDetection.UNKNOWN){
-            CompSorterSubsystem.INSTANCE.sendRight();
+        }else if (right == SorterSubsystem.SlotDetection.UNKNOWN){
+            SorterSubsystem.INSTANCE.sendRight();
             middleLaunch = Slot.Right;
             wait.start();
-        }else if (!(center == CompSorterSubsystem.SlotDetection.GREEN)){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+        }else if (!(center == SorterSubsystem.SlotDetection.GREEN)){
+            SorterSubsystem.INSTANCE.sendCenter();
             middleLaunch = Slot.Center;
             wait.start();
-        }else if (!(left == CompSorterSubsystem.SlotDetection.GREEN)){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+        }else if (!(left == SorterSubsystem.SlotDetection.GREEN)){
+            SorterSubsystem.INSTANCE.sendLeft();
             middleLaunch = Slot.Left;
             wait.start();
-        }else if (!(right == CompSorterSubsystem.SlotDetection.GREEN)){
-            CompSorterSubsystem.INSTANCE.sendRight();
+        }else if (!(right == SorterSubsystem.SlotDetection.GREEN)){
+            SorterSubsystem.INSTANCE.sendRight();
             middleLaunch = Slot.Right;
             wait.start();
         }
     }
     private void launchGreenMiddle(){
-        if(center == CompSorterSubsystem.SlotDetection.GREEN){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+        if(center == SorterSubsystem.SlotDetection.GREEN){
+            SorterSubsystem.INSTANCE.sendCenter();
             middleLaunch = Slot.Center;
             wait.start();
-        }else if (left == CompSorterSubsystem.SlotDetection.GREEN){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+        }else if (left == SorterSubsystem.SlotDetection.GREEN){
+            SorterSubsystem.INSTANCE.sendLeft();
             middleLaunch = Slot.Left;
             wait.start();
-        }else if (right == CompSorterSubsystem.SlotDetection.GREEN){
-            CompSorterSubsystem.INSTANCE.sendRight();
+        }else if (right == SorterSubsystem.SlotDetection.GREEN){
+            SorterSubsystem.INSTANCE.sendRight();
             middleLaunch = Slot.Right;
             wait.start();
-        }else if (center == CompSorterSubsystem.SlotDetection.UNKNOWN){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+        }else if (center == SorterSubsystem.SlotDetection.UNKNOWN){
+            SorterSubsystem.INSTANCE.sendCenter();
             middleLaunch = Slot.Center;
             wait.start();
-        }else if (left == CompSorterSubsystem.SlotDetection.UNKNOWN){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+        }else if (left == SorterSubsystem.SlotDetection.UNKNOWN){
+            SorterSubsystem.INSTANCE.sendLeft();
             middleLaunch = Slot.Left;
             wait.start();
-        }else if (right == CompSorterSubsystem.SlotDetection.UNKNOWN){
-            CompSorterSubsystem.INSTANCE.sendRight();
+        }else if (right == SorterSubsystem.SlotDetection.UNKNOWN){
+            SorterSubsystem.INSTANCE.sendRight();
             middleLaunch = Slot.Right;
             wait.start();
-        }else if (!(center == CompSorterSubsystem.SlotDetection.PURPLE)){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+        }else if (!(center == SorterSubsystem.SlotDetection.PURPLE)){
+            SorterSubsystem.INSTANCE.sendCenter();
             middleLaunch = Slot.Center;
             wait.start();
-        }else if (!(left == CompSorterSubsystem.SlotDetection.PURPLE)){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+        }else if (!(left == SorterSubsystem.SlotDetection.PURPLE)){
+            SorterSubsystem.INSTANCE.sendLeft();
             middleLaunch = Slot.Left;
             wait.start();
-        }else if (!(right == CompSorterSubsystem.SlotDetection.PURPLE)){
-            CompSorterSubsystem.INSTANCE.sendRight();
+        }else if (!(right == SorterSubsystem.SlotDetection.PURPLE)){
+            SorterSubsystem.INSTANCE.sendRight();
             middleLaunch = Slot.Right;
             wait.start();
         }
     }
     private void launchPurpleLast(){
-        if(center == CompSorterSubsystem.SlotDetection.PURPLE){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+        if(center == SorterSubsystem.SlotDetection.PURPLE){
+            SorterSubsystem.INSTANCE.sendCenter();
             lastLaunch = Slot.Center;
             wait.start();
-        }else if (left == CompSorterSubsystem.SlotDetection.PURPLE){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+        }else if (left == SorterSubsystem.SlotDetection.PURPLE){
+            SorterSubsystem.INSTANCE.sendLeft();
             lastLaunch = Slot.Left;
             wait.start();
-        }else if (right == CompSorterSubsystem.SlotDetection.PURPLE){
-            CompSorterSubsystem.INSTANCE.sendRight();
+        }else if (right == SorterSubsystem.SlotDetection.PURPLE){
+            SorterSubsystem.INSTANCE.sendRight();
             lastLaunch = Slot.Right;
             wait.start();
-        }else if (center == CompSorterSubsystem.SlotDetection.UNKNOWN){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+        }else if (center == SorterSubsystem.SlotDetection.UNKNOWN){
+            SorterSubsystem.INSTANCE.sendCenter();
             lastLaunch = Slot.Center;
             wait.start();
-        }else if (left == CompSorterSubsystem.SlotDetection.UNKNOWN){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+        }else if (left == SorterSubsystem.SlotDetection.UNKNOWN){
+            SorterSubsystem.INSTANCE.sendLeft();
             lastLaunch = Slot.Left;
             wait.start();
-        }else if (right == CompSorterSubsystem.SlotDetection.UNKNOWN){
-            CompSorterSubsystem.INSTANCE.sendRight();
+        }else if (right == SorterSubsystem.SlotDetection.UNKNOWN){
+            SorterSubsystem.INSTANCE.sendRight();
             lastLaunch = Slot.Right;
             wait.start();
-        }else if (!(center == CompSorterSubsystem.SlotDetection.GREEN)){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+        }else if (!(center == SorterSubsystem.SlotDetection.GREEN)){
+            SorterSubsystem.INSTANCE.sendCenter();
             lastLaunch = Slot.Center;
             wait.start();
-        }else if (!(left == CompSorterSubsystem.SlotDetection.GREEN)){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+        }else if (!(left == SorterSubsystem.SlotDetection.GREEN)){
+            SorterSubsystem.INSTANCE.sendLeft();
             lastLaunch = Slot.Left;
             wait.start();
-        }else if (!(right == CompSorterSubsystem.SlotDetection.GREEN)){
-            CompSorterSubsystem.INSTANCE.sendRight();
+        }else if (!(right == SorterSubsystem.SlotDetection.GREEN)){
+            SorterSubsystem.INSTANCE.sendRight();
             lastLaunch = Slot.Right;
             wait.start();
         }
     }
     private void launchGreenLast(){
-        if(center == CompSorterSubsystem.SlotDetection.GREEN){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+        if(center == SorterSubsystem.SlotDetection.GREEN){
+            SorterSubsystem.INSTANCE.sendCenter();
             lastLaunch = Slot.Center;
             wait.start();
-        }else if (left == CompSorterSubsystem.SlotDetection.GREEN){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+        }else if (left == SorterSubsystem.SlotDetection.GREEN){
+            SorterSubsystem.INSTANCE.sendLeft();
             lastLaunch = Slot.Left;
             wait.start();
-        }else if (right == CompSorterSubsystem.SlotDetection.GREEN){
-            CompSorterSubsystem.INSTANCE.sendRight();
+        }else if (right == SorterSubsystem.SlotDetection.GREEN){
+            SorterSubsystem.INSTANCE.sendRight();
             lastLaunch = Slot.Right;
             wait.start();
-        }else if (center == CompSorterSubsystem.SlotDetection.UNKNOWN){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+        }else if (center == SorterSubsystem.SlotDetection.UNKNOWN){
+            SorterSubsystem.INSTANCE.sendCenter();
             lastLaunch = Slot.Center;
             wait.start();
-        }else if (left == CompSorterSubsystem.SlotDetection.UNKNOWN){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+        }else if (left == SorterSubsystem.SlotDetection.UNKNOWN){
+            SorterSubsystem.INSTANCE.sendLeft();
             lastLaunch = Slot.Left;
             wait.start();
-        }else if (right == CompSorterSubsystem.SlotDetection.UNKNOWN){
-            CompSorterSubsystem.INSTANCE.sendRight();
+        }else if (right == SorterSubsystem.SlotDetection.UNKNOWN){
+            SorterSubsystem.INSTANCE.sendRight();
             lastLaunch = Slot.Right;
             wait.start();
-        }else if (!(center == CompSorterSubsystem.SlotDetection.PURPLE)){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+        }else if (!(center == SorterSubsystem.SlotDetection.PURPLE)){
+            SorterSubsystem.INSTANCE.sendCenter();
             lastLaunch = Slot.Center;
             wait.start();
-        }else if (!(left == CompSorterSubsystem.SlotDetection.PURPLE)){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+        }else if (!(left == SorterSubsystem.SlotDetection.PURPLE)){
+            SorterSubsystem.INSTANCE.sendLeft();
             lastLaunch = Slot.Left;
             wait.start();
-        }else if (!(right == CompSorterSubsystem.SlotDetection.PURPLE)){
-            CompSorterSubsystem.INSTANCE.sendRight();
+        }else if (!(right == SorterSubsystem.SlotDetection.PURPLE)){
+            SorterSubsystem.INSTANCE.sendRight();
             lastLaunch = Slot.Right;
             wait.start();
         }

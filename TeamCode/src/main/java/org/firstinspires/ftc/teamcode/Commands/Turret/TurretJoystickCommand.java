@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Commands.Turret;
 
-import org.firstinspires.ftc.teamcode.Subsystems.CompTurretSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.TurretSubsystem;
 
 import dev.nextftc.bindings.Range;
 import dev.nextftc.core.commands.Command;
@@ -11,7 +11,7 @@ public class TurretJoystickCommand extends Command {
     public TurretJoystickCommand(Range input, Range input2 ) {
         this.input = input;
         this.input2 = input2;
-        requires(CompTurretSubsystem.INSTANCE);
+        requires(TurretSubsystem.INSTANCE);
         setInterruptible(true);
     }
     @Override
@@ -27,7 +27,7 @@ public class TurretJoystickCommand extends Command {
 
     @Override
     public void update() {
-        CompTurretSubsystem.INSTANCE.moveTurretJoystick(input.get(), input2.get());
+        TurretSubsystem.INSTANCE.moveTurretJoystick(input.get(), input2.get());
         // executed on every update of the command
     }
 

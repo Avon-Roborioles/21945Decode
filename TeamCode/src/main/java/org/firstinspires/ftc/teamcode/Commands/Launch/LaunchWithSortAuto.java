@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.Commands.Launch;
 
-import org.firstinspires.ftc.teamcode.Subsystems.CompSorterSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompStatusSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.StatusSubsystem;
 import org.firstinspires.ftc.teamcode.Utility.Timing;
 
 import java.util.concurrent.TimeUnit;
@@ -41,8 +41,8 @@ public class LaunchWithSortAuto extends Command {
 
 
 
-    CompSorterSubsystem.SlotDetection left, right, center;
-    CompStatusSubsystem.OBPattern sorterPattern;
+    SorterSubsystem.SlotDetection left, right, center;
+    StatusSubsystem.OBPattern sorterPattern;
     Color first, middle, last;
     Color leftSlotSet, rightSlotSet, centerSlotSet;
 
@@ -73,12 +73,12 @@ public class LaunchWithSortAuto extends Command {
 
     @Override
     public void start() {
-        CompSorterSubsystem.INSTANCE.resetSorter();
+        SorterSubsystem.INSTANCE.resetSorter();
         St = Step.GetReady;
         firstLaunch = Slot.Null;
 
 
-        sorterPattern = CompStatusSubsystem.INSTANCE.getCurrentOBPattern();
+        sorterPattern = StatusSubsystem.INSTANCE.getCurrentOBPattern();
         switch (sorterPattern){
             case PPG:
                 first = Color.PURPLE;
@@ -110,7 +110,7 @@ public class LaunchWithSortAuto extends Command {
 
         switch (St) {
             case GetReady:
-                CompSorterSubsystem.INSTANCE.resetSorter();
+                SorterSubsystem.INSTANCE.resetSorter();
                 ready.start();
                 St = Step.WaitForReady;
                 break;
@@ -120,15 +120,15 @@ public class LaunchWithSortAuto extends Command {
                 }
                 break;
             case Ready:
-                left = CompSorterSubsystem.INSTANCE.leftSlot();
-                right = CompSorterSubsystem.INSTANCE.rightSlot();
-                center = CompSorterSubsystem.INSTANCE.centerSlot();
+                left = SorterSubsystem.INSTANCE.leftSlot();
+                right = SorterSubsystem.INSTANCE.rightSlot();
+                center = SorterSubsystem.INSTANCE.centerSlot();
 
-                if (left == CompSorterSubsystem.SlotDetection.GREEN){
+                if (left == SorterSubsystem.SlotDetection.GREEN){
                     leftSlotSet = Color.GREEN;
                     rightSlotSet = Color.PURPLE;
                     centerSlotSet = Color.PURPLE;
-                }else if(right == CompSorterSubsystem.SlotDetection.GREEN){
+                }else if(right == SorterSubsystem.SlotDetection.GREEN){
                     leftSlotSet = Color.PURPLE;
                     rightSlotSet = Color.GREEN;
                     centerSlotSet = Color.PURPLE;
@@ -156,7 +156,7 @@ public class LaunchWithSortAuto extends Command {
                 }
                 break;
             case ResetFirst:
-                CompSorterSubsystem.INSTANCE.resetSorter();
+                SorterSubsystem.INSTANCE.resetSorter();
                 if(reset.done()){
                     St = Step.LaunchMiddle;
                 }
@@ -177,7 +177,7 @@ public class LaunchWithSortAuto extends Command {
                 }
                 break;
             case ResetMiddle:
-                CompSorterSubsystem.INSTANCE.resetSorter();
+                SorterSubsystem.INSTANCE.resetSorter();
                 if(reset.done()){
                     St = Step.LaunchLast;
                 }
@@ -199,23 +199,23 @@ public class LaunchWithSortAuto extends Command {
                 }
                 break;
             case ResetLast:
-                CompSorterSubsystem.INSTANCE.resetSorter();
+                SorterSubsystem.INSTANCE.resetSorter();
                 if(reset.done()){
                     St = Step.CheckForMissLast;
                 }
                 break;
             case CheckForMissLast:
-                left = CompSorterSubsystem.INSTANCE.leftSlot();
-                right = CompSorterSubsystem.INSTANCE.rightSlot();
-                center = CompSorterSubsystem.INSTANCE.centerSlot();
-                if(!(left == CompSorterSubsystem.SlotDetection.EMPTY)){
-                    CompSorterSubsystem.INSTANCE.sendLeft();
+                left = SorterSubsystem.INSTANCE.leftSlot();
+                right = SorterSubsystem.INSTANCE.rightSlot();
+                center = SorterSubsystem.INSTANCE.centerSlot();
+                if(!(left == SorterSubsystem.SlotDetection.EMPTY)){
+                    SorterSubsystem.INSTANCE.sendLeft();
                     St = Step.WaitLast;
-                }else if (!(right == CompSorterSubsystem.SlotDetection.EMPTY)){
-                    CompSorterSubsystem.INSTANCE.sendRight();
+                }else if (!(right == SorterSubsystem.SlotDetection.EMPTY)){
+                    SorterSubsystem.INSTANCE.sendRight();
                     St = Step.WaitLast;
-                }else if (!(center == CompSorterSubsystem.SlotDetection.EMPTY)){
-                    CompSorterSubsystem.INSTANCE.sendCenter();
+                }else if (!(center == SorterSubsystem.SlotDetection.EMPTY)){
+                    SorterSubsystem.INSTANCE.sendCenter();
                     St = Step.WaitLast;
                 }else {
                     St = Step.Done;
@@ -227,51 +227,51 @@ public class LaunchWithSortAuto extends Command {
 
     @Override
     public void stop(boolean interrupted) {
-        CompSorterSubsystem.INSTANCE.resetSorter();
+        SorterSubsystem.INSTANCE.resetSorter();
         // executed when the command ends
     }
 
     private void launchPurpleFirst(){
         if(centerSlotSet == Color.PURPLE){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+            SorterSubsystem.INSTANCE.sendCenter();
             firstLaunch = Slot.Center;
             wait.start();
         }else if (leftSlotSet == Color.PURPLE){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+            SorterSubsystem.INSTANCE.sendLeft();
             firstLaunch = Slot.Left;
             wait.start();
         }else if (rightSlotSet == Color.PURPLE){
-            CompSorterSubsystem.INSTANCE.sendRight();
+            SorterSubsystem.INSTANCE.sendRight();
             firstLaunch = Slot.Right;
             wait.start();
         }
     }
     private void launchGreenFirst(){
         if(centerSlotSet == Color.GREEN){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+            SorterSubsystem.INSTANCE.sendCenter();
             firstLaunch = Slot.Center;
             wait.start();
         }else if (leftSlotSet == Color.GREEN){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+            SorterSubsystem.INSTANCE.sendLeft();
             firstLaunch = Slot.Left;
             wait.start();
         }else if (rightSlotSet == Color.GREEN){
-            CompSorterSubsystem.INSTANCE.sendRight();
+            SorterSubsystem.INSTANCE.sendRight();
             firstLaunch = Slot.Right;
             wait.start();
         }
     }
     private void launchPurpleMiddle(){
         if(centerSlotSet == Color.PURPLE){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+            SorterSubsystem.INSTANCE.sendCenter();
             middleLaunch = Slot.Center;
             wait.start();
         }else if (leftSlotSet == Color.PURPLE){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+            SorterSubsystem.INSTANCE.sendLeft();
             middleLaunch = Slot.Left;
             wait.start();
         }else if (rightSlotSet == Color.PURPLE){
-            CompSorterSubsystem.INSTANCE.sendRight();
+            SorterSubsystem.INSTANCE.sendRight();
             middleLaunch = Slot.Right;
             wait.start();
         }
@@ -279,30 +279,30 @@ public class LaunchWithSortAuto extends Command {
     }
     private void launchGreenMiddle(){
         if(centerSlotSet == Color.GREEN){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+            SorterSubsystem.INSTANCE.sendCenter();
             middleLaunch = Slot.Center;
             wait.start();
         }else if (leftSlotSet == Color.GREEN){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+            SorterSubsystem.INSTANCE.sendLeft();
             middleLaunch = Slot.Left;
             wait.start();
         }else if (rightSlotSet == Color.GREEN){
-            CompSorterSubsystem.INSTANCE.sendRight();
+            SorterSubsystem.INSTANCE.sendRight();
             middleLaunch = Slot.Right;
             wait.start();
         }
     }
     private void launchPurpleLast(){
         if(centerSlotSet == Color.PURPLE){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+            SorterSubsystem.INSTANCE.sendCenter();
             lastLaunch = Slot.Center;
             wait.start();
         }else if (leftSlotSet == Color.PURPLE){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+            SorterSubsystem.INSTANCE.sendLeft();
             lastLaunch = Slot.Left;
             wait.start();
         }else if (rightSlotSet == Color.PURPLE){
-            CompSorterSubsystem.INSTANCE.sendRight();
+            SorterSubsystem.INSTANCE.sendRight();
             lastLaunch = Slot.Right;
             wait.start();
         }
@@ -310,15 +310,15 @@ public class LaunchWithSortAuto extends Command {
     }
     private void launchGreenLast(){
         if(centerSlotSet == Color.GREEN){
-            CompSorterSubsystem.INSTANCE.sendCenter();
+            SorterSubsystem.INSTANCE.sendCenter();
             lastLaunch = Slot.Center;
             wait.start();
         }else if (leftSlotSet == Color.GREEN){
-            CompSorterSubsystem.INSTANCE.sendLeft();
+            SorterSubsystem.INSTANCE.sendLeft();
             lastLaunch = Slot.Left;
             wait.start();
         }else if (rightSlotSet == Color.GREEN){
-            CompSorterSubsystem.INSTANCE.sendRight();
+            SorterSubsystem.INSTANCE.sendRight();
             lastLaunch = Slot.Right;
             wait.start();
         }

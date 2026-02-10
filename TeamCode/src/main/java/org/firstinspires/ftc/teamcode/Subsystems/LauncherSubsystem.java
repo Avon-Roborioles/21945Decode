@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.bylazar.telemetry.PanelsTelemetry;
-import com.bylazar.telemetry.TelemetryManager;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
@@ -15,9 +14,9 @@ import dev.nextftc.hardware.impl.ServoEx;
 import dev.nextftc.hardware.impl.VoltageCompensatingMotor;
 import dev.nextftc.hardware.positionable.SetPosition;
 
-public class CompLauncherSubsystem implements Subsystem {
-    public static final CompLauncherSubsystem INSTANCE = new CompLauncherSubsystem();
-    private CompLauncherSubsystem() {}
+public class LauncherSubsystem implements Subsystem {
+    public static final LauncherSubsystem INSTANCE = new LauncherSubsystem();
+    private LauncherSubsystem() {}
 
 
     // Hardware

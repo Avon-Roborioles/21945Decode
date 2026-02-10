@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Commands.Launch;
 
-import org.firstinspires.ftc.teamcode.Subsystems.CompSorterSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
 import org.firstinspires.ftc.teamcode.Utility.Timing;
 
 import java.util.concurrent.TimeUnit;
@@ -48,7 +48,7 @@ public class ForceLaunchAutoSlow extends Command {
     @Override
     public void start() {
         St = Step.GetReady;
-        CompSorterSubsystem.INSTANCE.resetSorter();
+        SorterSubsystem.INSTANCE.resetSorter();
         Missed1 = false;
         // executed when the command begins
     }
@@ -57,7 +57,7 @@ public class ForceLaunchAutoSlow extends Command {
     public void update() {
         switch (St) {
             case GetReady:
-                CompSorterSubsystem.INSTANCE.resetSorter();
+                SorterSubsystem.INSTANCE.resetSorter();
                 ready.start();
                 St = Step.WaitForReady;
                 break;
@@ -72,13 +72,13 @@ public class ForceLaunchAutoSlow extends Command {
 
                 break;
             case LaunchCenter:
-                CompSorterSubsystem.INSTANCE.sendCenter();
+                SorterSubsystem.INSTANCE.sendCenter();
                 wait.start();
                 St = Step.WaitCenter;
                 break;
             case WaitCenter:
                 if(wait.done()){
-                    CompSorterSubsystem.INSTANCE.resetSorter();
+                    SorterSubsystem.INSTANCE.resetSorter();
                     reset.start();
                     St = Step.ResetCenter;
                 }
@@ -89,13 +89,13 @@ public class ForceLaunchAutoSlow extends Command {
                 }
                 break;
             case LaunchLeft:
-                CompSorterSubsystem.INSTANCE.sendLeft();
+                SorterSubsystem.INSTANCE.sendLeft();
                 wait.start();
                 St = Step.WaitLeft;
                 break;
             case WaitLeft:
                 if(wait.done()){
-                    CompSorterSubsystem.INSTANCE.resetSorter();
+                    SorterSubsystem.INSTANCE.resetSorter();
                     reset.start();
                     St = Step.ResetLeft;
                 }
@@ -106,13 +106,13 @@ public class ForceLaunchAutoSlow extends Command {
                 }
                 break;
             case LaunchRight:
-                CompSorterSubsystem.INSTANCE.sendRight();
+                SorterSubsystem.INSTANCE.sendRight();
                 wait.start();
                 St = Step.WaitRight;
                 break;
             case WaitRight:
                 if(wait.done()){
-                    CompSorterSubsystem.INSTANCE.resetSorter();
+                    SorterSubsystem.INSTANCE.resetSorter();
                     reset.start();
                     St = Step.ResetRight;
                 }
@@ -127,7 +127,7 @@ public class ForceLaunchAutoSlow extends Command {
                     delay.start();
                 }
                 if(delay.done()) {
-                    if (CompSorterSubsystem.INSTANCE.sorterEmpty() || Missed1) {
+                    if (SorterSubsystem.INSTANCE.sorterEmpty() || Missed1) {
                         St = Step.Done;
                     }else{
                         Missed1 = true;
@@ -136,14 +136,14 @@ public class ForceLaunchAutoSlow extends Command {
                 }
                 break;
             case CheckForMiss:
-                if(CompSorterSubsystem.INSTANCE.leftDetected()){
-                    CompSorterSubsystem.INSTANCE.sendLeft();
+                if(SorterSubsystem.INSTANCE.leftDetected()){
+                    SorterSubsystem.INSTANCE.sendLeft();
                     St = Step.WaitRight;
-                }else if(CompSorterSubsystem.INSTANCE.centerDetected()) {
-                    CompSorterSubsystem.INSTANCE.sendCenter();
+                }else if(SorterSubsystem.INSTANCE.centerDetected()) {
+                    SorterSubsystem.INSTANCE.sendCenter();
                     St = Step.WaitRight;
-                }else if (CompSorterSubsystem.INSTANCE.rightDetected()){
-                    CompSorterSubsystem.INSTANCE.sendRight();
+                }else if (SorterSubsystem.INSTANCE.rightDetected()){
+                    SorterSubsystem.INSTANCE.sendRight();
                     St = Step.WaitRight;
                 }else{
                     St = Step.Done;
@@ -158,7 +158,7 @@ public class ForceLaunchAutoSlow extends Command {
 
     @Override
     public void stop(boolean interrupted) {
-        CompSorterSubsystem.INSTANCE.resetSorter();
+        SorterSubsystem.INSTANCE.resetSorter();
         // executed when the command ends
     }
 }

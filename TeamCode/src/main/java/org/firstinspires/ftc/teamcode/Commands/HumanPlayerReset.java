@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.Commands;
 
 import com.pedropathing.geometry.Pose;
 
-import org.firstinspires.ftc.teamcode.Subsystems.CompVisionSubsystem;
-
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.extensions.pedro.PedroComponent;
 

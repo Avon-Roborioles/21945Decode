@@ -2,10 +2,7 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.I2cDeviceSynchDevice;
-import com.qualcomm.robotcore.hardware.PWMOutputEx;
 import com.qualcomm.robotcore.hardware.PwmControl;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.MovingStatistics;
@@ -23,9 +20,9 @@ import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
 @Configurable
-public class CompStatusSubsystem implements Subsystem {
-    public static final CompStatusSubsystem INSTANCE = new CompStatusSubsystem();
-    private CompStatusSubsystem() {}
+public class StatusSubsystem implements Subsystem {
+    public static final StatusSubsystem INSTANCE = new StatusSubsystem();
+    private StatusSubsystem() {}
     public static double pwmTarget = 0;
 
 
@@ -311,7 +308,7 @@ public class CompStatusSubsystem implements Subsystem {
 
         currentOBPattern = OBPattern.NULL;
 
-        setUpLights();
+//        setUpLights();
         setPrismNorm();
 
 
@@ -733,7 +730,7 @@ public class CompStatusSubsystem implements Subsystem {
 
             })
             .setUpdate(() -> {
-                switch (CompSorterSubsystem.INSTANCE.leftSlot()){
+                switch (SorterSubsystem.INSTANCE.leftSlot()){
                     case PURPLE:
                         setLeftPurple();
                         break;
@@ -747,7 +744,7 @@ public class CompStatusSubsystem implements Subsystem {
                         setLeftOff();
                         break;
                 }
-                switch (CompSorterSubsystem.INSTANCE.centerSlot()){
+                switch (SorterSubsystem.INSTANCE.centerSlot()){
                     case PURPLE:
                         setCenterPurple();
                         break;
@@ -761,7 +758,7 @@ public class CompStatusSubsystem implements Subsystem {
                         setCenterOff();
                         break;
                 }
-                switch (CompSorterSubsystem.INSTANCE.rightSlot()){
+                switch (SorterSubsystem.INSTANCE.rightSlot()){
                     case PURPLE:
                         setRightPurple();
                         break;

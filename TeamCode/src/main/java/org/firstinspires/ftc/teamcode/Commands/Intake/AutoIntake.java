@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.Commands.Intake;
 
-import org.firstinspires.ftc.teamcode.Subsystems.CompIntakeSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompSorterSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
 import org.firstinspires.ftc.teamcode.Utility.Timing;
 
 import java.util.concurrent.TimeUnit;
@@ -27,7 +27,7 @@ public class AutoIntake extends Command {
     Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
     public AutoIntake(long Time) {
         end = new Timing.Timer(Time, TimeUnit.MILLISECONDS);
-        requires(CompIntakeSubsystem.INSTANCE/* subsystems */);
+        requires(IntakeSubsystem.INSTANCE/* subsystems */);
         setInterruptible(true); // this is the default, so you don't need to specify
     }
 
@@ -42,8 +42,8 @@ public class AutoIntake extends Command {
         end.start();
         step =intakeSeq.Intake;
 
-        CompSorterSubsystem.INSTANCE.resetSorter();
-        CompIntakeSubsystem.INSTANCE.intake();
+        SorterSubsystem.INSTANCE.resetSorter();
+        IntakeSubsystem.INSTANCE.intake();
 
         // executed when the command begins
     }
@@ -52,39 +52,39 @@ public class AutoIntake extends Command {
     public void update() {
         switch (step) {
             case Intake:
-                CompIntakeSubsystem.INSTANCE.intake();
+                IntakeSubsystem.INSTANCE.intake();
                 step = intakeSeq.CheckForFull;
                 break;
             case CheckForFull:
-                if (CompSorterSubsystem.INSTANCE.sorterFull()) {
+                if (SorterSubsystem.INSTANCE.sorterFull()) {
                     step = intakeSeq.Hug;
                 }
                 break;
             case Hug:
-                CompSorterSubsystem.INSTANCE.sortHug();
+                SorterSubsystem.INSTANCE.sortHug();
                 step = intakeSeq.StopIntake;
                 break;
             case StopIntake:
-                CompIntakeSubsystem.INSTANCE.stopIntake();
+                IntakeSubsystem.INSTANCE.stopIntake();
                 step = intakeSeq.CheckBB;
                 break;
             case CheckBB:
-                CompIntakeSubsystem.INSTANCE.outtake();
-                if (CompIntakeSubsystem.INSTANCE.intakeBBTripped()) {
+                IntakeSubsystem.INSTANCE.outtake();
+                if (IntakeSubsystem.INSTANCE.intakeBBTripped()) {
                     step = intakeSeq.Outake;
                 }else{
                     step = intakeSeq.ReleaseHug;
-                    CompIntakeSubsystem.INSTANCE.stopIntake();
+                    IntakeSubsystem.INSTANCE.stopIntake();
                 }
                 break;
             case Outake:
-                CompIntakeSubsystem.INSTANCE.outtake();
-                if(!CompIntakeSubsystem.INSTANCE.intakeBBTripped()){
+                IntakeSubsystem.INSTANCE.outtake();
+                if(!IntakeSubsystem.INSTANCE.intakeBBTripped()){
                     step = intakeSeq.ReleaseHug;
                 }
                 break;
             case ReleaseHug:
-                CompSorterSubsystem.INSTANCE.resetSorter();
+                SorterSubsystem.INSTANCE.resetSorter();
                 step = intakeSeq.Wait;
                 wait.start();
                 break;
@@ -94,16 +94,16 @@ public class AutoIntake extends Command {
                 }
                 break;
             case CheckForFullAgain:
-                if (CompSorterSubsystem.INSTANCE.sorterFull()) {
+                if (SorterSubsystem.INSTANCE.sorterFull()) {
                     step = intakeSeq.HugAgain;
-                    CompIntakeSubsystem.INSTANCE.outtake();
+                    IntakeSubsystem.INSTANCE.outtake();
                 }else{
-                    CompIntakeSubsystem.INSTANCE.intake();
+                    IntakeSubsystem.INSTANCE.intake();
                 }
                 break;
             case HugAgain:
-                CompSorterSubsystem.INSTANCE.sortHug();
-                CompIntakeSubsystem.INSTANCE.outtake();
+                SorterSubsystem.INSTANCE.sortHug();
+                IntakeSubsystem.INSTANCE.outtake();
                 step = intakeSeq.Done;
                 break;
         }
@@ -114,11 +114,11 @@ public class AutoIntake extends Command {
     @Override
     public void stop(boolean interrupted) {
         if (!interrupted) {
-            CompSorterSubsystem.INSTANCE.sortHug();
+            SorterSubsystem.INSTANCE.sortHug();
         }
 
 
-        CompIntakeSubsystem.INSTANCE.stopIntake();
+        IntakeSubsystem.INSTANCE.stopIntake();
 
 
         // executed when the command ends

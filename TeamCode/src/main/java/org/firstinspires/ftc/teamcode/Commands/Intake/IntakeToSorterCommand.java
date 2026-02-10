@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.Commands.Intake;
 
-import org.firstinspires.ftc.teamcode.Subsystems.CompIntakeSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompSorterSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
 import org.firstinspires.ftc.teamcode.Utility.Timing;
 
 import java.util.concurrent.TimeUnit;
@@ -28,7 +28,7 @@ public class IntakeToSorterCommand extends Command {
 
     Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
     public IntakeToSorterCommand() {
-        requires(CompIntakeSubsystem.INSTANCE, CompSorterSubsystem.INSTANCE/* subsystems */);
+        requires(IntakeSubsystem.INSTANCE, SorterSubsystem.INSTANCE/* subsystems */);
         setInterruptible(true); // this is the default, so you don't need to specify
     }
 
@@ -41,7 +41,7 @@ public class IntakeToSorterCommand extends Command {
     public void start() {
         step = intakeSeq.Intake;
 
-        CompSorterSubsystem.INSTANCE.resetSorter();
+        SorterSubsystem.INSTANCE.resetSorter();
 
 
 
@@ -52,37 +52,37 @@ public class IntakeToSorterCommand extends Command {
     public void update() {
         switch (step) {
             case Intake:
-                CompIntakeSubsystem.INSTANCE.intake();
+                IntakeSubsystem.INSTANCE.intake();
                 step = intakeSeq.CheckForFull;
                 break;
             case CheckForFull:
-                if (CompSorterSubsystem.INSTANCE.sorterFull() || CompSorterSubsystem.INSTANCE.sorterFullDumb()) {
+                if (SorterSubsystem.INSTANCE.sorterFull() || SorterSubsystem.INSTANCE.sorterFullDumb()) {
                     step = intakeSeq.Hug;
                 }
                 break;
             case Hug:
-                CompSorterSubsystem.INSTANCE.sortHug();
+                SorterSubsystem.INSTANCE.sortHug();
                 step = intakeSeq.StopIntake;
                 break;
             case StopIntake:
-                CompIntakeSubsystem.INSTANCE.stopIntake();
+                IntakeSubsystem.INSTANCE.stopIntake();
                 step = intakeSeq.CheckBB;
                 break;
             case CheckBB:
-                if (CompIntakeSubsystem.INSTANCE.intakeBBTripped()) {
+                if (IntakeSubsystem.INSTANCE.intakeBBTripped()) {
                     step = intakeSeq.Outake;
                 }else{
                     step = intakeSeq.ReleaseHug;
                 }
                 break;
             case Outake:
-                CompIntakeSubsystem.INSTANCE.outtake();
-                if(!CompIntakeSubsystem.INSTANCE.intakeBBTripped()){
+                IntakeSubsystem.INSTANCE.outtake();
+                if(!IntakeSubsystem.INSTANCE.intakeBBTripped()){
                     step = intakeSeq.ReleaseHug;
                 }
                 break;
             case ReleaseHug:
-                CompSorterSubsystem.INSTANCE.resetSorter();
+                SorterSubsystem.INSTANCE.resetSorter();
                 step = intakeSeq.Wait;
                 wait.start();
                 break;
@@ -92,14 +92,14 @@ public class IntakeToSorterCommand extends Command {
                 }
                 break;
             case CheckForFullAgain:
-                if (CompSorterSubsystem.INSTANCE.sorterFull()) {
+                if (SorterSubsystem.INSTANCE.sorterFull()) {
                     step = intakeSeq.HugAgain;
                 }else{
-                    CompIntakeSubsystem.INSTANCE.intake();
+                    IntakeSubsystem.INSTANCE.intake();
                 }
                 break;
             case HugAgain:
-                CompSorterSubsystem.INSTANCE.sortHug();
+                SorterSubsystem.INSTANCE.sortHug();
                 step = intakeSeq.Done;
                 break;
         }
@@ -110,11 +110,11 @@ public class IntakeToSorterCommand extends Command {
     @Override
     public void stop(boolean interrupted) {
         if (!interrupted) {
-            CompSorterSubsystem.INSTANCE.sortHug();
+            SorterSubsystem.INSTANCE.sortHug();
         }
 
 
-        CompIntakeSubsystem.INSTANCE.stopIntake();
+        IntakeSubsystem.INSTANCE.stopIntake();
         // executed when the command ends
     }
 }

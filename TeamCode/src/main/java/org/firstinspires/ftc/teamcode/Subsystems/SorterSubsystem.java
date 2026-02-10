@@ -12,12 +12,11 @@ import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
-import dev.nextftc.ftc.components.BulkReadComponent;
 import dev.nextftc.hardware.impl.ServoEx;
 
-public class CompSorterSubsystem implements Subsystem {
-    public static final CompSorterSubsystem INSTANCE = new CompSorterSubsystem();
-    private CompSorterSubsystem() {}
+public class SorterSubsystem implements Subsystem {
+    public static final SorterSubsystem INSTANCE = new SorterSubsystem();
+    private SorterSubsystem() {}
 
     private double hugPos = 0.075;
 
@@ -306,28 +305,28 @@ public class CompSorterSubsystem implements Subsystem {
         rightDetected();
         centerDetected();
         if (!leftDetect && !centerDetect && !rightDetect){
-            CompStatusSubsystem.INSTANCE.setPrismOff();
+            StatusSubsystem.INSTANCE.setPrismOff();
 
         }else if(leftDetect && !centerDetect && !rightDetect){
-            CompStatusSubsystem.INSTANCE.setPrismLeftOn();
+            StatusSubsystem.INSTANCE.setPrismLeftOn();
 
         }else if(!leftDetect && centerDetect && !rightDetect){
-            CompStatusSubsystem.INSTANCE.setPrismCenterOn();
+            StatusSubsystem.INSTANCE.setPrismCenterOn();
 
         }else if(!leftDetect && !centerDetect && rightDetect){
-            CompStatusSubsystem.INSTANCE.setPrismRightOn();
+            StatusSubsystem.INSTANCE.setPrismRightOn();
 
         }else if(leftDetect && centerDetect && !rightDetect){
-            CompStatusSubsystem.INSTANCE.setPrismLeftAndCenterOn();
+            StatusSubsystem.INSTANCE.setPrismLeftAndCenterOn();
 
         }else if(!leftDetect && centerDetect && rightDetect){
-            CompStatusSubsystem.INSTANCE.setPrismRightAndCenterOn();
+            StatusSubsystem.INSTANCE.setPrismRightAndCenterOn();
 
         }else if(leftDetect && !centerDetect && rightDetect){
-            CompStatusSubsystem.INSTANCE.setPrismLeftAndRightOn();
+            StatusSubsystem.INSTANCE.setPrismLeftAndRightOn();
 
         }else if(leftDetect && centerDetect && rightDetect){
-            CompStatusSubsystem.INSTANCE.setPrismLeftAndRightAndCenterOn();
+            StatusSubsystem.INSTANCE.setPrismLeftAndRightAndCenterOn();
 
         }
 

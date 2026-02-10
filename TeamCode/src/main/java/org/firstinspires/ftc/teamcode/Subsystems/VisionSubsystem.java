@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
-import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
@@ -15,9 +14,9 @@ import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.impl.ServoEx;
 import dev.nextftc.hardware.positionable.SetPosition;
 
-public class CompVisionSubsystem implements Subsystem {
-    public static final CompVisionSubsystem INSTANCE = new CompVisionSubsystem();
-    private CompVisionSubsystem() {}
+public class VisionSubsystem implements Subsystem {
+    public static final VisionSubsystem INSTANCE = new VisionSubsystem();
+    private VisionSubsystem() {}
 
     public ServoEx LLTilt = new ServoEx("LL Tilt");
     private Limelight3A limelight;
@@ -102,13 +101,13 @@ public class CompVisionSubsystem implements Subsystem {
             if (latestResult.isValid()) {
                 switch (latestResult.getFiducialResults().get(0).getFiducialId()) {
                     case 21:
-                        CompStatusSubsystem.INSTANCE.setCurrentOBPattern(CompStatusSubsystem.OBPattern.GPP);
+                        StatusSubsystem.INSTANCE.setCurrentOBPattern(StatusSubsystem.OBPattern.GPP);
                         break;
                     case 22:
-                        CompStatusSubsystem.INSTANCE.setCurrentOBPattern(CompStatusSubsystem.OBPattern.PGP);
+                        StatusSubsystem.INSTANCE.setCurrentOBPattern(StatusSubsystem.OBPattern.PGP);
                         break;
                     case 23:
-                        CompStatusSubsystem.INSTANCE.setCurrentOBPattern(CompStatusSubsystem.OBPattern.PPG);
+                        StatusSubsystem.INSTANCE.setCurrentOBPattern(StatusSubsystem.OBPattern.PPG);
                         break;
 
                 }

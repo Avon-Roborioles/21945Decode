@@ -8,9 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromPoseAuto;
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntake;
-import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunch;
 import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchWithSort;
-import org.firstinspires.ftc.teamcode.Subsystems.CompVisionSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.VisionSubsystem;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
@@ -101,7 +100,7 @@ public class BlueGoalSort extends AutoBase {
 
     }
     @Override public void onStartButtonPressed (){
-        CompVisionSubsystem.INSTANCE.setLLToOB();
+        VisionSubsystem.INSTANCE.setLLToOB();
 //
         Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(false, scorePreload);
         Command RunLaunch1 = new RunTurretAndLauncherFromPoseAuto(false, toScore1);
@@ -123,7 +122,9 @@ public class BlueGoalSort extends AutoBase {
                             new SequentialGroup(
                                     new FollowPath(DriveToScorePreload, false),
                                     new LambdaCommand().setStart(() -> {
-                                        CompVisionSubsystem.INSTANCE.setLLToOB();}).setUpdate(() -> {CompVisionSubsystem.INSTANCE.SearchForOb();}).setIsDone(() -> true).setStop((Interrupted)-> {CompVisionSubsystem.INSTANCE.stopLL();}),
+                                        VisionSubsystem.INSTANCE.setLLToOB();}).setUpdate(() -> {
+                                        VisionSubsystem.INSTANCE.SearchForOb();}).setIsDone(() -> true).setStop((Interrupted)-> {
+                                        VisionSubsystem.INSTANCE.stopLL();}),
                                     LaunchWOSort
                             )
                  ),
