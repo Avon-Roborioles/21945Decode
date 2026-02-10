@@ -3,6 +3,7 @@ import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
+import com.pedropathing.paths.callbacks.TemporalCallback;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromPoseAuto;
@@ -69,6 +70,7 @@ public class BlueGoal12Ball extends AutoBase {
         DriveToScore1 = new Path(new BezierLine(dumpGate, toScore1));
         DriveToScore1.setLinearHeadingInterpolation(dumpGate.getHeading(), toScore1.getHeading());
         DriveToScore1.setTimeoutConstraint(750);
+
 
 
         DriveToPickUp2 = new Path(new BezierCurve(toScore1, toPickUp2CP, toPickUp2));

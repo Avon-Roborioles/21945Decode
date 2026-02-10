@@ -29,7 +29,9 @@ public class CompStatusSubsystem implements Subsystem {
     public static double pwmTarget = 0;
 
 
-    int brightness = 10 ;
+
+
+    int brightness = 100 ;
 
     // put hardware, commands, etc here
     private AnalogInput floodgate ;
@@ -45,6 +47,7 @@ public class CompStatusSubsystem implements Subsystem {
     long prevTime = 0;
     long curTime = 0;
     long deltaTime = 0;
+    Timing.Timer wait = new Timing.Timer(400, TimeUnit.MILLISECONDS);
     MovingStatistics statistics = new MovingStatistics(200);
 
     PrismAnimations.Snakes purpleSnakes = new PrismAnimations.Snakes();
@@ -144,25 +147,25 @@ public class CompStatusSubsystem implements Subsystem {
 
         //Green Left
         greenLeft.setBrightness(brightness);
-        greenLeft.setPrimaryColor(0,255,0);
+        greenLeft.setPrimaryColor(0,0,255);
         greenLeft.setStartIndex(0);
         greenLeft.setStopIndex(11);
 
         //Green Middle Back
         greenMiddleBack.setBrightness(brightness);
-        greenMiddleBack.setPrimaryColor(0,255,0);
+        greenMiddleBack.setPrimaryColor(0,0,255);
         greenMiddleBack.setStartIndex(12);
         greenMiddleBack.setStopIndex(17);
 
         //Green Right
         greenRight.setBrightness(brightness);
-        greenRight.setPrimaryColor(0,255,0);
+        greenRight.setPrimaryColor(0,0,255);
         greenRight.setStartIndex(18);
         greenRight.setStopIndex(29);
 
         //Green Middle Front
         greenMiddleFront.setBrightness(brightness);
-        greenMiddleFront.setPrimaryColor(0,255,0);
+        greenMiddleFront.setPrimaryColor(0,0,255);
         greenMiddleFront.setStartIndex(30);
         greenMiddleFront.setStopIndex(36);
 
@@ -215,62 +218,62 @@ public class CompStatusSubsystem implements Subsystem {
         errorMiddleFront.setStopIndex(36);
 
         leftSL.setBrightness(brightness);
-        leftSL.setPrimaryColor(0, 225, 0);
+        leftSL.setPrimaryColor(252, 51, 153);
         leftSL.setStartIndex(0);
         leftSL.setStopIndex(3);
 
         leftSB.setBrightness(brightness);
-        leftSB.setPrimaryColor(0, 225, 0);
+        leftSB.setPrimaryColor(252, 51, 153);
         leftSB.setStartIndex(12);
         leftSB.setStopIndex(13);
 
         leftSR.setBrightness(brightness);
-        leftSR.setPrimaryColor(0, 225, 0);
+        leftSR.setPrimaryColor(252, 51, 153);
         leftSR.setStartIndex(26);
         leftSR.setStopIndex(29);
 
         leftSF.setBrightness(brightness);
-        leftSF.setPrimaryColor(0, 225, 0);
+        leftSF.setPrimaryColor(252, 51, 153);
         leftSF.setStartIndex(34);
         leftSF.setStopIndex(35);
 
         centerSL.setBrightness(brightness);
-        centerSL.setPrimaryColor(0, 225, 0);
+        centerSL.setPrimaryColor(242, 171, 0);
         centerSL.setStartIndex(4);
         centerSL.setStopIndex(7);
 
         centerSB.setBrightness(brightness);
-        centerSB.setPrimaryColor(0, 225, 0);
+        centerSB.setPrimaryColor(242, 171, 0);
         centerSB.setStartIndex(14);
         centerSB.setStopIndex(15);
 
         centerSR.setBrightness(brightness);
-        centerSR.setPrimaryColor(0, 225, 0);
+        centerSR.setPrimaryColor(242, 171, 0);
         centerSR.setStartIndex(22);
         centerSR.setStopIndex(25);
 
         centerSF.setBrightness(brightness);
-        centerSF.setPrimaryColor(0, 225, 0);
+        centerSF.setPrimaryColor(242, 171, 0);
         centerSF.setStartIndex(32);
         centerSF.setStopIndex(33);
 
         rightSL.setBrightness(brightness);
-        rightSL.setPrimaryColor(0, 225, 0);
+        rightSL.setPrimaryColor(53, 239, 242);
         rightSL.setStartIndex(8);
         rightSL.setStopIndex(11);
 
         rightSB.setBrightness(brightness);
-        rightSB.setPrimaryColor(0, 225, 0);
+        rightSB.setPrimaryColor(53, 239, 242);
         rightSB.setStartIndex(16);
         rightSB.setStopIndex(17);
 
         rightSR.setBrightness(brightness);
-        rightSR.setPrimaryColor(0, 225, 0);
+        rightSR.setPrimaryColor(53, 239, 242);
         rightSR.setStartIndex(18);
         rightSR.setStopIndex(21);
 
         rightSF.setBrightness(brightness);
-        rightSF.setPrimaryColor(0, 225, 0);
+        rightSF.setPrimaryColor(53, 239, 242);
         rightSF.setStartIndex(30);
         rightSF.setStopIndex(31);
 
@@ -298,9 +301,9 @@ public class CompStatusSubsystem implements Subsystem {
         prism.enableDefaultBootArtboard(true);
         prism.setDefaultBootArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_0);
         prism.clearAllAnimations();
-        purpleSnakes.setBrightness(5);
+        purpleSnakes.setBrightness(15);
         purpleSnakes.setSnakeLength(10);
-        purpleSnakes.setColors(new Color(160,32,225));
+        purpleSnakes.setColors(new Color(102,0,204));
         purpleSnakes.setSpeed(0.1F);
         purpleSnakes.setDirection(Direction.Forward);
         prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,purpleSnakes);
@@ -316,66 +319,107 @@ public class CompStatusSubsystem implements Subsystem {
 
     }
     public void setUpLights(){
-//        prism.clearAllAnimations();
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,greenLeft);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,greenRight);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,greenMiddleBack);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,greenMiddleFront);
-//        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_1);
-//
-//        prism.clearAllAnimations();
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,leftSL);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,leftSF);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,leftSB);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,leftSR);
-//        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_2);
-//
-//        prism.clearAllAnimations();
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,rightSL);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,rightSF);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,rightSB);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,rightSR);
-//        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_3);
+        wait.start();
+        while(!wait.done()) {
 
-//        prism.clearAllAnimations();
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,centerSL);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,centerSF);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,centerSB);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,centerSR);
-//        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_4);
+        }
 
-//        prism.clearAllAnimations();
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,leftSL);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,leftSF);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,leftSB);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,leftSR);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_4,rightSL);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_5,rightSF);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_6,rightSB);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_7,rightSR);
-//        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_5);
+        prism.clearAllAnimations();
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,greenLeft);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,greenRight);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,greenMiddleBack);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,greenMiddleFront);
+        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_1);
 
-//        prism.clearAllAnimations();
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,centerSL);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,centerSF);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,centerSB);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,centerSR);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_4,rightSL);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_5,rightSF);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_6,rightSB);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_7,rightSR);
-//        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_6);
-//
-//        prism.clearAllAnimations();
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,leftSL);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,leftSF);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,leftSB);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,leftSR);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_4,centerSL);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_5,centerSF);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_6,centerSB);
-//        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_7, centerSR);
-//        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_7);
+        wait.start();
+        while(!wait.done()) {
+
+        }
+
+        prism.clearAllAnimations();
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,leftSL);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,leftSF);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,leftSB);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,leftSR);
+        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_2);
+
+        wait.start();
+        while(!wait.done()) {
+
+        }
+
+        prism.clearAllAnimations();
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,rightSL);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,rightSF);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,rightSB);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,rightSR);
+        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_3);
+
+        wait.start();
+        while(!wait.done()) {
+
+        }
+
+        prism.clearAllAnimations();
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,centerSL);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,centerSF);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,centerSB);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,centerSR);
+        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_4);
+
+        wait.start();
+        while(!wait.done()) {
+
+        }
+
+        prism.clearAllAnimations();
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,leftSL);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,leftSF);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,leftSB);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,leftSR);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_4,rightSL);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_5,rightSF);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_6,rightSB);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_7,rightSR);
+        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_5);
+
+        wait.start();
+        while(!wait.done()) {
+
+        }
+
+        prism.clearAllAnimations();
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,centerSL);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,centerSF);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,centerSB);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,centerSR);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_4,rightSL);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_5,rightSF);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_6,rightSB);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_7,rightSR);
+        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_6);
+
+        wait.start();
+        while(!wait.done()) {
+
+        }
+
+        prism.clearAllAnimations();
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,leftSL);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,leftSF);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,leftSB);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,leftSR);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_4,centerSL);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_5,centerSF);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_6,centerSB);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_7, centerSR);
+        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_7);
+
+        wait.start();
+        while(!wait.done()) {
+
+        }
+        setPrismNorm();
 
 
 

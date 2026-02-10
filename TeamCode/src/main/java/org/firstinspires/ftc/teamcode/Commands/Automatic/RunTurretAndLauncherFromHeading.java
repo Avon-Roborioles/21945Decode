@@ -27,6 +27,9 @@ public class RunTurretAndLauncherFromHeading extends Command {
     Pose goal;
     Pose goalAngle;
     public static double shotTime = 0.85;
+    Boolean lightsNeedSet = false;
+    Boolean happy = false;
+
 
     public RunTurretAndLauncherFromHeading(boolean redAlliance) {
         this.redAlliance = redAlliance;
@@ -58,9 +61,10 @@ public class RunTurretAndLauncherFromHeading extends Command {
         CompTurretSubsystem.INSTANCE.turnTurretToFieldAngle(turretFieldAngleRad);
         CompLauncherSubsystem.INSTANCE.RunLauncherFromDistance(distanceToGoal);
         if(CompTurretSubsystem.INSTANCE.TurretHappy() && CompLauncherSubsystem.INSTANCE.LaunchReady()){
-            CompStatusSubsystem.INSTANCE.setPrismGreen();
+                CompStatusSubsystem.INSTANCE.setPrismGreen();
         }else {
-            CompStatusSubsystem.INSTANCE.setPrismOrange();
+                CompStatusSubsystem.INSTANCE.setPrismOrange();
+
         }
 //        ActiveOpMode.telemetry().addLine("-------------- RunTurretAndLauncherFromHeading Telemetry: --------------");
 //        ActiveOpMode.telemetry().addData("redAlliance", redAlliance);
@@ -78,7 +82,6 @@ public class RunTurretAndLauncherFromHeading extends Command {
         CompLauncherSubsystem.INSTANCE.HoodDown().schedule();
         CompLauncherSubsystem.INSTANCE.StopLauncher.schedule();
         CompStatusSubsystem.INSTANCE.setPrismNorm();
-
 
         // executed when the command ends
     }

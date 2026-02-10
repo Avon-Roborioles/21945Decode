@@ -217,56 +217,56 @@ public class CompSorterSubsystem implements Subsystem {
         return (sortCSC.getNormalizedColors().alpha > 0.113);
     }
     public boolean rightDetected(){
-        rightDetect = sortCSR.getDistance(DistanceUnit.MM)<42;
+        rightDetect = sortCSR.getDistance(DistanceUnit.MM)<40;
         return rightDetect;
     }
     public boolean rightDetectedDumb(){
-        return (sortCSR.getNormalizedColors().alpha > 0.190);
+        return (sortCSR.getNormalizedColors().alpha > 0.20);
     }
 
 
     public SlotDetection leftSlot(){
         updateColor();
-        if(leftDetected()){
+        if(sortCSL.getDistance(DistanceUnit.MM)<70){
             if(leftColor.red<0.37) {
-                CompStatusSubsystem.INSTANCE.setLeftGreen();
+//                CompStatusSubsystem.INSTANCE.setLeftGreen();
                 return SlotDetection.GREEN;
             }else {
-                CompStatusSubsystem.INSTANCE.setLeftPurple();
+//                CompStatusSubsystem.INSTANCE.setLeftPurple();
                 return SlotDetection.PURPLE;
             }
         }else {
-            CompStatusSubsystem.INSTANCE.setLeftOff();
+//            CompStatusSubsystem.INSTANCE.setLeftOff();
             return SlotDetection.EMPTY;
         }
     }
     public SlotDetection centerSlot(){
         updateColor();
-        if(centerDetected()){
+        if(sortCSC.getDistance(DistanceUnit.MM)<80){
             if(centerColor.green>0.70) {
-                CompStatusSubsystem.INSTANCE.setCenterGreen();
+//                CompStatusSubsystem.INSTANCE.setCenterGreen();
                 return SlotDetection.GREEN;
             }else {
-                CompStatusSubsystem.INSTANCE.setCenterPurple();
+//                CompStatusSubsystem.INSTANCE.setCenterPurple();
                 return SlotDetection.PURPLE;
             }
         }else {
-            CompStatusSubsystem.INSTANCE.setCenterOff();
+//            CompStatusSubsystem.INSTANCE.setCenterOff();
             return SlotDetection.EMPTY;
         }
     }
     public SlotDetection rightSlot(){
         updateColor();
-        if(rightDetected()){
+        if(sortCSR.getDistance(DistanceUnit.MM)<42){
             if(rightColor.red<0.40) {
-                CompStatusSubsystem.INSTANCE.setRightGreen();
+//                CompStatusSubsystem.INSTANCE.setRightGreen();
                 return SlotDetection.GREEN;
             }else{
-                CompStatusSubsystem.INSTANCE.setRightPurple();
+//                CompStatusSubsystem.INSTANCE.setRightPurple();
                 return SlotDetection.PURPLE;
             }
         }else {
-            CompStatusSubsystem.INSTANCE.setRightOff();
+//            CompStatusSubsystem.INSTANCE.setRightOff();
             return SlotDetection.EMPTY;
         }
     }
