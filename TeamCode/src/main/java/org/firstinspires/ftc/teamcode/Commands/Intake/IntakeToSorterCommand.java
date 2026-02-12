@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.Utility.Timing;
 import java.util.concurrent.TimeUnit;
 
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.ftc.ActiveOpMode;
 
 
 public class IntakeToSorterCommand extends Command {
@@ -58,6 +59,8 @@ public class IntakeToSorterCommand extends Command {
             case CheckForFull:
                 if (SorterSubsystem.INSTANCE.sorterFull() || SorterSubsystem.INSTANCE.sorterFullDumb()) {
                     step = intakeSeq.Hug;
+                    ActiveOpMode.gamepad1().rumble(250);
+
                 }
                 break;
             case Hug:
