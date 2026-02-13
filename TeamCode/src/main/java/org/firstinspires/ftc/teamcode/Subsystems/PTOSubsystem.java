@@ -1,10 +1,15 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+
+import dev.nextftc.bindings.Range;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
+import dev.nextftc.hardware.controllable.MotorGroup;
+import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.impl.ServoEx;
 import dev.nextftc.hardware.positionable.SetPosition;
 
@@ -19,14 +24,26 @@ public class PTOSubsystem implements Subsystem {
     // put hardware, commands, etc here
     public ServoEx ptoL = new ServoEx("PTO L");
     public ServoEx ptoR = new ServoEx("PTO R");
+    public MotorGroup LeftMotors = new MotorGroup(new MotorEx(Constants.driveConstants.leftFrontMotorName), new MotorEx(Constants.driveConstants.leftRearMotorName));
+    public MotorGroup RightMotors = new MotorGroup(new MotorEx(Constants.driveConstants.rightFrontMotorName), new MotorEx(Constants.driveConstants.rightRearMotorName));
+    public Command disengage = new ParallelGroup(new SetPosition(ptoL, lUp).setIsDone(()->true), new SetPosition(ptoR, rUp).setIsDone(()->true), new LambdaCommand().setStart(() -> engaged = false).setIsDone(()->true));
+    public Command engage = new ParallelGroup(new SetPosition(ptoL, lDown), new SetPosition(ptoR, rDown), new LambdaCommand().setStart(() -> engaged = true).setIsDone(()->true));
 
-    public Command disengage = new ParallelGroup(new SetPosition(ptoL, lUp), new SetPosition(ptoR, rUp), new LambdaCommand().setStart(() -> engaged = false));
-    public Command engage = new ParallelGroup(new SetPosition(ptoL, lDown), new SetPosition(ptoR, rDown), new LambdaCommand().setStart(() -> engaged = true));
-
-
+    public void Engage(){
+        ptoL.setPosition(lDown);
+        ptoR.setPosition(rDown);
+        engaged = true;
+    }
+    public void Disengage(){
+        ptoL.setPosition(lUp);
+        ptoR.setPosition(rUp);
+        engaged = false;
+    }
     @Override
     public void initialize() {
         engaged = false;
+
+
         // initialization logic (runs on init)
     }
 
@@ -42,5 +59,12 @@ public class PTOSubsystem implements Subsystem {
         ActiveOpMode.telemetry().addData("PTO R Position", ptoR.getPosition());
 
 
+    }
+
+    public void runLeftFromJoystick(Range input){
+        LeftMotors.setPower(input.get().doubleValue());
+    }
+    public void runRightFromJoystick(Range input){
+        RightMotors.setPower(input.get().doubleValue());
     }
 }

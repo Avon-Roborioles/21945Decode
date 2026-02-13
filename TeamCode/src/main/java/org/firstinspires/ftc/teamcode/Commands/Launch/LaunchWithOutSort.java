@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Commands.Launch;
 
 import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.TurretSubsystem;
 import org.firstinspires.ftc.teamcode.Utility.Timing;
 
 import java.util.concurrent.TimeUnit;
@@ -71,9 +72,13 @@ public class LaunchWithOutSort extends Command {
                 break;
             case LaunchCenter:
                 if(!(SorterSubsystem.INSTANCE.centerSlot() == SorterSubsystem.SlotDetection.EMPTY)){
-                    SorterSubsystem.INSTANCE.sendCenter();
-                    wait.start();
-                    St = Step.WaitCenter;
+                    if(TurretSubsystem.INSTANCE.turretFine()) {
+                        SorterSubsystem.INSTANCE.sendCenter();
+                        wait.start();
+                        St = Step.WaitCenter;
+                    }else{
+                        ActiveOpMode.gamepad1().rumble(100);
+                    }
                 } else {
                     St = Step.LaunchLeft;
                 }
@@ -92,9 +97,13 @@ public class LaunchWithOutSort extends Command {
                 break;
             case LaunchLeft:
                 if(!(SorterSubsystem.INSTANCE.leftSlot() == SorterSubsystem.SlotDetection.EMPTY)){
-                    SorterSubsystem.INSTANCE.sendLeft();
-                    wait.start();
-                    St = Step.WaitLeft;
+                    if(TurretSubsystem.INSTANCE.turretFine()) {
+                        SorterSubsystem.INSTANCE.sendLeft();
+                        wait.start();
+                        St = Step.WaitLeft;
+                    }else{
+                        ActiveOpMode.gamepad1().rumble(100);
+                    }
                 } else {
                     St = Step.LaunchRight;
 
@@ -114,9 +123,13 @@ public class LaunchWithOutSort extends Command {
                 break;
             case LaunchRight:
                 if(!(SorterSubsystem.INSTANCE.rightSlot() == SorterSubsystem.SlotDetection.EMPTY)){
-                    SorterSubsystem.INSTANCE.sendRight();
-                    wait.start();
-                    St = Step.WaitRight;
+                    if(TurretSubsystem.INSTANCE.turretFine()) {
+                        SorterSubsystem.INSTANCE.sendRight();
+                        wait.start();
+                        St = Step.WaitRight;
+                    }else{
+                        ActiveOpMode.gamepad1().rumble(100);
+                    }
                 } else {
                     St = Step.Pause;
                 }

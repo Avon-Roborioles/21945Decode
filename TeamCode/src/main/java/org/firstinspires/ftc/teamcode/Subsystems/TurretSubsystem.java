@@ -40,7 +40,7 @@ public class TurretSubsystem implements Subsystem {
     double power = 0;
     double leftLimit = -140;
     double rightLimit = 130;
-    boolean turretOn = true;
+    boolean turretOn = false;
 
     public static double akp =0.0015;
     public static double akI =0;
@@ -221,6 +221,9 @@ public class TurretSubsystem implements Subsystem {
     public boolean TurretHappy(){
         return turretControlSystem.isWithinTolerance(new KineticState(3));
     }
+    public boolean turretFine(){
+        return turretControlSystem.isWithinTolerance(new KineticState(5));
+    }
 
     public void turnTurretOn(){
         turretOn = true;
@@ -276,9 +279,9 @@ public class TurretSubsystem implements Subsystem {
 
 
         if(!ActiveOpMode.opModeInInit()){
-//            if (tuneMode){
-//                turretTargetPosDeg = turretTargetTune;
-//            }
+            if (tuneMode){
+                turretTargetPosDeg = turretTargetTune;
+            }
             //400 Degree Flip
             if(turretTargetPosDeg>200){
                 turretTargetPosDeg= (-160 + (turretTargetPosDeg-200));
@@ -286,12 +289,12 @@ public class TurretSubsystem implements Subsystem {
                 turretTargetPosDeg= ( 160 + (turretTargetPosDeg+200));
             }
             // 200 Hard limit
-//            if(turretTargetPosDeg<leftLimit){
-//                turretTargetPosDeg= leftLimit;
-//
-//            }else if(turretTargetPosDeg>rightLimit){
-//                turretTargetPosDeg= rightLimit;
-//            }
+            if(turretTargetPosDeg<leftLimit){
+                turretTargetPosDeg= leftLimit;
+
+            }else if(turretTargetPosDeg>rightLimit){
+                turretTargetPosDeg= rightLimit;
+            }
             turretControlSystem.setGoal(new KineticState(turretTargetPosDeg));
             coefficients.kD= akD;
             coefficients.kI= akI;

@@ -5,11 +5,13 @@ import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.Pose;
 
 import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromHeading;
+import org.firstinspires.ftc.teamcode.Commands.Automatic.TeleOpDriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.HumanPlayerReset;
 import org.firstinspires.ftc.teamcode.Commands.Intake.IntakeToSorterCommand;
 import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunch;
 import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchWithOutSort;
 import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchWithSort;
+import org.firstinspires.ftc.teamcode.Commands.PTOJoystickCommand;
 import org.firstinspires.ftc.teamcode.Commands.ReLocalizeWithLLCommand;
 import org.firstinspires.ftc.teamcode.Commands.Turret.TurretJoystickCommand;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeSubsystem;
@@ -40,9 +42,9 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 import dev.nextftc.hardware.driving.DriverControlledCommand;
 
 public abstract class TeleOpBase extends Storage {
-    Pose holdPose;
     Pose Botpose;
-    DriverControlledCommand driverControlled;
+    TeleOpDriveCommand driverControlled;
+    PTOJoystickCommand joyCommand;
     Timing.Timer waitTimer = new Timing.Timer(100, TimeUnit.MILLISECONDS);
 
 
@@ -67,7 +69,7 @@ public abstract class TeleOpBase extends Storage {
 
 
     }
-    public abstract DriverControlledCommand driveCommand();
+    public abstract TeleOpDriveCommand driveCommand();
     public abstract Boolean RedAlliance();
 
 
@@ -91,6 +93,7 @@ public abstract class TeleOpBase extends Storage {
     @Override
     public void onStartButtonPressed() {
 
+
         Command launchWithoutSort = new LaunchWithOutSort();
         Command launchWithSort = new LaunchWithSort();
         Command intakeToSorter = new IntakeToSorterCommand();
@@ -98,7 +101,6 @@ public abstract class TeleOpBase extends Storage {
         Command runTurretFromJoystick = new TurretJoystickCommand(Gamepads.gamepad2().rightStickX(), Gamepads.gamepad2().leftStickX());
         Command forceLaunch = new ForceLaunch();
 
-        Command ReLocalize = new ReLocalizeWithLLCommand();
         Command eStop = new SequentialGroup(LauncherSubsystem.INSTANCE.StopLauncher, IntakeSubsystem.INSTANCE.StopIntake, LauncherSubsystem.INSTANCE.HoodDown(), new LambdaCommand().setStart(intakeToSorter::cancel).setIsDone(() -> true),
                 new LambdaCommand().setStart(forceLaunch::cancel).setIsDone(() -> true),
                 new LambdaCommand().setStart(runTurretFromJoystick::cancel).setIsDone(() -> true),
@@ -116,7 +118,7 @@ public abstract class TeleOpBase extends Storage {
 
         Gamepads.gamepad1().circle().whenBecomesTrue(launchWithoutSort).whenBecomesFalse(new LambdaCommand().setStart(launchWithoutSort::cancel).setIsDone(() -> true));
         Gamepads.gamepad1().square().whenBecomesTrue(new HumanPlayerReset(RedAlliance()));
-        Gamepads.gamepad1().triangle().whenBecomesTrue(PTOSubsystem.INSTANCE.engage).whenBecomesFalse(PTOSubsystem.INSTANCE.disengage);
+//        Gamepads.gamepad1().triangle().whenBecomesTrue(PTOSubsystem.INSTANCE.engage).whenBecomesFalse(PTOSubsystem.INSTANCE.disengage);
         Gamepads.gamepad1().cross().whenBecomesTrue(runTurretAndLauncherFromHeading).whenBecomesFalse(new LambdaCommand().setStart(() -> {runTurretAndLauncherFromHeading.cancel();runTurretFromJoystick.schedule();}).setIsDone(() -> true));;
         Gamepads.gamepad1().dpadUp();
         Gamepads.gamepad1().dpadDown();
@@ -129,8 +131,7 @@ public abstract class TeleOpBase extends Storage {
         Gamepads.gamepad1().leftBumper().whenBecomesTrue(intakeToSorter);
         Gamepads.gamepad1().rightBumper().whenTrue(IntakeSubsystem.INSTANCE.Outtake).whenBecomesFalse(IntakeSubsystem.INSTANCE.StopIntake);
         Gamepads.gamepad1().options();
-        Gamepads.gamepad1().share().whenBecomesTrue(new LambdaCommand().setStart(() -> {
-            StatusSubsystem.INSTANCE.setPrismNorm();}));
+        Gamepads.gamepad1().share().whenBecomesTrue(new LambdaCommand().setStart(() -> {StatusSubsystem.INSTANCE.setPrismNorm();}));
         Gamepads.gamepad1().ps().whenBecomesTrue(new LambdaCommand().setStart(() -> {PedroComponent.follower().setPose(new Pose(PedroComponent.follower().getPose().getX(),PedroComponent.follower().getPose().getY(),(3*Math.PI)/2));}).setIsDone(() -> true));;
         Gamepads.gamepad1().touchpad().whenBecomesTrue(eStop);
 
@@ -141,12 +142,12 @@ public abstract class TeleOpBase extends Storage {
         Gamepads.gamepad2().cross().toggleOnBecomesTrue().whenBecomesTrue(runTurretAndLauncherFromHeading).whenBecomesFalse(new LambdaCommand().setStart(() -> {runTurretAndLauncherFromHeading.cancel();runTurretFromJoystick.schedule();}).setIsDone(() -> true));;
         Gamepads.gamepad2().dpadUp().whenBecomesTrue(LauncherSubsystem.INSTANCE.SpeedUp);
         Gamepads.gamepad2().dpadDown().whenBecomesTrue(LauncherSubsystem.INSTANCE.SpeedDown);
-//        Gamepads.gamepad2().dpadLeft().toggleOnBecomesTrue().whenBecomesTrue(new InstantCommand(()->{ReLocalize.schedule();}));
+        Gamepads.gamepad2().dpadLeft();
         Gamepads.gamepad2().dpadRight();
         Gamepads.gamepad2().leftStickX();
         Gamepads.gamepad2().leftStickX();
-        Gamepads.gamepad2().leftStickY().lessThan(-0.75).whenBecomesTrue(LauncherSubsystem.INSTANCE.HoodPlus);
-        Gamepads.gamepad2().leftStickY().atLeast(0.75).whenBecomesTrue(LauncherSubsystem.INSTANCE.HoodMinus);
+//        Gamepads.gamepad2().leftStickY().lessThan(-0.75).whenBecomesTrue(LauncherSubsystem.INSTANCE.HoodPlus);
+//        Gamepads.gamepad2().leftStickY().atLeast(0.75).whenBecomesTrue(LauncherSubsystem.INSTANCE.HoodMinus);
         Gamepads.gamepad2().leftStickButton();
         Gamepads.gamepad2().rightStickY().lessThan(-0.75);
         Gamepads.gamepad2().rightStickY().atLeast(0.75);
@@ -157,10 +158,7 @@ public abstract class TeleOpBase extends Storage {
         Gamepads.gamepad2().rightBumper().whenTrue(IntakeSubsystem.INSTANCE.Outtake).whenBecomesFalse(IntakeSubsystem.INSTANCE.StopIntake);
         Gamepads.gamepad2().options().whenBecomesTrue(StatusSubsystem.INSTANCE.cycleOBPatternCommand);
         Gamepads.gamepad2().share();
-        Gamepads.gamepad2().ps().toggleOnBecomesTrue().whenTrue(new LambdaCommand().setStart(() -> {
-            VisionSubsystem.INSTANCE.setLLToOB();}).setUpdate(() -> {
-            VisionSubsystem.INSTANCE.SearchForOb();}).setIsDone(() -> true).setStop((Interrupted)-> {
-            VisionSubsystem.INSTANCE.stopLL();}));
+        Gamepads.gamepad2().ps();
         Gamepads.gamepad2().touchpad().whenBecomesTrue(eStop);
         Command start = new SequentialGroup(SorterSubsystem.INSTANCE.wake, SorterSubsystem.INSTANCE.resetSorter, PTOSubsystem.INSTANCE.disengage, VisionSubsystem.INSTANCE.down);
         start.schedule();
@@ -184,10 +182,7 @@ public abstract class TeleOpBase extends Storage {
     @Override
     public void onStop() {
 
-        StatusSubsystem.INSTANCE.returnToDefault();
-        StatusSubsystem.INSTANCE.prism.clearAllAnimations();
-        StatusSubsystem.INSTANCE.prism.loadAnimationsFromArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_0);
-        telemetry.addLine("Done");
+        StatusSubsystem.INSTANCE.setPrismNorm();
 
     }
 }
