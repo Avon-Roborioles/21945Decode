@@ -24,8 +24,8 @@ public class PTOSubsystem implements Subsystem {
     // put hardware, commands, etc here
     public ServoEx ptoL = new ServoEx("PTO L");
     public ServoEx ptoR = new ServoEx("PTO R");
-    public MotorGroup LeftMotors = new MotorGroup(new MotorEx(Constants.driveConstants.leftFrontMotorName), new MotorEx(Constants.driveConstants.leftRearMotorName));
-    public MotorGroup RightMotors = new MotorGroup(new MotorEx(Constants.driveConstants.rightFrontMotorName), new MotorEx(Constants.driveConstants.rightRearMotorName));
+    public MotorGroup LeftMotors = new MotorGroup(new MotorEx("FrontLeft"), new MotorEx("BackLeft"));
+    public MotorGroup RightMotors = new MotorGroup(new MotorEx("FrontRight"), new MotorEx("BackRight"));
     public Command disengage = new ParallelGroup(new SetPosition(ptoL, lUp).setIsDone(()->true), new SetPosition(ptoR, rUp).setIsDone(()->true), new LambdaCommand().setStart(() -> engaged = false).setIsDone(()->true));
     public Command engage = new ParallelGroup(new SetPosition(ptoL, lDown), new SetPosition(ptoR, rDown), new LambdaCommand().setStart(() -> engaged = true).setIsDone(()->true));
 
@@ -62,9 +62,9 @@ public class PTOSubsystem implements Subsystem {
     }
 
     public void runLeftFromJoystick(Range input){
-        LeftMotors.setPower(input.get().doubleValue());
+        LeftMotors.setPower(input.get());
     }
     public void runRightFromJoystick(Range input){
-        RightMotors.setPower(input.get().doubleValue());
+        RightMotors.setPower(input.get());
     }
 }
