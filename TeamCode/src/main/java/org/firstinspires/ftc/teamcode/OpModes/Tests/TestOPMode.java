@@ -64,8 +64,8 @@ public class TestOPMode extends NextFTCOpMode {
     public void onUpdate() {
 
         PTOSubsystem.INSTANCE.Engage();
-        PTOSubsystem.INSTANCE.runLeftFromJoystick(Gamepads.gamepad2().leftStickY());
-        PTOSubsystem.INSTANCE.runRightFromJoystick(Gamepads.gamepad2().rightStickY());
+//        PTOSubsystem.INSTANCE.runLeftFromJoystick(Gamepads.gamepad2().leftStickY());
+//        PTOSubsystem.INSTANCE.runRightFromJoystick(Gamepads.gamepad2().rightStickY());
 
 
 

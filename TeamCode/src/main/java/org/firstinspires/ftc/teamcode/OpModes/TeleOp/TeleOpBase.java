@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
+import static dev.nextftc.bindings.Bindings.button;
+
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.Pose;
@@ -29,7 +31,10 @@ import org.firstinspires.ftc.teamcode.Utility.Timing;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
+import dev.nextftc.bindings.Button;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.LambdaCommand;
@@ -45,7 +50,10 @@ public abstract class TeleOpBase extends Storage {
     Pose Botpose;
     TeleOpDriveCommand driverControlled;
     PTOJoystickCommand joyCommand;
+    Boolean inLift = false;
+
     Timing.Timer waitTimer = new Timing.Timer(100, TimeUnit.MILLISECONDS);
+    Timing.Timer deBounce = new Timing.Timer(500, TimeUnit.MILLISECONDS);
 
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
@@ -90,8 +98,13 @@ public abstract class TeleOpBase extends Storage {
 
     }
 
+
     @Override
     public void onStartButtonPressed() {
+
+
+
+
 
 
         Command launchWithoutSort = new LaunchWithOutSort();
@@ -110,7 +123,7 @@ public abstract class TeleOpBase extends Storage {
         PedroComponent.follower().setPose( PosStorage.memory.lastPose);
         PedroComponent.follower().setHeading( PosStorage.memory.lastPose.getHeading());
 
-
+        joyCommand = new PTOJoystickCommand(Gamepads.gamepad2().leftStickY(), Gamepads.gamepad2().rightStickY());
         driverControlled = driveCommand();
 
 
@@ -158,10 +171,13 @@ public abstract class TeleOpBase extends Storage {
         Gamepads.gamepad2().rightBumper().whenTrue(IntakeSubsystem.INSTANCE.Outtake).whenBecomesFalse(IntakeSubsystem.INSTANCE.StopIntake);
         Gamepads.gamepad2().options().whenBecomesTrue(StatusSubsystem.INSTANCE.cycleOBPatternCommand);
         Gamepads.gamepad2().share();
-        Gamepads.gamepad2().ps();
+
+
+
         Gamepads.gamepad2().touchpad().whenBecomesTrue(eStop);
         Command start = new SequentialGroup(SorterSubsystem.INSTANCE.wake, SorterSubsystem.INSTANCE.resetSorter, PTOSubsystem.INSTANCE.disengage, VisionSubsystem.INSTANCE.down);
         start.schedule();
+
     }
 
     @Override
@@ -172,9 +188,21 @@ public abstract class TeleOpBase extends Storage {
             if(Botpose!= null){
                 PosStorage.memory.lastPose = PedroComponent.follower().getPose();
             }
+            if(!inLift){
+                if(Gamepads.gamepad2().ps().get() && Gamepads.gamepad1().options().get()){
+                    inLift = true;
+                    joyCommand.schedule();
+                    deBounce.start();
+                }
+            }else{
+                if((Gamepads.gamepad2().ps().get() || Gamepads.gamepad1().options().get()) && deBounce.done()){
+                    inLift = false;
+                    joyCommand.cancel();
+                }
+            }
             telemetry.addData("last Pos",  PosStorage.memory.lastPose);
         }
-
+        telemetry.addData("inLift", inLift);
         telemetry.addData("BotPose", Botpose);
         panelsTelemetry.update(telemetry);
     }

@@ -7,6 +7,7 @@ import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.controllable.MotorGroup;
 import dev.nextftc.hardware.impl.MotorEx;
@@ -24,8 +25,7 @@ public class PTOSubsystem implements Subsystem {
     // put hardware, commands, etc here
     public ServoEx ptoL = new ServoEx("PTO L");
     public ServoEx ptoR = new ServoEx("PTO R");
-    public MotorGroup LeftMotors = new MotorGroup(new MotorEx("FrontLeft"), new MotorEx("BackLeft"));
-    public MotorGroup RightMotors = new MotorGroup(new MotorEx("FrontRight"), new MotorEx("BackRight"));
+    MotorEx fl, fr, bl,br;
     public Command disengage = new ParallelGroup(new SetPosition(ptoL, lUp).setIsDone(()->true), new SetPosition(ptoR, rUp).setIsDone(()->true), new LambdaCommand().setStart(() -> engaged = false).setIsDone(()->true));
     public Command engage = new ParallelGroup(new SetPosition(ptoL, lDown), new SetPosition(ptoR, rDown), new LambdaCommand().setStart(() -> engaged = true).setIsDone(()->true));
 
@@ -42,6 +42,10 @@ public class PTOSubsystem implements Subsystem {
     @Override
     public void initialize() {
         engaged = false;
+        fr = new MotorEx("FrontRight");
+        fl = new MotorEx("FrontLeft").reversed();
+        br = new MotorEx("BackRight");
+        bl = new MotorEx("BackLeft").reversed();
 
 
         // initialization logic (runs on init)
@@ -61,10 +65,5 @@ public class PTOSubsystem implements Subsystem {
 
     }
 
-    public void runLeftFromJoystick(Range input){
-        LeftMotors.setPower(input.get());
-    }
-    public void runRightFromJoystick(Range input){
-        RightMotors.setPower(input.get());
-    }
+
 }
