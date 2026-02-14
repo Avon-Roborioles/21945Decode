@@ -2,9 +2,9 @@ package org.firstinspires.ftc.teamcode.Commands.Automatic;
 
 import com.pedropathing.geometry.Pose;
 
-import org.firstinspires.ftc.teamcode.Subsystems.CompLauncherSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompStatusSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompTurretSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.LauncherSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.StatusSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.TurretSubsystem;
 import org.firstinspires.ftc.teamcode.Utility.Timing;
 
 import dev.nextftc.core.commands.Command;
@@ -31,7 +31,7 @@ public class RunTurretAndLauncherFromPoseAuto extends Command {
     public RunTurretAndLauncherFromPoseAuto(boolean redAlliance, Pose EndPose) {
         this.redAlliance = redAlliance;
         this.botPose = EndPose;
-        requires(CompTurretSubsystem.INSTANCE);
+        requires(TurretSubsystem.INSTANCE);
         setInterruptible(true); // this is the default, so you don't need to specify
     }
 
@@ -42,6 +42,7 @@ public class RunTurretAndLauncherFromPoseAuto extends Command {
 
     @Override
     public void start() {
+        TurretSubsystem.INSTANCE.turnTurretOn();
         goal = redAlliance ? redGoal : blueGoal;
         goalAngle = redAlliance ? RedGoalAngle : BlueGoalAngle;
         startDelay.start();
@@ -55,20 +56,15 @@ public class RunTurretAndLauncherFromPoseAuto extends Command {
             botPose = PedroComponent.follower().getPose();
         }
         distanceToGoal = Math.hypot((goal.getX()- botPose.getX()), (goal.getY()-botPose.getY()));
-        turretFieldAngleRad = Math.atan2((goalAngle.getY()- botPose.getY()), (goalAngle.getX()- botPose.getX()) + PedroComponent.follower().getAngularVelocity()* CompStatusSubsystem.INSTANCE.getLoopTimeSeconds());
+        turretFieldAngleRad = Math.atan2((goalAngle.getY()- botPose.getY()), (goalAngle.getX()- botPose.getX()) + PedroComponent.follower().getAngularVelocity()* StatusSubsystem.INSTANCE.getLoopTimeSeconds());
 
-        CompTurretSubsystem.INSTANCE.turnTurretToFieldAngleAuto(turretFieldAngleRad, botPose.getHeading());
-        CompLauncherSubsystem.INSTANCE.RunLauncherFromDistance(distanceToGoal);
+        TurretSubsystem.INSTANCE.turnTurretToFieldAngleAuto(turretFieldAngleRad, botPose.getHeading());
+        LauncherSubsystem.INSTANCE.RunLauncherFromDistance(distanceToGoal);
         ActiveOpMode.telemetry().addLine("-------------- RunTurretAndLauncherFromHeading Telemetry: --------------");
         ActiveOpMode.telemetry().addData("redAlliance", redAlliance);
         ActiveOpMode.telemetry().addData("BotPose", botPose);
         ActiveOpMode.telemetry().addData("distanceToGoal", distanceToGoal);
         ActiveOpMode.telemetry().addData("turretFieldAngleDeg", Math.toDegrees(turretFieldAngleRad));
-        if(CompTurretSubsystem.INSTANCE.TurretHappy() && CompLauncherSubsystem.INSTANCE.LaunchReady()){
-            CompStatusSubsystem.INSTANCE.setPrismGreen();
-        }else {
-            CompStatusSubsystem.INSTANCE.setPrismOrange();
-        }
 
         // executed on every update of the command
     }
@@ -76,9 +72,11 @@ public class RunTurretAndLauncherFromPoseAuto extends Command {
     @Override
     public void stop(boolean interrupted) {
 
-        CompLauncherSubsystem.INSTANCE.HoodDown().schedule();
-        CompLauncherSubsystem.INSTANCE.StopLauncher.schedule();
-        CompStatusSubsystem.INSTANCE.setPrismNorm();
+        LauncherSubsystem.INSTANCE.HoodDown().schedule();
+        LauncherSubsystem.INSTANCE.StopLauncher.schedule();
+        StatusSubsystem.INSTANCE.setPrismNorm();
+        TurretSubsystem.INSTANCE.turnTurretOff();
+
 
 
         // executed when the command ends

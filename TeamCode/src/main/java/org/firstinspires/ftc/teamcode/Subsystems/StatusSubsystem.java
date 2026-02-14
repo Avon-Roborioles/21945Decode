@@ -1,10 +1,8 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.I2cDeviceSynchDevice;
-import com.qualcomm.robotcore.hardware.PWMOutputEx;
 import com.qualcomm.robotcore.hardware.PwmControl;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.MovingStatistics;
@@ -21,13 +19,16 @@ import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
+@Configurable
+public class StatusSubsystem implements Subsystem {
+    public static final StatusSubsystem INSTANCE = new StatusSubsystem();
+    private StatusSubsystem() {}
+    public static double pwmTarget = 0;
 
-public class CompStatusSubsystem implements Subsystem {
-    public static final CompStatusSubsystem INSTANCE = new CompStatusSubsystem();
-    private CompStatusSubsystem() {}
 
 
-    int brightness = 10 ;
+
+    int brightness = 100 ;
 
     // put hardware, commands, etc here
     private AnalogInput floodgate ;
@@ -43,6 +44,7 @@ public class CompStatusSubsystem implements Subsystem {
     long prevTime = 0;
     long curTime = 0;
     long deltaTime = 0;
+    Timing.Timer wait = new Timing.Timer(400, TimeUnit.MILLISECONDS);
     MovingStatistics statistics = new MovingStatistics(200);
 
     PrismAnimations.Snakes purpleSnakes = new PrismAnimations.Snakes();
@@ -62,6 +64,23 @@ public class CompStatusSubsystem implements Subsystem {
     PrismAnimations.Solid errorMiddleBack = new PrismAnimations.Solid();
     PrismAnimations.Solid errorMiddleFront = new PrismAnimations.Solid();
     PrismAnimations.Solid errorRight = new PrismAnimations.Solid();
+
+    PrismAnimations.Solid leftSL = new PrismAnimations.Solid();
+    PrismAnimations.Solid leftSB = new PrismAnimations.Solid();
+    PrismAnimations.Solid leftSR = new PrismAnimations.Solid();
+    PrismAnimations.Solid leftSF = new PrismAnimations.Solid();
+    PrismAnimations.Solid rightSL = new PrismAnimations.Solid();
+    PrismAnimations.Solid rightSB = new PrismAnimations.Solid();
+    PrismAnimations.Solid rightSR = new PrismAnimations.Solid();
+    PrismAnimations.Solid rightSF = new PrismAnimations.Solid();
+    PrismAnimations.Solid centerSL = new PrismAnimations.Solid();
+    PrismAnimations.Solid centerSB = new PrismAnimations.Solid();
+    PrismAnimations.Solid centerSR = new PrismAnimations.Solid();
+    PrismAnimations.Solid centerSF = new PrismAnimations.Solid();
+
+
+
+
 
     Timing.Timer delay = new Timing.Timer(3000, TimeUnit.MILLISECONDS);
     private enum CStatus{
@@ -125,25 +144,25 @@ public class CompStatusSubsystem implements Subsystem {
 
         //Green Left
         greenLeft.setBrightness(brightness);
-        greenLeft.setPrimaryColor(0,255,0);
+        greenLeft.setPrimaryColor(0,0,255);
         greenLeft.setStartIndex(0);
         greenLeft.setStopIndex(11);
 
         //Green Middle Back
         greenMiddleBack.setBrightness(brightness);
-        greenMiddleBack.setPrimaryColor(0,255,0);
+        greenMiddleBack.setPrimaryColor(0,0,255);
         greenMiddleBack.setStartIndex(12);
         greenMiddleBack.setStopIndex(17);
 
         //Green Right
         greenRight.setBrightness(brightness);
-        greenRight.setPrimaryColor(0,255,0);
+        greenRight.setPrimaryColor(0,0,255);
         greenRight.setStartIndex(18);
         greenRight.setStopIndex(29);
 
         //Green Middle Front
         greenMiddleFront.setBrightness(brightness);
-        greenMiddleFront.setPrimaryColor(0,255,0);
+        greenMiddleFront.setPrimaryColor(0,0,255);
         greenMiddleFront.setStartIndex(30);
         greenMiddleFront.setStopIndex(36);
 
@@ -194,6 +213,74 @@ public class CompStatusSubsystem implements Subsystem {
         errorMiddleFront.setPrimaryColor(255,128,0);
         errorMiddleFront.setStartIndex(30);
         errorMiddleFront.setStopIndex(36);
+
+        leftSL.setBrightness(brightness);
+        leftSL.setPrimaryColor(252, 51, 153);
+        leftSL.setStartIndex(0);
+        leftSL.setStopIndex(3);
+
+        leftSB.setBrightness(brightness);
+        leftSB.setPrimaryColor(252, 51, 153);
+        leftSB.setStartIndex(12);
+        leftSB.setStopIndex(13);
+
+        leftSR.setBrightness(brightness);
+        leftSR.setPrimaryColor(252, 51, 153);
+        leftSR.setStartIndex(26);
+        leftSR.setStopIndex(29);
+
+        leftSF.setBrightness(brightness);
+        leftSF.setPrimaryColor(252, 51, 153);
+        leftSF.setStartIndex(34);
+        leftSF.setStopIndex(35);
+
+        centerSL.setBrightness(brightness);
+        centerSL.setPrimaryColor(242, 171, 0);
+        centerSL.setStartIndex(4);
+        centerSL.setStopIndex(7);
+
+        centerSB.setBrightness(brightness);
+        centerSB.setPrimaryColor(242, 171, 0);
+        centerSB.setStartIndex(14);
+        centerSB.setStopIndex(15);
+
+        centerSR.setBrightness(brightness);
+        centerSR.setPrimaryColor(242, 171, 0);
+        centerSR.setStartIndex(22);
+        centerSR.setStopIndex(25);
+
+        centerSF.setBrightness(brightness);
+        centerSF.setPrimaryColor(242, 171, 0);
+        centerSF.setStartIndex(32);
+        centerSF.setStopIndex(33);
+
+        rightSL.setBrightness(brightness);
+        rightSL.setPrimaryColor(53, 239, 242);
+        rightSL.setStartIndex(8);
+        rightSL.setStopIndex(11);
+
+        rightSB.setBrightness(brightness);
+        rightSB.setPrimaryColor(53, 239, 242);
+        rightSB.setStartIndex(16);
+        rightSB.setStopIndex(17);
+
+        rightSR.setBrightness(brightness);
+        rightSR.setPrimaryColor(53, 239, 242);
+        rightSR.setStartIndex(18);
+        rightSR.setStopIndex(21);
+
+        rightSF.setBrightness(brightness);
+        rightSF.setPrimaryColor(53, 239, 242);
+        rightSF.setStartIndex(30);
+        rightSF.setStopIndex(31);
+
+
+
+
+
+
+
+
     }
 
 
@@ -211,14 +298,136 @@ public class CompStatusSubsystem implements Subsystem {
         prism.enableDefaultBootArtboard(true);
         prism.setDefaultBootArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_0);
         prism.clearAllAnimations();
-        purpleSnakes.setBrightness(5);
+        purpleSnakes.setBrightness(15);
         purpleSnakes.setSnakeLength(10);
-        purpleSnakes.setColors(new Color(160,32,225));
+        purpleSnakes.setColors(new Color(102,0,204));
         purpleSnakes.setSpeed(0.1F);
         purpleSnakes.setDirection(Direction.Forward);
         prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,purpleSnakes);
         prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_0);
+
         currentOBPattern = OBPattern.NULL;
+
+//        setUpLights();
+        setPrismNorm();
+
+
+
+
+    }
+    public void setUpLights(){
+        wait.start();
+        while(!wait.done()) {
+
+        }
+
+        prism.clearAllAnimations();
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,greenLeft);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,greenRight);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,greenMiddleBack);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,greenMiddleFront);
+        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_1);
+
+        wait.start();
+        while(!wait.done()) {
+
+        }
+
+        prism.clearAllAnimations();
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,leftSL);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,leftSF);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,leftSB);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,leftSR);
+        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_2);
+
+        wait.start();
+        while(!wait.done()) {
+
+        }
+
+        prism.clearAllAnimations();
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,rightSL);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,rightSF);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,rightSB);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,rightSR);
+        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_3);
+
+        wait.start();
+        while(!wait.done()) {
+
+        }
+
+        prism.clearAllAnimations();
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,centerSL);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,centerSF);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,centerSB);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,centerSR);
+        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_4);
+
+        wait.start();
+        while(!wait.done()) {
+
+        }
+
+        prism.clearAllAnimations();
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,leftSL);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,leftSF);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,leftSB);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,leftSR);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_4,rightSL);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_5,rightSF);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_6,rightSB);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_7,rightSR);
+        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_5);
+
+        wait.start();
+        while(!wait.done()) {
+
+        }
+
+        prism.clearAllAnimations();
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,centerSL);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,centerSF);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,centerSB);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,centerSR);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_4,rightSL);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_5,rightSF);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_6,rightSB);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_7,rightSR);
+        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_6);
+
+        wait.start();
+        while(!wait.done()) {
+
+        }
+
+        prism.clearAllAnimations();
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0,leftSL);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_1,leftSF);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_2,leftSB);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_3,leftSR);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_4,centerSL);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_5,centerSF);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_6,centerSB);
+        prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_7, centerSR);
+        prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_7);
+
+        wait.start();
+        while(!wait.done()) {
+
+        }
+        setPrismNorm();
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -248,7 +457,7 @@ public class CompStatusSubsystem implements Subsystem {
         }
         prevTime = curTime;
 
-
+//        setPrismToPWM((long) pwmTarget);
         if(ActiveOpMode.isStarted()){
             beacon.setPosition(0.5);
         }else {
@@ -350,20 +559,45 @@ public class CompStatusSubsystem implements Subsystem {
         }else if(PWM>2500){
             PWM = 2500;
         }
-        prismPwm.setPosition(PWM/2500.0);
+        PWM = PWM-500;
+        prismPwm.setPosition(PWM/2000.0);
 
     }
     public void setPrismOrange(){
-        setPrismToPWM(800);
+        setPrismToPWM(1115);
 
     }
     public void setPrismGreen(){
-        setPrismToPWM(1100);
+        setPrismToPWM(1400);
 
     }
     public void setPrismNorm(){
-        setPrismToPWM(501);
+        setPrismToPWM(503);
 
+    }
+    public void setPrismOff(){
+        setPrismToPWM(1060);
+    }
+    public void setPrismLeftOn(){
+        setPrismToPWM(525);
+    }
+    public void setPrismRightOn(){
+        setPrismToPWM(535);
+    }
+    public void setPrismCenterOn(){
+        setPrismToPWM(545);
+    }
+    public void setPrismLeftAndRightOn(){
+        setPrismToPWM(555);
+    }
+    public void setPrismLeftAndCenterOn(){
+        setPrismToPWM(575);
+    }
+    public void setPrismRightAndCenterOn(){
+        setPrismToPWM(565);
+    }
+    public void setPrismLeftAndRightAndCenterOn(){
+        setPrismToPWM(515);
     }
 
     public void setLeftPurple(){
@@ -381,7 +615,7 @@ public class CompStatusSubsystem implements Subsystem {
     public void setLeftError(){
         if(!(left == CStatus.ERROR)) {
             left = CStatus.ERROR;
-            prism.insertAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0, errorLeft);
+            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0, errorLeft);
         }
     }
 
@@ -496,7 +730,7 @@ public class CompStatusSubsystem implements Subsystem {
 
             })
             .setUpdate(() -> {
-                switch (CompSorterSubsystem.INSTANCE.leftSlot()){
+                switch (SorterSubsystem.INSTANCE.leftSlot()){
                     case PURPLE:
                         setLeftPurple();
                         break;
@@ -510,7 +744,7 @@ public class CompStatusSubsystem implements Subsystem {
                         setLeftOff();
                         break;
                 }
-                switch (CompSorterSubsystem.INSTANCE.centerSlot()){
+                switch (SorterSubsystem.INSTANCE.centerSlot()){
                     case PURPLE:
                         setCenterPurple();
                         break;
@@ -524,7 +758,7 @@ public class CompStatusSubsystem implements Subsystem {
                         setCenterOff();
                         break;
                 }
-                switch (CompSorterSubsystem.INSTANCE.rightSlot()){
+                switch (SorterSubsystem.INSTANCE.rightSlot()){
                     case PURPLE:
                         setRightPurple();
                         break;

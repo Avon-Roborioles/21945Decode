@@ -1,16 +1,16 @@
 package org.firstinspires.ftc.teamcode.Commands.Automatic;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.geometry.Pose;
 
-import org.firstinspires.ftc.teamcode.Subsystems.CompLauncherSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompStatusSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompTurretSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.LauncherSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.StatusSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.TurretSubsystem;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.extensions.pedro.PedroComponent;
-import dev.nextftc.ftc.ActiveOpMode;
 
-
+@Configurable
 public class RunTurretAndLauncherFromHeading extends Command {
 
     Pose botPose;
@@ -18,16 +18,21 @@ public class RunTurretAndLauncherFromHeading extends Command {
     boolean redAlliance;
     double turretFieldAngleRad;
 
+
     static Pose redGoal = new Pose(144,144);
-    static Pose RedGoalAngle = new Pose(133, 133);
+    static Pose RedGoalAngle = new Pose(136, 134);
     static Pose blueGoal = new Pose(0,144);
     static Pose BlueGoalAngle = new Pose(8, 134);
     Pose goal;
     Pose goalAngle;
+    public static double shotTime = 0.85;
+    Boolean lightsNeedSet = false;
+    Boolean happy = false;
+
 
     public RunTurretAndLauncherFromHeading(boolean redAlliance) {
         this.redAlliance = redAlliance;
-        requires(CompTurretSubsystem.INSTANCE);
+        requires(TurretSubsystem.INSTANCE);
         setInterruptible(true); // this is the default, so you don't need to specify
     }
 
@@ -38,6 +43,7 @@ public class RunTurretAndLauncherFromHeading extends Command {
 
     @Override
     public void start() {
+        TurretSubsystem.INSTANCE.turnTurretOn();
         goal = redAlliance ? redGoal : blueGoal;
         goalAngle = redAlliance ? RedGoalAngle : BlueGoalAngle;
 
@@ -47,15 +53,18 @@ public class RunTurretAndLauncherFromHeading extends Command {
     @Override
     public void update() {
         botPose = PedroComponent.follower().getPose();
-        distanceToGoal = Math.hypot((goal.getX()- botPose.getX()), (goal.getY()-botPose.getY()));
-        turretFieldAngleRad = Math.atan2((goalAngle.getY()- botPose.getY()), (goalAngle.getX()- botPose.getX()) + PedroComponent.follower().getAngularVelocity()* CompStatusSubsystem.INSTANCE.getLoopTimeSeconds());
+        PedroComponent.follower().getVelocity().getXComponent();
+        PedroComponent.follower().getVelocity().getYComponent();
+        distanceToGoal = Math.hypot((goal.getX()- botPose.getX()-PedroComponent.follower().getVelocity().getXComponent()*shotTime), (goal.getY()-botPose.getY() - PedroComponent.follower().getVelocity().getYComponent()*shotTime));
+        turretFieldAngleRad = Math.atan2((goalAngle.getY()- botPose.getY() - PedroComponent.follower().getVelocity().getYComponent()*shotTime), (goalAngle.getX()- botPose.getX() - PedroComponent.follower().getVelocity().getXComponent()*shotTime) + PedroComponent.follower().getAngularVelocity()* StatusSubsystem.INSTANCE.getLoopTimeSeconds());
 
-        CompTurretSubsystem.INSTANCE.turnTurretToFieldAngle(turretFieldAngleRad);
-        CompLauncherSubsystem.INSTANCE.RunLauncherFromDistance(distanceToGoal);
-        if(CompTurretSubsystem.INSTANCE.TurretHappy() && CompLauncherSubsystem.INSTANCE.LaunchReady()){
-            CompStatusSubsystem.INSTANCE.setPrismGreen();
+        TurretSubsystem.INSTANCE.turnTurretToFieldAngle(turretFieldAngleRad);
+        LauncherSubsystem.INSTANCE.RunLauncherFromDistance(distanceToGoal);
+        if(TurretSubsystem.INSTANCE.TurretHappy()){
+                StatusSubsystem.INSTANCE.setPrismGreen();
         }else {
-            CompStatusSubsystem.INSTANCE.setPrismOrange();
+                StatusSubsystem.INSTANCE.setPrismOrange();
+
         }
 //        ActiveOpMode.telemetry().addLine("-------------- RunTurretAndLauncherFromHeading Telemetry: --------------");
 //        ActiveOpMode.telemetry().addData("redAlliance", redAlliance);
@@ -70,10 +79,10 @@ public class RunTurretAndLauncherFromHeading extends Command {
     @Override
     public void stop(boolean interrupted) {
 
-        CompLauncherSubsystem.INSTANCE.HoodDown().schedule();
-        CompLauncherSubsystem.INSTANCE.StopLauncher.schedule();
-        CompStatusSubsystem.INSTANCE.setPrismNorm();
-
+        LauncherSubsystem.INSTANCE.HoodDown().schedule();
+        LauncherSubsystem.INSTANCE.StopLauncher.schedule();
+        StatusSubsystem.INSTANCE.setPrismNorm();
+        TurretSubsystem.INSTANCE.turnTurretOff();
 
         // executed when the command ends
     }

@@ -8,9 +8,9 @@ import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.powerable.SetPower;
 
-public class CompIntakeSubsystem implements Subsystem {
-    public static final CompIntakeSubsystem INSTANCE = new CompIntakeSubsystem();
-    private CompIntakeSubsystem() {}
+public class IntakeSubsystem implements Subsystem {
+    public static final IntakeSubsystem INSTANCE = new IntakeSubsystem();
+    private IntakeSubsystem() {}
 
     //Variables
     private double intakeSpeed = -1;

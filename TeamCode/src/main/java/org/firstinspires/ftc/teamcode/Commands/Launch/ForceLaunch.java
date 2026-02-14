@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Commands.Launch;
 
-import org.firstinspires.ftc.teamcode.Subsystems.CompSorterSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
 import org.firstinspires.ftc.teamcode.Utility.Timing;
 
 import java.util.concurrent.TimeUnit;
@@ -28,8 +28,8 @@ public class ForceLaunch extends Command {
     }
 
     Step St = Step.LaunchCenter;
-    Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
-    Timing.Timer reset = new Timing.Timer(250, TimeUnit.MILLISECONDS);
+    Timing.Timer wait = new Timing.Timer(205, TimeUnit.MILLISECONDS);
+    Timing.Timer reset = new Timing.Timer(150, TimeUnit.MILLISECONDS);
     Timing.Timer delay = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
     Timing.Timer ready = new Timing.Timer(300, TimeUnit.MILLISECONDS);
 
@@ -46,7 +46,7 @@ public class ForceLaunch extends Command {
     @Override
     public void start() {
         St = Step.GetReady;
-        CompSorterSubsystem.INSTANCE.resetSorter();
+        SorterSubsystem.INSTANCE.resetSorter();
         // executed when the command begins
     }
 
@@ -54,7 +54,7 @@ public class ForceLaunch extends Command {
     public void update() {
         switch (St) {
             case GetReady:
-                CompSorterSubsystem.INSTANCE.resetSorter();
+                SorterSubsystem.INSTANCE.resetSorter();
                 ready.start();
                 St = Step.WaitForReady;
                 break;
@@ -69,13 +69,13 @@ public class ForceLaunch extends Command {
 
                 break;
             case LaunchCenter:
-                CompSorterSubsystem.INSTANCE.sendCenter();
+                SorterSubsystem.INSTANCE.sendCenter();
                 wait.start();
                 St = Step.WaitCenter;
                 break;
             case WaitCenter:
                 if(wait.done()){
-                    CompSorterSubsystem.INSTANCE.resetSorter();
+                    SorterSubsystem.INSTANCE.resetSorter();
                     reset.start();
                     St = Step.ResetCenter;
                 }
@@ -86,13 +86,13 @@ public class ForceLaunch extends Command {
                 }
                 break;
             case LaunchLeft:
-                CompSorterSubsystem.INSTANCE.sendLeft();
+                SorterSubsystem.INSTANCE.sendLeft();
                 wait.start();
                 St = Step.WaitLeft;
                 break;
             case WaitLeft:
                 if(wait.done()){
-                    CompSorterSubsystem.INSTANCE.resetSorter();
+                    SorterSubsystem.INSTANCE.resetSorter();
                     reset.start();
                     St = Step.ResetLeft;
                 }
@@ -103,13 +103,13 @@ public class ForceLaunch extends Command {
                 }
                 break;
             case LaunchRight:
-                CompSorterSubsystem.INSTANCE.sendRight();
+                SorterSubsystem.INSTANCE.sendRight();
                 wait.start();
                 St = Step.WaitRight;
                 break;
             case WaitRight:
                 if(wait.done()){
-                    CompSorterSubsystem.INSTANCE.resetSorter();
+                    SorterSubsystem.INSTANCE.resetSorter();
                     reset.start();
                     St = Step.ResetRight;
                 }
@@ -135,7 +135,7 @@ public class ForceLaunch extends Command {
 
     @Override
     public void stop(boolean interrupted) {
-        CompSorterSubsystem.INSTANCE.resetSorter();
+        SorterSubsystem.INSTANCE.resetSorter();
         // executed when the command ends
     }
 }

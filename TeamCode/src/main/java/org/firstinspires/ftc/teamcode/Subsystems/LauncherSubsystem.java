@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.bylazar.telemetry.PanelsTelemetry;
-import com.bylazar.telemetry.TelemetryManager;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
@@ -15,9 +14,9 @@ import dev.nextftc.hardware.impl.ServoEx;
 import dev.nextftc.hardware.impl.VoltageCompensatingMotor;
 import dev.nextftc.hardware.positionable.SetPosition;
 
-public class CompLauncherSubsystem implements Subsystem {
-    public static final CompLauncherSubsystem INSTANCE = new CompLauncherSubsystem();
-    private CompLauncherSubsystem() {}
+public class LauncherSubsystem implements Subsystem {
+    public static final LauncherSubsystem INSTANCE = new LauncherSubsystem();
+    private LauncherSubsystem() {}
 
 
     // Hardware
@@ -188,9 +187,14 @@ public class CompLauncherSubsystem implements Subsystem {
     private double distanceToHoodAngle(double distance){
         return   (Math.pow(distance, 2) * -0.0027) + (distance * 0.8495) - 21.433;
     }
+    public double rpmToHoodAngle(){
+        double speed = Math.abs(launcherControlSystem.getLastMeasurement().getVelocity());
+        return -0.00011* Math.pow(speed,2) + 0.3111097*speed - 175.616183;
+    }
     public boolean LaunchReady(){
         return Math.abs(launcherControlSystem.getLastMeasurement().getVelocity() - launcherControlSystem.getGoal().getVelocity()) < 60;
     }
+
 
     public void RunLauncherFromDistance(double distance){
 //        ActiveOpMode.telemetry().addLine("-------------- For Nick: --------------");
@@ -202,7 +206,8 @@ public class CompLauncherSubsystem implements Subsystem {
 
 
         speedTarget = distanceToSpeed(distance);
-        hoodAngleTarget = distanceToHoodAngle(distance);
+//        hoodAngleTarget = distanceToHoodAngle(distance);
+        hoodAngleTarget = rpmToHoodAngle();
     }
 
 

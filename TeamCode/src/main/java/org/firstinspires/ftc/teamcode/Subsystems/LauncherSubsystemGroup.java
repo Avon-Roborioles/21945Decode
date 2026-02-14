@@ -7,8 +7,8 @@ public class LauncherSubsystemGroup extends SubsystemGroup {
 
     private LauncherSubsystemGroup(){
         super(
-             CompLauncherSubsystem.INSTANCE,
-             CompTurretSubsystem.INSTANCE
+             LauncherSubsystem.INSTANCE,
+             TurretSubsystem.INSTANCE
         );
     }
 }

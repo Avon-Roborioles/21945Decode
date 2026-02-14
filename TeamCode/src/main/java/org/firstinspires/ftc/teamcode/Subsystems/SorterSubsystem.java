@@ -12,18 +12,17 @@ import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
-import dev.nextftc.ftc.components.BulkReadComponent;
 import dev.nextftc.hardware.impl.ServoEx;
 
-public class CompSorterSubsystem implements Subsystem {
-    public static final CompSorterSubsystem INSTANCE = new CompSorterSubsystem();
-    private CompSorterSubsystem() {}
+public class SorterSubsystem implements Subsystem {
+    public static final SorterSubsystem INSTANCE = new SorterSubsystem();
+    private SorterSubsystem() {}
 
     private double hugPos = 0.075;
 
-    private double lDown = 0.02;
-    private double rDown = 0.035;
-    private double cDown = 0.035;
+    private double lDown = 0.025;
+    private double rDown = 0.04;
+    private double cDown = 0.045;
     private double lUp = lDown+0.5;
     private double rUp = rDown+ 0.5;
     private double cUp = cDown+ 0.5;
@@ -37,6 +36,9 @@ public class CompSorterSubsystem implements Subsystem {
     private NormalizedRGBA leftColor;
     private NormalizedRGBA centerColor;
     private NormalizedRGBA rightColor;
+    private boolean leftDetect = false;
+    private boolean centerDetect = false;
+    private boolean rightDetect = false;
 
     Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
     Timing.Timer reset = new Timing.Timer(200, TimeUnit.MILLISECONDS);
@@ -198,68 +200,72 @@ public class CompSorterSubsystem implements Subsystem {
             .setInterruptible(false);
     // put hardware, commands, etc here
     public boolean leftDetected(){
-        return (sortCSL.getDistance(DistanceUnit.MM)<70 );
+        leftDetect = sortCSL.getDistance(DistanceUnit.MM)<70;
+        return leftDetect;
     }
     public boolean leftDetectedDumb(){
+
         return (sortCSL.getNormalizedColors().alpha > 0.64);
     }
 
     public boolean centerDetected(){
-        return (sortCSC.getDistance(DistanceUnit.MM)<80 );
+        centerDetect = sortCSC.getDistance(DistanceUnit.MM)<80;
+        return centerDetect;
     }
     public boolean centerDetectedDumb(){
         return (sortCSC.getNormalizedColors().alpha > 0.113);
     }
     public boolean rightDetected(){
-        return (sortCSR.getDistance(DistanceUnit.MM)<42);
+        rightDetect = sortCSR.getDistance(DistanceUnit.MM)<40;
+        return rightDetect;
     }
     public boolean rightDetectedDumb(){
-        return (sortCSR.getNormalizedColors().alpha > 0.190);
+        return (sortCSR.getNormalizedColors().alpha > 0.20);
     }
 
 
     public SlotDetection leftSlot(){
         updateColor();
-        if(leftDetected()){
+        if(sortCSL.getDistance(DistanceUnit.MM)<70){
             if(leftColor.red<0.37) {
-                CompStatusSubsystem.INSTANCE.setLeftGreen();
+//                CompStatusSubsystem.INSTANCE.setLeftGreen();
                 return SlotDetection.GREEN;
             }else {
-                CompStatusSubsystem.INSTANCE.setLeftPurple();
+//                CompStatusSubsystem.INSTANCE.setLeftPurple();
                 return SlotDetection.PURPLE;
             }
         }else {
-            CompStatusSubsystem.INSTANCE.setLeftOff();
+//            CompStatusSubsystem.INSTANCE.setLeftOff();
             return SlotDetection.EMPTY;
         }
     }
     public SlotDetection centerSlot(){
         updateColor();
-        if(centerDetected()){
+        if(sortCSC.getDistance(DistanceUnit.MM)<80){
             if(centerColor.green>0.70) {
-                CompStatusSubsystem.INSTANCE.setCenterGreen();
+//                CompStatusSubsystem.INSTANCE.setCenterGreen();
                 return SlotDetection.GREEN;
             }else {
-                CompStatusSubsystem.INSTANCE.setCenterPurple();
+//                CompStatusSubsystem.INSTANCE.setCenterPurple();
                 return SlotDetection.PURPLE;
             }
         }else {
-            CompStatusSubsystem.INSTANCE.setCenterOff();
+//            CompStatusSubsystem.INSTANCE.setCenterOff();
             return SlotDetection.EMPTY;
         }
     }
     public SlotDetection rightSlot(){
         updateColor();
-        if(rightDetected()){
+        if(sortCSR.getDistance(DistanceUnit.MM)<42){
             if(rightColor.red<0.40) {
-                CompStatusSubsystem.INSTANCE.setRightGreen();
+//                CompStatusSubsystem.INSTANCE.setRightGreen();
                 return SlotDetection.GREEN;
             }else{
-                CompStatusSubsystem.INSTANCE.setRightPurple();
+//                CompStatusSubsystem.INSTANCE.setRightPurple();
                 return SlotDetection.PURPLE;
             }
         }else {
-            CompStatusSubsystem.INSTANCE.setRightOff();
+//            CompStatusSubsystem.INSTANCE.setRightOff();
             return SlotDetection.EMPTY;
         }
     }
@@ -295,7 +301,38 @@ public class CompSorterSubsystem implements Subsystem {
 
     }
     public boolean sorterFull(){
-        return (leftDetected()) && (centerDetected()) && (rightDetected());
+        leftDetected();
+        rightDetected();
+        centerDetected();
+        if (!leftDetect && !centerDetect && !rightDetect){
+            StatusSubsystem.INSTANCE.setPrismOff();
+
+        }else if(leftDetect && !centerDetect && !rightDetect){
+            StatusSubsystem.INSTANCE.setPrismLeftOn();
+
+        }else if(!leftDetect && centerDetect && !rightDetect){
+            StatusSubsystem.INSTANCE.setPrismCenterOn();
+
+        }else if(!leftDetect && !centerDetect && rightDetect){
+            StatusSubsystem.INSTANCE.setPrismRightOn();
+
+        }else if(leftDetect && centerDetect && !rightDetect){
+            StatusSubsystem.INSTANCE.setPrismLeftAndCenterOn();
+
+        }else if(!leftDetect && centerDetect && rightDetect){
+            StatusSubsystem.INSTANCE.setPrismRightAndCenterOn();
+
+        }else if(leftDetect && !centerDetect && rightDetect){
+            StatusSubsystem.INSTANCE.setPrismLeftAndRightOn();
+
+        }else if(leftDetect && centerDetect && rightDetect){
+            StatusSubsystem.INSTANCE.setPrismLeftAndRightAndCenterOn();
+
+        }
+
+
+
+        return (leftDetect) && (rightDetect) && (centerDetect);
     }
     public boolean sorterFullDumb(){
         return (leftDetectedDumb() && centerDetectedDumb() && rightDetectedDumb());

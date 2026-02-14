@@ -10,13 +10,13 @@ import com.qualcomm.robotcore.util.MovingStatistics;
 
 import org.firstinspires.ftc.teamcode.Commands.Intake.IntakeToSorterCommand;
 import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchWithOutSort;
-import org.firstinspires.ftc.teamcode.Subsystems.CompIntakeSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompLauncherSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompPTOSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompSorterSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompStatusSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompTurretSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompVisionSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.LauncherSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.PTOSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.StatusSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.TurretSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.VisionSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.LauncherSubsystemGroup;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
@@ -42,7 +42,7 @@ public class LoopTimeTestOPMode extends NextFTCOpMode {
 
     {
         addComponents(
-                new SubsystemComponent(CompLauncherSubsystem.INSTANCE, CompIntakeSubsystem.INSTANCE, CompSorterSubsystem.INSTANCE, CompPTOSubsystem.INSTANCE, CompTurretSubsystem.INSTANCE, CompVisionSubsystem.INSTANCE, CompStatusSubsystem.INSTANCE, LauncherSubsystemGroup.INSTANCE),
+                new SubsystemComponent(LauncherSubsystem.INSTANCE, IntakeSubsystem.INSTANCE, SorterSubsystem.INSTANCE, PTOSubsystem.INSTANCE, TurretSubsystem.INSTANCE, VisionSubsystem.INSTANCE, StatusSubsystem.INSTANCE, LauncherSubsystemGroup.INSTANCE),
                 new PedroComponent(Constants::createFollower),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
@@ -93,21 +93,21 @@ public class LoopTimeTestOPMode extends NextFTCOpMode {
         Gamepads.gamepad1().options();
         Gamepads.gamepad1().share();
         Gamepads.gamepad1().ps();
-        Gamepads.gamepad1().touchpad().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.StopLauncher);
+        Gamepads.gamepad1().touchpad().whenBecomesTrue(LauncherSubsystem.INSTANCE.StopLauncher);
 
 
         Gamepads.gamepad2().circle().whenBecomesTrue(new LaunchWithOutSort());;
-        Gamepads.gamepad2().square().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.SpinUpToSpeed(800));
+        Gamepads.gamepad2().square().whenBecomesTrue(LauncherSubsystem.INSTANCE.SpinUpToSpeed(800));
         Gamepads.gamepad2().triangle();
         Gamepads.gamepad2().cross().whenBecomesTrue(new IntakeToSorterCommand());
-        Gamepads.gamepad2().dpadUp().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.SpeedUp);
-        Gamepads.gamepad2().dpadDown().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.SpeedDown);
+        Gamepads.gamepad2().dpadUp().whenBecomesTrue(LauncherSubsystem.INSTANCE.SpeedUp);
+        Gamepads.gamepad2().dpadDown().whenBecomesTrue(LauncherSubsystem.INSTANCE.SpeedDown);
         Gamepads.gamepad2().dpadLeft();
         Gamepads.gamepad2().dpadRight();
-        Gamepads.gamepad2().leftStickX().atLeast(0.75).whenTrue(CompTurretSubsystem.INSTANCE.turretLeft);
-        Gamepads.gamepad2().leftStickX().lessThan(-0.75).whenTrue(CompTurretSubsystem.INSTANCE.turretRight);;
-        Gamepads.gamepad2().leftStickY().lessThan(-0.75).whenBecomesTrue(CompLauncherSubsystem.INSTANCE.HoodPlus);
-        Gamepads.gamepad2().leftStickY().atLeast(0.75).whenBecomesTrue(CompLauncherSubsystem.INSTANCE.HoodMinus);
+        Gamepads.gamepad2().leftStickX().atLeast(0.75).whenTrue(TurretSubsystem.INSTANCE.turretLeft);
+        Gamepads.gamepad2().leftStickX().lessThan(-0.75).whenTrue(TurretSubsystem.INSTANCE.turretRight);;
+        Gamepads.gamepad2().leftStickY().lessThan(-0.75).whenBecomesTrue(LauncherSubsystem.INSTANCE.HoodPlus);
+        Gamepads.gamepad2().leftStickY().atLeast(0.75).whenBecomesTrue(LauncherSubsystem.INSTANCE.HoodMinus);
         Gamepads.gamepad2().leftStickButton();
         Gamepads.gamepad2().rightStickX().atLeast(0.75);
         Gamepads.gamepad2().rightStickX().lessThan(-0.75);
@@ -119,10 +119,10 @@ public class LoopTimeTestOPMode extends NextFTCOpMode {
         Gamepads.gamepad2().leftBumper();
         Gamepads.gamepad2().rightBumper();
         Gamepads.gamepad2().options();
-        Gamepads.gamepad2().share().toggleOnBecomesTrue().whenTrue(CompIntakeSubsystem.INSTANCE.Outtake).whenBecomesFalse(CompIntakeSubsystem.INSTANCE.StopIntake);
+        Gamepads.gamepad2().share().toggleOnBecomesTrue().whenTrue(IntakeSubsystem.INSTANCE.Outtake).whenBecomesFalse(IntakeSubsystem.INSTANCE.StopIntake);
         Gamepads.gamepad2().ps();
-        Gamepads.gamepad2().touchpad().whenBecomesTrue(CompLauncherSubsystem.INSTANCE.StopLauncher);
-        Command start = new SequentialGroup(CompSorterSubsystem.INSTANCE.wake, CompSorterSubsystem.INSTANCE.resetSorter, CompPTOSubsystem.INSTANCE.disengage);
+        Gamepads.gamepad2().touchpad().whenBecomesTrue(LauncherSubsystem.INSTANCE.StopLauncher);
+        Command start = new SequentialGroup(SorterSubsystem.INSTANCE.wake, SorterSubsystem.INSTANCE.resetSorter, PTOSubsystem.INSTANCE.disengage);
         start.schedule();
 
 

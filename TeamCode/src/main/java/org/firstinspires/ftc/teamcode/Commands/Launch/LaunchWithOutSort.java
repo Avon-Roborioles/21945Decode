@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Commands.Launch;
 
-import org.firstinspires.ftc.teamcode.Subsystems.CompSorterSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.TurretSubsystem;
 import org.firstinspires.ftc.teamcode.Utility.Timing;
 
 import java.util.concurrent.TimeUnit;
@@ -29,10 +30,10 @@ public class LaunchWithOutSort extends Command {
     }
 
     Step St = Step.LaunchCenter;
-    Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
-    Timing.Timer reset = new Timing.Timer(200, TimeUnit.MILLISECONDS);
+    Timing.Timer wait = new Timing.Timer(215, TimeUnit.MILLISECONDS);
+    Timing.Timer reset = new Timing.Timer(150, TimeUnit.MILLISECONDS);
     Timing.Timer delay = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
-    Timing.Timer ready = new Timing.Timer(250, TimeUnit.MILLISECONDS);
+    Timing.Timer ready = new Timing.Timer(300, TimeUnit.MILLISECONDS);
 
 
     public LaunchWithOutSort() {
@@ -48,7 +49,7 @@ public class LaunchWithOutSort extends Command {
     @Override
     public void start() {
         St = Step.GetReady;
-        CompSorterSubsystem.INSTANCE.resetSorter();
+        SorterSubsystem.INSTANCE.resetSorter();
         // executed when the command begins
     }
 
@@ -56,7 +57,7 @@ public class LaunchWithOutSort extends Command {
     public void update() {
         switch (St) {
             case GetReady:
-                CompSorterSubsystem.INSTANCE.resetSorter();
+                SorterSubsystem.INSTANCE.resetSorter();
                 ready.start();
                 St = Step.WaitForReady;
                 break;
@@ -70,17 +71,21 @@ public class LaunchWithOutSort extends Command {
 
                 break;
             case LaunchCenter:
-                if(!(CompSorterSubsystem.INSTANCE.centerSlot() == CompSorterSubsystem.SlotDetection.EMPTY)){
-                    CompSorterSubsystem.INSTANCE.sendCenter();
-                    wait.start();
-                    St = Step.WaitCenter;
+                if(!(SorterSubsystem.INSTANCE.centerSlot() == SorterSubsystem.SlotDetection.EMPTY)){
+                    if(TurretSubsystem.INSTANCE.turretFine()) {
+                        SorterSubsystem.INSTANCE.sendCenter();
+                        wait.start();
+                        St = Step.WaitCenter;
+                    }else{
+                        ActiveOpMode.gamepad1().rumble(100);
+                    }
                 } else {
                     St = Step.LaunchLeft;
                 }
                 break;
             case WaitCenter:
                 if(wait.done()){
-                    CompSorterSubsystem.INSTANCE.resetSorter();
+                    SorterSubsystem.INSTANCE.resetSorter();
                     reset.start();
                     St = Step.ResetCenter;
                 }
@@ -91,10 +96,14 @@ public class LaunchWithOutSort extends Command {
                 }
                 break;
             case LaunchLeft:
-                if(!(CompSorterSubsystem.INSTANCE.leftSlot() == CompSorterSubsystem.SlotDetection.EMPTY)){
-                    CompSorterSubsystem.INSTANCE.sendLeft();
-                    wait.start();
-                    St = Step.WaitLeft;
+                if(!(SorterSubsystem.INSTANCE.leftSlot() == SorterSubsystem.SlotDetection.EMPTY)){
+                    if(TurretSubsystem.INSTANCE.turretFine()) {
+                        SorterSubsystem.INSTANCE.sendLeft();
+                        wait.start();
+                        St = Step.WaitLeft;
+                    }else{
+                        ActiveOpMode.gamepad1().rumble(100);
+                    }
                 } else {
                     St = Step.LaunchRight;
 
@@ -102,7 +111,7 @@ public class LaunchWithOutSort extends Command {
                 break;
             case WaitLeft:
                 if(wait.done()){
-                    CompSorterSubsystem.INSTANCE.resetSorter();
+                    SorterSubsystem.INSTANCE.resetSorter();
                     reset.start();
                     St = Step.ResetLeft;
                 }
@@ -113,17 +122,21 @@ public class LaunchWithOutSort extends Command {
                 }
                 break;
             case LaunchRight:
-                if(!(CompSorterSubsystem.INSTANCE.rightSlot() == CompSorterSubsystem.SlotDetection.EMPTY)){
-                    CompSorterSubsystem.INSTANCE.sendRight();
-                    wait.start();
-                    St = Step.WaitRight;
+                if(!(SorterSubsystem.INSTANCE.rightSlot() == SorterSubsystem.SlotDetection.EMPTY)){
+                    if(TurretSubsystem.INSTANCE.turretFine()) {
+                        SorterSubsystem.INSTANCE.sendRight();
+                        wait.start();
+                        St = Step.WaitRight;
+                    }else{
+                        ActiveOpMode.gamepad1().rumble(100);
+                    }
                 } else {
                     St = Step.Pause;
                 }
                 break;
             case WaitRight:
                 if(wait.done()){
-                    CompSorterSubsystem.INSTANCE.resetSorter();
+                    SorterSubsystem.INSTANCE.resetSorter();
                     reset.start();
                     St = Step.ResetRight;
                 }
@@ -142,7 +155,7 @@ public class LaunchWithOutSort extends Command {
                 }
                 break;
             case CheckForMiss:
-                if(!(CompSorterSubsystem.INSTANCE.leftSlot() == CompSorterSubsystem.SlotDetection.EMPTY) || !(CompSorterSubsystem.INSTANCE.centerSlot() == CompSorterSubsystem.SlotDetection.EMPTY) || !(CompSorterSubsystem.INSTANCE.rightSlot() == CompSorterSubsystem.SlotDetection.EMPTY)){
+                if(!(SorterSubsystem.INSTANCE.leftSlot() == SorterSubsystem.SlotDetection.EMPTY) || !(SorterSubsystem.INSTANCE.centerSlot() == SorterSubsystem.SlotDetection.EMPTY) || !(SorterSubsystem.INSTANCE.rightSlot() == SorterSubsystem.SlotDetection.EMPTY)){
                     St = Step.LaunchCenter;
                 }else {
                     St = Step.Done;
@@ -156,7 +169,7 @@ public class LaunchWithOutSort extends Command {
 
     @Override
     public void stop(boolean interrupted) {
-        CompSorterSubsystem.INSTANCE.resetSorter();
+        SorterSubsystem.INSTANCE.resetSorter();
         // executed when the command ends
     }
 }

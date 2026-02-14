@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.Commands;
 
-import org.firstinspires.ftc.teamcode.Subsystems.CompTurretSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompVisionSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.VisionSubsystem;
 
-import dev.nextftc.bindings.Range;
 import dev.nextftc.core.commands.Command;
 
 public class ReLocalizeWithLLCommand extends Command {
@@ -18,8 +16,8 @@ public class ReLocalizeWithLLCommand extends Command {
 
     @Override
     public void start() {
-        CompVisionSubsystem.INSTANCE.stopLL();
-        CompVisionSubsystem.INSTANCE.setReLocalizingPipeline();
+        VisionSubsystem.INSTANCE.stopLL();
+        VisionSubsystem.INSTANCE.setReLocalizingPipeline();
 
 
         // executed when the command begins
@@ -27,7 +25,7 @@ public class ReLocalizeWithLLCommand extends Command {
 
     @Override
     public void update() {
-        CompVisionSubsystem.INSTANCE.reLocalizeWithLimeLight();
+        VisionSubsystem.INSTANCE.reLocalizeWithLimeLight();
 
 
         // executed on every update of the command

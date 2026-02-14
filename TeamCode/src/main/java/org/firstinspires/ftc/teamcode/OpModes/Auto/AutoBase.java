@@ -3,14 +3,13 @@ package org.firstinspires.ftc.teamcode.OpModes.Auto;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 
-import org.firstinspires.ftc.teamcode.Subsystems.CompIntakeSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompLauncherSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompPTOSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompSorterSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompStatusSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompTurretSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.CompVisionSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.LauncherSubsystemGroup;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.LauncherSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.PTOSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.StatusSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.TurretSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.VisionSubsystem;
 import org.firstinspires.ftc.teamcode.Utility.PosStorage;
 import org.firstinspires.ftc.teamcode.Utility.Storage;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
@@ -19,7 +18,6 @@ import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.ActiveOpMode;
-import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
 public abstract class AutoBase extends Storage {
@@ -28,7 +26,7 @@ public abstract class AutoBase extends Storage {
 
     {
         addComponents(
-            new SubsystemComponent(CompLauncherSubsystem.INSTANCE, CompIntakeSubsystem.INSTANCE, CompSorterSubsystem.INSTANCE, CompPTOSubsystem.INSTANCE,CompTurretSubsystem.INSTANCE, CompVisionSubsystem.INSTANCE,CompStatusSubsystem.INSTANCE ),
+            new SubsystemComponent(LauncherSubsystem.INSTANCE, IntakeSubsystem.INSTANCE, SorterSubsystem.INSTANCE, PTOSubsystem.INSTANCE, TurretSubsystem.INSTANCE, VisionSubsystem.INSTANCE, StatusSubsystem.INSTANCE ),
 //                new SubsystemComponent(CompLauncherSubsystem.INSTANCE, CompIntakeSubsystem.INSTANCE, CompSorterSubsystem.INSTANCE, CompPTOSubsystem.INSTANCE, CompTurretSubsystem.INSTANCE, CompVisionSubsystem.INSTANCE, CompStatusSubsystem.INSTANCE, LauncherSubsystemGroup.INSTANCE),
                 new PedroComponent(Constants::createFollower),
                 BulkReadComponent.INSTANCE,
