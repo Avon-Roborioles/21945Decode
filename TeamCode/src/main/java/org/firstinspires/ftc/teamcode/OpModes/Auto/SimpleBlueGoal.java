@@ -59,7 +59,7 @@ public class SimpleBlueGoal extends AutoBase {
                 new ParallelGroup(
                         new SequentialGroup(
                                 new FollowPath(DriveToTriangle),
-                                new AutoIntake()
+                                new AutoIntake(100)
                         ),
                         new ParallelGroup(
                                 new SequentialGroup(

@@ -9,7 +9,7 @@ import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.impl.ServoEx;
 
 @TeleOp(name="PTO Test", group="Tests")
-@Disabled
+//@Disabled
 @Configurable
 public class PTOTestOpMode extends LinearOpMode {
     MotorEx fl, fr, bl,br;
@@ -31,8 +31,8 @@ public class PTOTestOpMode extends LinearOpMode {
                 ptoL.setPosition(0);
                 ptoR.setPosition(0);
             }else if(gamepad1.b){
-                ptoL.setPosition(1);
-                ptoR.setPosition(1);
+                ptoL.setPosition(0.7 );
+                ptoR.setPosition(0.7 );
             }
 
             fr.setPower(gamepad1.left_stick_y);
