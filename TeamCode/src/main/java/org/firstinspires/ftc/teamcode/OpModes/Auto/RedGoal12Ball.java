@@ -109,7 +109,6 @@ public class RedGoal12Ball extends AutoBase {
         Command Intake1 = new AutoIntake(5000);
         Command Intake2 = new AutoIntake(3500);
         Command Intake3 = new AutoIntake(3000);
-
         Command IntakeCheck = new AutoIntakeCheck();
         Command StopLauncher = new LambdaCommand().setStart(()->{RunLaunchPre.cancel();RunLaunch1.cancel();RunLaunch2.cancel();RunLaunch3.cancel();
         }).setIsDone(()->{ return true;});
@@ -118,7 +117,8 @@ public class RedGoal12Ball extends AutoBase {
         PedroComponent.follower().setMaxPower(maxPower);
         PedroComponent.follower().update();
         buildPaths();
-        runAuto = new SequentialGroup(
+        runAuto = new SequentialGroup
+(
                 new LambdaCommand().setStart(()->{RunLaunchPre.schedule();}).setIsDone(()->{ return true;}),
                 new Delay(0.125),
                  new ParallelGroup(
