@@ -31,65 +31,62 @@ public class TurretSubsystem implements Subsystem {
     private double angleOffset = 204.2 - 0.8;
     private double turretTargetPosDeg =0;
     public static double turretTargetTune = 0;
-    public static boolean tuneMode = true;
+    public static boolean tuneMode = false;
     private double turretFieldAngleGoalDeg = 90;
     private double botHeadingRad = 0;
     double turretZeroHeadingRad = 0;
     private final OctoQuadFWv3.EncoderDataBlock data = new OctoQuadFWv3.EncoderDataBlock();
     double maxPower = 1;
     double power = 0;
-    double leftLimit = -140;
-    double rightLimit = 130;
+
     boolean turretOn = false;
 
     public static double akp =0.0015;
     public static double akI =0;
-    public static double akD = 0;
+    public static double akD = 0.025;
     public static double akF = 0;
     public static double akS = 0;
 
-    public static double kS_N200_N190 = 0.04;//-200 -> -190
-    public static double kS_N190_N180 = 0.025;//-190 -> -180
-    public static double kS_N180_N170 = 0.04;//-180 -> -170
-    public static double kS_N170_N160 = 0.04;//-170 -> -160
-    public static double kS_N160_N150 = 0.04;//-160 -> -150
-    public static double kS_N150_N140 = 0.035;//-150 -> -140
-    public static double kS_N140_N130 = 0.035;//-140 -> -130
-    public static double kS_N130_N120 = 0.03;//-130 -> -120
-    public static double kS_N120_N110 = 0.03;//-120 -> -110
-    public static double kS_N110_N100 = 0.04;//-110 -> -100
-    public static double kS_N100_N90 = 0.045;//-100 -> -90
-    public static double kS_N90_N80 = 0.04;//-90 -> -80
-    public static double kS_N80_N70 = 0.04;//-80 -> -70
-    public static double kS_N70_N60 = 0.04;//-70 -> -60
-    public static double kS_N60_N50 = 0.0375;//-60 -> -50
-    public static double kS_N50_N40 = 0.03;//-50 -> -40
-    public static double kS_N40_N30 = 0.04;//-40 -> -30
-    public static double kS_N30_N20 = 0.03;//-30 -> -20
-    public static double kS_N20_N10 = 0.035;//-20 -> -10
-    public static double kS_N10_0 = 0.03;//-10 -> 0
-    public static double kS_0_10 = 0.04;//0 -> 10
-    public static double kS_10_20 = 0.04;//10 -> 20
-    public static double kS_20_30 = 0.035;//20 -> 30
-    public static double kS_30_40 = 0.04;//30 -> 40
-    public static double kS_40_50 = 0.04;//40 -> 50
-    public static double kS_50_60 = 0.055;//50 -> 60
-    public static double kS_60_70 = 0.04;//60 -> 70
-    public static double kS_70_80 = 0.07;//70 -> 80
-    public static double kS_80_90 = 0.04;//80 -> 90
-    public static double kS_90_100 = 0.04;//90 -> 100
-    public static double kS_100_110 = 0.055;//100 -> 110
-    public static double kS_110_120 = 0.035;//110 -> 120
-    public static double kS_120_130 = 0.05;//120 -> 130
-    public static double kS_130_140 = 0.04;//130 -> 140
-    public static double kS_140_150 = 0.04;//140 -> 150
-    public static double kS_150_160 = 0.04;//150 -> 160
-    public static double kS_160_170 = 0.045;//160 -> 170
-    public static double kS_170_180 = 0.04;//170 -> 180
-    public static double kS_180_190 = 0.045;//180 -> 190
-    public static double kS_190_200 = 0.05;//190 -> 200
-
-
+    public static double kS_N200_N190 = 0.12;//-200 -> -190
+    public static double kS_N190_N180 = 0.115;//-190 -> -180
+    public static double kS_N180_N170 = 0.13;//-180 -> -170
+    public static double kS_N170_N160 = 0.12;//-170 -> -160
+    public static double kS_N160_N150 = 0.11;//-160 -> -150
+    public static double kS_N150_N140 = 0.1;//-150 -> -140
+    public static double kS_N140_N130 = 0.06;//-140 -> -130
+    public static double kS_N130_N120 = 0.06;//-130 -> -120
+    public static double kS_N120_N110 = 0.06;//-120 -> -110
+    public static double kS_N110_N100 = 0.07;//-110 -> -100
+    public static double kS_N100_N90 = 0.07;//-100 -> -90
+    public static double kS_N90_N80 = 0.07;//-90 -> -80
+    public static double kS_N80_N70 = 0.07;//-80 -> -70
+    public static double kS_N70_N60 = 0.08;//-70 -> -60
+    public static double kS_N60_N50 = 0.09;//-60 -> -50
+    public static double kS_N50_N40 = 0.105;//-50 -> -40
+    public static double kS_N40_N30 = 0.1325;//-40 -> -30
+    public static double kS_N30_N20 = 0.135;//-30 -> -20
+    public static double kS_N20_N10 = 0.1;//-20 -> -10
+    public static double kS_N10_0 = 0.125;//-10 -> 0
+    public static double kS_0_10 = 0.13;//0 -> 10
+    public static double kS_10_20 = 0.15;//10 -> 20
+    public static double kS_20_30 = 0.14;//20 -> 30
+    public static double kS_30_40 = 0.145;//30 -> 40
+    public static double kS_40_50 = 0.17;//40 -> 50
+    public static double kS_50_60 = 0.18;//50 -> 60
+    public static double kS_60_70 = 0.19;//60 -> 70
+    public static double kS_70_80 = 0.205;//70 -> 80
+    public static double kS_80_90 = 0.23;//80 -> 90
+    public static double kS_90_100 = 0.24;//90 -> 100
+    public static double kS_100_110 = 0.24;//100 -> 110
+    public static double kS_110_120 = 0.285;//110 -> 120
+    public static double kS_120_130 = 0.275;//120 -> 130
+    public static double kS_130_140 = 0.33;//130 -> 140
+    public static double kS_140_150 = 0.29;//140 -> 150
+    public static double kS_150_160 = 0.34;//150 -> 160
+    public static double kS_160_170 = 0.345;//160 -> 170
+    public static double kS_170_180 = 0.32;//170 -> 180
+    public static double kS_180_190 = 0.35;//180 -> 190
+    public static double kS_190_200 = 0.37;//190 -> 200
 
     
 
@@ -101,7 +98,6 @@ public class TurretSubsystem implements Subsystem {
 
 
     private PIDCoefficients coefficients = new PIDCoefficients(akp, akI, akD);
-    private BasicFeedforwardParameters parameters = new BasicFeedforwardParameters(0,0, akF);
 
     double lastSetPoint = 0;
     public static double kv = 0.0;
@@ -201,12 +197,6 @@ public class TurretSubsystem implements Subsystem {
 
 
         turretTargetPosDeg = - Math.toDegrees(fieldAngleRad - turretZeroHeadingRad);
-        if(turretTargetPosDeg<leftLimit- 20){
-            turretTargetPosDeg= rightLimit;
-
-        }else if(turretTargetPosDeg>rightLimit+20){
-            turretTargetPosDeg= leftLimit;
-        }
 
     }
 
@@ -243,7 +233,6 @@ public class TurretSubsystem implements Subsystem {
         turretMotorEx.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretControlSystem = ControlSystem.builder()
                 .posSquID(coefficients)
-                .basicFF(parameters)
 //                .posFilter()
 
                 .build();
@@ -280,6 +269,7 @@ public class TurretSubsystem implements Subsystem {
 
         if(!ActiveOpMode.opModeInInit()){
             if (tuneMode){
+                turretOn = true;
                 turretTargetPosDeg = turretTargetTune;
             }
             //400 Degree Flip
@@ -288,18 +278,16 @@ public class TurretSubsystem implements Subsystem {
             }else if(turretTargetPosDeg<-200){
                 turretTargetPosDeg= ( 160 + (turretTargetPosDeg+200));
             }
-            // 200 Hard limit
-            if(turretTargetPosDeg<leftLimit){
-                turretTargetPosDeg= leftLimit;
 
-            }else if(turretTargetPosDeg>rightLimit){
-                turretTargetPosDeg= rightLimit;
-            }
             turretControlSystem.setGoal(new KineticState(turretTargetPosDeg));
             coefficients.kD= akD;
-            coefficients.kI= akI;
+            if (Math.abs(turretPos-turretTargetPosDeg)<5){
+                coefficients.kI= akI;
+            }else{
+                coefficients.kI= 0;
+            }
+
             coefficients.kP= akp;
-            parameters.kS= akF;
             if(turretPos<-190){
                 akS=kS_N200_N190;
             }else if(turretPos< -180){
@@ -382,13 +370,15 @@ public class TurretSubsystem implements Subsystem {
                 akS = kS_190_200;
             }
 
+//            akS = akF;
 
 
-//            power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)) + ( kv * (turretTargetPosDeg - lastSetPoint)) + Math.signum(turretPos-turretTargetPosDeg)* kS;
-            power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)) ;
+
+            power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)) + ( kv * (turretTargetPosDeg - lastSetPoint));
+//            power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)) ;
             power += Math.signum(turretTargetPosDeg - turretPos)* akS;
 
-            if (turretOn && Math.abs(power) > 0){
+            if (turretOn && Math.abs(power) > 0.01){
                 turretMotor.setPower(power*maxPower );
             }else{
                 turretMotor.setPower(0);
@@ -404,6 +394,7 @@ public class TurretSubsystem implements Subsystem {
     public void getTurretTelemetryAdv(){
         PanelsTelemetry.INSTANCE.getTelemetry().addData("Turret Position", turretPos);
         PanelsTelemetry.INSTANCE.getTelemetry().addData("Turret Target", turretTargetPosDeg);
+        PanelsTelemetry.INSTANCE.getTelemetry().addData("Turret Error", Math.abs(turretPos- turretTargetPosDeg));
         ActiveOpMode.telemetry().addLine("-------------- Turret Telemetry Adv: --------------");
         ActiveOpMode.telemetry().addData("Turret Position", turretPos);
         ActiveOpMode.telemetry().addData("Turret Velo", data.velocities[0]);
