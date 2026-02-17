@@ -30,15 +30,17 @@ public class TurretSubsystem implements Subsystem {
     private double angleOffset = 204.2 - 0.8;
     private double turretTargetPosDeg =0;
     public static double abTurretTargetTune = 0;
-    public static boolean abTuneMode = true;
+    public static boolean abTuneMode = false;
     public static boolean powerMode = false;
     private double turretFieldAngleGoalDeg = 90;
     private double botHeadingRad = 0;
     double turretZeroHeadingRad = 0;
     double turretError = 0;
+    public static double turretHappyThresh = 10;
     private final OctoQuadFWv3.EncoderDataBlock data = new OctoQuadFWv3.EncoderDataBlock();
     double maxPower = 1;
     double power = 0;
+    boolean turretFineBo = false;
     public static double powerAdd = 0;
     public static double powerSet = 0;
 
@@ -49,13 +51,18 @@ public class TurretSubsystem implements Subsystem {
     public static double akD = 0;
     public static double akS = 0;
     public static double akF = 0;
+    public static double bkp = 0.01;
+    public static double bkI = 0;
+    public static double bkD = 0.04;
+    public static double bThresh = 30;
+
 
 
     public static double powerAdd_N200_N165 = -0.18;
     public static double powerAdd_N165_N145 = -0.09;
     public static double powerAdd_N145_N35 = 0;
     public static double powerAdd_N35_65 = 0.08;
-    public static double powerAdd_65_190 = 0.09;
+    public static double powerAdd_65_190 = 0.11;
     public static double powerAdd_190_200 = 0.188;
 
 
@@ -222,10 +229,14 @@ public class TurretSubsystem implements Subsystem {
     }
 
     public boolean TurretHappy(){
-        return turretControlSystem.isWithinTolerance(new KineticState(3));
+        return turretControlSystem.isWithinTolerance(new KineticState(5));
     }
     public boolean turretFine(){
-        return turretControlSystem.isWithinTolerance(new KineticState(5));
+        turretFineBo = turretControlSystem.isWithinTolerance(new KineticState(turretHappyThresh));
+        if(turretFineBo && !ActiveOpMode.gamepad1().isRumbling() && LauncherSubsystem.INSTANCE.LaunchReady()){
+            ActiveOpMode.gamepad1().rumble(500);
+        }
+        return turretFineBo;
     }
 
     public void turnTurretOn(){
@@ -281,26 +292,38 @@ public class TurretSubsystem implements Subsystem {
 
 
         if(!ActiveOpMode.opModeInInit()){
-            if (abTuneMode){
-                turretOn = true;
-                turretTargetPosDeg = abTurretTargetTune;
-            }
             //400 Degree Flip
             if(turretTargetPosDeg>200){
                 turretTargetPosDeg= (-160 + (turretTargetPosDeg-200));
             }else if(turretTargetPosDeg<-200){
                 turretTargetPosDeg= ( 160 + (turretTargetPosDeg+200));
             }
-
-            turretControlSystem.setGoal(new KineticState(turretTargetPosDeg));
-            coefficients.kD= akD;
-            if (Math.abs(turretPos-turretTargetPosDeg)<5){
-                coefficients.kI= akI;
-            }else{
-                coefficients.kI= 0;
+            turretError = turretTargetPosDeg-turretPos;
+            if (abTuneMode){
+                turretOn = true;
+                turretTargetPosDeg = abTurretTargetTune;
+                if(Math.abs(turretError)<1){
+                    StatusSubsystem.INSTANCE.setPrismGreen();
+                }else{
+                    StatusSubsystem.INSTANCE.setPrismOrange();
+                }
             }
 
-            coefficients.kP= akp;
+
+
+            turretControlSystem.setGoal(new KineticState(turretTargetPosDeg));
+            if (Math.abs(turretError)<bThresh){
+                coefficients.kP = akp;
+                coefficients.kD= akD;
+
+                coefficients.kI= akI;
+
+            }else{
+                coefficients.kP = bkp;
+                coefficients.kD= bkD;
+                coefficients.kI= bkI;
+            }
+
             if(turretPos<-190){
                 akS=kS_N200_N190;
             }else if(turretPos< -180){
@@ -382,7 +405,7 @@ public class TurretSubsystem implements Subsystem {
             }else if(turretPos<200) {
                 akS = kS_190_200;
             }
-            turretError = turretTargetPosDeg-turretPos;
+
 
             if(turretPos <-165){
                 powerAdd = powerAdd_N200_N165;
@@ -405,7 +428,7 @@ public class TurretSubsystem implements Subsystem {
             if(powerMode){
                 power = powerSet;
             }
-            if (turretOn && Math.abs(power) > 0.01 && Math.abs(turretError)> 0){
+            if (turretOn && Math.abs(power) > 0.01 && Math.abs(turretError)> 0.5){
                 turretMotor.setPower(power*maxPower );
             }else{
                 turretMotor.setPower(0);

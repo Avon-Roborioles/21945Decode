@@ -60,7 +60,8 @@ public class RunTurretAndLauncherFromHeading extends Command {
 
         TurretSubsystem.INSTANCE.turnTurretToFieldAngle(turretFieldAngleRad);
         LauncherSubsystem.INSTANCE.RunLauncherFromDistance(distanceToGoal);
-        if(TurretSubsystem.INSTANCE.TurretHappy()){
+
+        if(TurretSubsystem.INSTANCE.turretFine()){
                 StatusSubsystem.INSTANCE.setPrismGreen();
         }else {
                 StatusSubsystem.INSTANCE.setPrismOrange();

@@ -192,7 +192,7 @@ public class LauncherSubsystem implements Subsystem {
         return -0.00011* Math.pow(speed,2) + 0.3111097*speed - 175.616183;
     }
     public boolean LaunchReady(){
-        return Math.abs(launcherControlSystem.getLastMeasurement().getVelocity() - launcherControlSystem.getGoal().getVelocity()) < 60;
+        return Math.abs(launcherControlSystem.getLastMeasurement().getVelocity() - launcherControlSystem.getGoal().getVelocity()) < 100;
     }
 
 
