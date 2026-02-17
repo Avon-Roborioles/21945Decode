@@ -124,6 +124,7 @@ public abstract class TeleOpBase extends Storage {
         PedroComponent.follower().setHeading( PosStorage.memory.lastPose.getHeading());
 
         joyCommand = new PTOJoystickCommand(Gamepads.gamepad2().leftStickY(), Gamepads.gamepad2().rightStickY());
+
         driverControlled = driveCommand();
 
 
@@ -131,7 +132,7 @@ public abstract class TeleOpBase extends Storage {
 
         Gamepads.gamepad1().circle().whenBecomesTrue(launchWithoutSort).whenBecomesFalse(new LambdaCommand().setStart(launchWithoutSort::cancel).setIsDone(() -> true));
         Gamepads.gamepad1().square().whenBecomesTrue(new HumanPlayerReset(RedAlliance()));
-//        Gamepads.gamepad1().triangle().whenBecomesTrue(PTOSubsystem.INSTANCE.engage).whenBecomesFalse(PTOSubsystem.INSTANCE.disengage);
+
         Gamepads.gamepad1().cross().whenBecomesTrue(runTurretAndLauncherFromHeading).whenBecomesFalse(new LambdaCommand().setStart(() -> {runTurretAndLauncherFromHeading.cancel();runTurretFromJoystick.schedule();}).setIsDone(() -> true));;
         Gamepads.gamepad1().dpadUp();
         Gamepads.gamepad1().dpadDown();
@@ -159,8 +160,8 @@ public abstract class TeleOpBase extends Storage {
         Gamepads.gamepad2().dpadRight();
         Gamepads.gamepad2().leftStickX();
         Gamepads.gamepad2().leftStickX();
-//        Gamepads.gamepad2().leftStickY().lessThan(-0.75).whenBecomesTrue(LauncherSubsystem.INSTANCE.HoodPlus);
-//        Gamepads.gamepad2().leftStickY().atLeast(0.75).whenBecomesTrue(LauncherSubsystem.INSTANCE.HoodMinus);
+        Gamepads.gamepad2().leftStickY().lessThan(-0.75).whenBecomesTrue(LauncherSubsystem.INSTANCE.HoodPlus);
+        Gamepads.gamepad2().leftStickY().atLeast(0.75).whenBecomesTrue(LauncherSubsystem.INSTANCE.HoodMinus);
         Gamepads.gamepad2().leftStickButton();
         Gamepads.gamepad2().rightStickY().lessThan(-0.75);
         Gamepads.gamepad2().rightStickY().atLeast(0.75);

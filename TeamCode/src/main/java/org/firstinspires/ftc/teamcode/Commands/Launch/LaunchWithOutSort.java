@@ -28,6 +28,7 @@ public class LaunchWithOutSort extends Command {
         Done
 
     }
+    boolean firstShot = false;
 
     Step St = Step.LaunchCenter;
     Timing.Timer wait = new Timing.Timer(215, TimeUnit.MILLISECONDS);
@@ -50,6 +51,7 @@ public class LaunchWithOutSort extends Command {
     public void start() {
         St = Step.GetReady;
         SorterSubsystem.INSTANCE.resetSorter();
+        firstShot = false;
         // executed when the command begins
     }
 
@@ -72,12 +74,12 @@ public class LaunchWithOutSort extends Command {
                 break;
             case LaunchCenter:
                 if(!(SorterSubsystem.INSTANCE.centerSlot() == SorterSubsystem.SlotDetection.EMPTY)){
+
                     if(TurretSubsystem.INSTANCE.turretFine()) {
+                        firstShot = true;
                         SorterSubsystem.INSTANCE.sendCenter();
                         wait.start();
                         St = Step.WaitCenter;
-                    }else{
-                        ActiveOpMode.gamepad1().rumble(100);
                     }
                 } else {
                     St = Step.LaunchLeft;
@@ -97,12 +99,16 @@ public class LaunchWithOutSort extends Command {
                 break;
             case LaunchLeft:
                 if(!(SorterSubsystem.INSTANCE.leftSlot() == SorterSubsystem.SlotDetection.EMPTY)){
-                    if(TurretSubsystem.INSTANCE.turretFine()) {
+                    if (!firstShot){
                         SorterSubsystem.INSTANCE.sendLeft();
                         wait.start();
                         St = Step.WaitLeft;
-                    }else{
-                        ActiveOpMode.gamepad1().rumble(100);
+                    }else {
+                        if (TurretSubsystem.INSTANCE.turretFine()) {
+                            SorterSubsystem.INSTANCE.sendLeft();
+                            wait.start();
+                            St = Step.WaitLeft;
+                        }
                     }
                 } else {
                     St = Step.LaunchRight;
@@ -123,12 +129,16 @@ public class LaunchWithOutSort extends Command {
                 break;
             case LaunchRight:
                 if(!(SorterSubsystem.INSTANCE.rightSlot() == SorterSubsystem.SlotDetection.EMPTY)){
-                    if(TurretSubsystem.INSTANCE.turretFine()) {
+                    if (!firstShot){
                         SorterSubsystem.INSTANCE.sendRight();
                         wait.start();
                         St = Step.WaitRight;
-                    }else{
-                        ActiveOpMode.gamepad1().rumble(100);
+                    }else {
+                        if (TurretSubsystem.INSTANCE.turretFine()) {
+                            SorterSubsystem.INSTANCE.sendRight();
+                            wait.start();
+                            St = Step.WaitRight;
+                        }
                     }
                 } else {
                     St = Step.Pause;

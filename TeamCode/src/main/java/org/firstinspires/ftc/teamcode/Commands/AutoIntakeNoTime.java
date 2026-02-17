@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Commands.Intake;
+package org.firstinspires.ftc.teamcode.Commands;
 
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import dev.nextftc.core.commands.Command;
 
-public class AutoIntakeCheck extends Command {
+public class AutoIntakeNoTime extends Command {
     enum intakeSeq {
         Intake,
         CheckForFull,
@@ -25,23 +25,23 @@ public class AutoIntakeCheck extends Command {
     }
     intakeSeq step;
     Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
-    public AutoIntakeCheck() {
-
+    public AutoIntakeNoTime() {
+        requires(IntakeSubsystem.INSTANCE/* subsystems */);
         setInterruptible(true); // this is the default, so you don't need to specify
     }
 
-    Timing.Timer end = new Timing.Timer(1500, TimeUnit.MILLISECONDS);
 
     @Override
-    public boolean isDone() {return step == intakeSeq.Done|| end.done();// whether or not the command is done
+    public boolean isDone() {
+        return step == intakeSeq.Done;// whether or not the command is done
     }
 
     @Override
     public void start() {
-        end.start();
         step = intakeSeq.Intake;
 
         SorterSubsystem.INSTANCE.resetSorter();
+        IntakeSubsystem.INSTANCE.intake();
 
         // executed when the command begins
     }
@@ -54,7 +54,7 @@ public class AutoIntakeCheck extends Command {
                 step = intakeSeq.CheckForFull;
                 break;
             case CheckForFull:
-                if (SorterSubsystem.INSTANCE.sorterFullDumb()) {
+                if (SorterSubsystem.INSTANCE.sorterFull()) {
                     step = intakeSeq.Hug;
                 }
                 break;
@@ -68,7 +68,7 @@ public class AutoIntakeCheck extends Command {
                 break;
             case CheckBB:
                 IntakeSubsystem.INSTANCE.outtake();
-                if (IntakeSubsystem.INSTANCE.intakeBBTripped() || IntakeSubsystem.INSTANCE.intakeBB2Tripped()) {
+                if (IntakeSubsystem.INSTANCE.intakeBBTripped()) {
                     step = intakeSeq.Outake;
                 }else{
                     step = intakeSeq.ReleaseHug;
@@ -92,7 +92,7 @@ public class AutoIntakeCheck extends Command {
                 }
                 break;
             case CheckForFullAgain:
-                if (SorterSubsystem.INSTANCE.sorterFullDumb()) {
+                if (SorterSubsystem.INSTANCE.sorterFull()) {
                     step = intakeSeq.HugAgain;
                     IntakeSubsystem.INSTANCE.outtake();
                 }else{

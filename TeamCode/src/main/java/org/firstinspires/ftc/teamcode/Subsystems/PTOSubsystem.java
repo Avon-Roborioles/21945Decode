@@ -17,10 +17,10 @@ import dev.nextftc.hardware.positionable.SetPosition;
 public class PTOSubsystem implements Subsystem {
     public static final PTOSubsystem INSTANCE = new PTOSubsystem();
     private PTOSubsystem() {}
-    double lUp = 0.85;
-    double lDown = 0.05;
-    double rUp = 0.85;
-    double rDown = 0.05;
+    double lUp = 0;
+    double lDown = 0.7;
+    double rUp = 0;
+    double rDown = 0.7;
     boolean engaged = false;
     // put hardware, commands, etc here
     public ServoEx ptoL = new ServoEx("PTO L");

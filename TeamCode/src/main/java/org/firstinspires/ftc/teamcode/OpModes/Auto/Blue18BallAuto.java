@@ -98,31 +98,31 @@ public class Blue18BallAuto extends AutoBase {
     public void onInit() {
 
     }
-
-    @Override
-    public void onWaitForStart() {
+    @Override public void onWaitForStart () {
 
     }
+    @Override public void onStartButtonPressed () {
+        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(true, new Pose(DriveDownShoot.getX() - 4, DriveDownShoot.getY() - 4, Math.toRadians(250)));
+        Command RunLaunch1 = new RunTurretAndLauncherFromPoseAuto(true, DriveUpOne);
+        Command RunLaunch2 = new RunTurretAndLauncherFromPoseAuto(true, DriveUpTwo);
+        Command RunLaunch3 = new RunTurretAndLauncherFromPoseAuto(true, DriveUpThree);
+        Command RunLaunch4 = new RunTurretAndLauncherFromPoseAuto(true, DriveUpFour);
+        Command RunLaunch5 = new RunTurretAndLauncherFromPoseAuto(true, DriveUpFive);
 
-    @Override
-    public void onStartButtonPressed() {
-
-    }
-
-    Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(true, new Pose(DriveDownShoot.getX() - 4, DriveDownShoot.getY() - 4, Math.toRadians(250)));
-    Command RunLaunch1 = new RunTurretAndLauncherFromPoseAuto(true, DriveUpOne);
-    Command RunLaunch2 = new RunTurretAndLauncherFromPoseAuto(true, DriveUpTwo);
-    Command RunLaunch3 = new RunTurretAndLauncherFromPoseAuto(true, DriveUpThree);
-    Command RunLaunch4 = new RunTurretAndLauncherFromPoseAuto(true, DriveUpFour);
-    Command RunLaunch5 = new RunTurretAndLauncherFromPoseAuto(true, DriveUpFive);
-
-    Command Intake1 = new AutoIntake(5000);
-    Command Intake2 = new AutoIntake(3500);
-    Command Intake3 = new AutoIntake(3000);
-    Command Intake4 = new AutoIntake(3000);
-    Command Intake5 = new AutoIntake(3000);
-    Command IntakeCheck = new AutoIntakeCheck();
-    Command StopLauncher = new LambdaCommand().setStart(() -> {RunLaunchPre.cancel();RunLaunch1.cancel();RunLaunch2.cancel();RunLaunch3.cancel();RunLaunch4.cancel();RunLaunch5.cancel();
+        Command Intake1 = new AutoIntake(5000);
+        Command Intake2 = new AutoIntake(3500);
+        Command Intake3 = new AutoIntake(3000);
+        Command Intake4 = new AutoIntake(3000);
+        Command Intake5 = new AutoIntake(3000);
+        Command IntakeCheck = new AutoIntakeCheck();
+        Command StopLauncher = new LambdaCommand().setStart(() -> {
+            RunLaunchPre.cancel();
+            RunLaunch1.cancel();
+            RunLaunch2.cancel();
+            RunLaunch3.cancel();
+            RunLaunch4.cancel();
+            RunLaunch5.cancel();
+        });
 
         Command LaunchWOSort = new SequentialGroup(new ForceLaunchAuto(), StopLauncher);
 
@@ -133,136 +133,127 @@ public class Blue18BallAuto extends AutoBase {
         buildPaths();
 
         runAuto = new SequentialGroup(
-
-
-
-                new Command[]{new LambdaCommand().setStart(() -> {
+                new LambdaCommand().setStart(() -> {
                     RunLaunchPre.schedule();
                 }).setIsDone(() -> true), new Delay(0.125), new ParallelGroup(
-                        new SequentialGroup(
-                                new FollowPath(ShootPreloads, false),
-                                new Delay(0.005)
-                        )
-                ), LaunchWOSort, new ParallelGroup(
-                        new SequentialGroup(
-                                new FollowPath(DriveToCollectOne),
-                                new InstantCommand(() -> {
-                                    PedroComponent.follower().setMaxPower(0.4);
-                                }),
-                                new FollowPath(DriveToShootOne)
-                        ),
-                        Intake1
-                ), new ParallelGroup(
-                        new SequentialGroup(
-                                new InstantCommand(() -> {
-                                    PedroComponent.follower().setMaxPower(1.0);
-                                }),
-                                new FollowPath(DriveToShootOne),
-                                new Delay(0.25)
-                        ),
-                        new LambdaCommand().setStart(() -> {
-                            RunLaunch1.schedule();
-                        }).setIsDone(() -> true),
-                        IntakeCheck
-                ), LaunchWOSort, new ParallelGroup(
-                        new SequentialGroup(
-                                new FollowPath(DriveToCollectTwo),
-                                new InstantCommand(() -> {
-                                    PedroComponent.follower().setMaxPower(0.35);
-                                }),
-                                new FollowPath(DriveToShootTwo)
-                        ),
-                        Intake2
-                ), new ParallelGroup(
-                        new SequentialGroup(
-                                new InstantCommand(() -> {
-                                    PedroComponent.follower().setMaxPower(1.0);
-                                }),
-                                new FollowPath(DriveToShootTwo),
-                                new Delay(0.25)
-                        ),
-                        new LambdaCommand().setStart(() -> {
-                            RunLaunch2.schedule();
-                        }).setIsDone(() -> true),
-                        IntakeCheck
-                ), LaunchWOSort, new ParallelGroup(
-                        new SequentialGroup(
-                                new FollowPath(DriveToCollectThree),
-                                new InstantCommand(() -> {
-                                    PedroComponent.follower().setMaxPower(0.35);
-                                }),
-                                new FollowPath(DriveToShootThree)
-                        ),
-                        Intake3
-                ), new ParallelGroup(
-                        new SequentialGroup(
-                                new InstantCommand(() -> {
-                                    PedroComponent.follower().setMaxPower(1.0);
-                                }),
-                                new FollowPath(DriveToShootThree),
-                                new Delay(0.25)
-                        ),
-                        new LambdaCommand().setStart(() -> {
-                            RunLaunch3.schedule();
-                        }).setIsDone(() -> true),
-                        IntakeCheck
-                ), LaunchWOSort, new ParallelGroup(
-                        new SequentialGroup(
-                                new FollowPath(DriveToCollectFour),
-                                new InstantCommand(() -> {
-                                    PedroComponent.follower().setMaxPower(0.35);
-                                }),
-                                new FollowPath(DriveToShootFour)
-                        ),
-                        Intake4
-                ), new ParallelGroup(
-                        new SequentialGroup(
-                                new InstantCommand(() -> {
-                                    PedroComponent.follower().setMaxPower(1.0);
-                                }),
-                                new FollowPath(DriveToShootFour),
-                                new Delay(0.25)
-                        ),
-                        new LambdaCommand().setStart(() -> {
-                            RunLaunch4.schedule();
-                        }).setIsDone(() -> true),
-                        IntakeCheck
-                ), LaunchWOSort, new ParallelGroup(
-                        new SequentialGroup(
-                                new FollowPath(DriveToCollectFive),
-                                new InstantCommand(() -> {
-                                    PedroComponent.follower().setMaxPower(0.35);
-                                }),
-                                new FollowPath(DriveToShootFive)
-                        ),
-                        Intake5
-                ), new ParallelGroup(
-                        new SequentialGroup(
-                                new InstantCommand(() -> {
-                                    PedroComponent.follower().setMaxPower(1.0);
-                                }),
-                                new FollowPath(DriveToShootFive),
-                                new Delay(0.25)
-                        ),
-                        new LambdaCommand().setStart(() -> {
-                            RunLaunch5.schedule();
-                        }).setIsDone(() -> true),
-                        IntakeCheck
+                new SequentialGroup(
+                        new FollowPath(ShootPreloads, false),
+                        new Delay(0.005)
+                )
+        ), LaunchWOSort, new ParallelGroup(
+                new SequentialGroup(
+                        new FollowPath(DriveToCollectOne),
+                        new InstantCommand(() -> {
+                            PedroComponent.follower().setMaxPower(0.4);
+                        }),
+                        new FollowPath(DriveToShootOne)
                 ),
-                        LaunchWOSort,
-                        StopLauncher
-
-                });
+                Intake1
+        ), new ParallelGroup(
+                new SequentialGroup(
+                        new InstantCommand(() -> {
+                            PedroComponent.follower().setMaxPower(1.0);
+                        }),
+                        new FollowPath(DriveToShootOne),
+                        new Delay(0.25)
+                ),
+                new LambdaCommand().setStart(() -> {
+                    RunLaunch1.schedule();
+                }).setIsDone(() -> true),
+                IntakeCheck
+        ), LaunchWOSort, new ParallelGroup(
+                new SequentialGroup(
+                        new FollowPath(DriveToCollectTwo),
+                        new InstantCommand(() -> {
+                            PedroComponent.follower().setMaxPower(0.35);
+                        }),
+                        new FollowPath(DriveToShootTwo)
+                ),
+                Intake2
+        ), new ParallelGroup(
+                new SequentialGroup(
+                        new InstantCommand(() -> {
+                            PedroComponent.follower().setMaxPower(1.0);
+                        }),
+                        new FollowPath(DriveToShootTwo),
+                        new Delay(0.25)
+                ),
+                new LambdaCommand().setStart(() -> {
+                    RunLaunch2.schedule();
+                }).setIsDone(() -> true),
+                IntakeCheck
+        ), LaunchWOSort, new ParallelGroup(
+                new SequentialGroup(
+                        new FollowPath(DriveToCollectThree),
+                        new InstantCommand(() -> {
+                            PedroComponent.follower().setMaxPower(0.35);
+                        }),
+                        new FollowPath(DriveToShootThree)
+                ),
+                Intake3
+        ), new ParallelGroup(
+                new SequentialGroup(
+                        new InstantCommand(() -> {
+                            PedroComponent.follower().setMaxPower(1.0);
+                        }),
+                        new FollowPath(DriveToShootThree),
+                        new Delay(0.25)
+                ),
+                new LambdaCommand().setStart(() -> {
+                    RunLaunch3.schedule();
+                }).setIsDone(() -> true),
+                IntakeCheck
+        ), LaunchWOSort, new ParallelGroup(
+                new SequentialGroup(
+                        new FollowPath(DriveToCollectFour),
+                        new InstantCommand(() -> {
+                            PedroComponent.follower().setMaxPower(0.35);
+                        }),
+                        new FollowPath(DriveToShootFour)
+                ),
+                Intake4
+        ), new ParallelGroup(
+                new SequentialGroup(
+                        new InstantCommand(() -> {
+                            PedroComponent.follower().setMaxPower(1.0);
+                        }),
+                        new FollowPath(DriveToShootFour),
+                        new Delay(0.25)
+                ),
+                new LambdaCommand().setStart(() -> {
+                    RunLaunch4.schedule();
+                }).setIsDone(() -> true),
+                IntakeCheck
+        ), LaunchWOSort, new ParallelGroup(
+                new SequentialGroup(
+                        new FollowPath(DriveToCollectFive),
+                        new InstantCommand(() -> {
+                            PedroComponent.follower().setMaxPower(0.35);
+                        }),
+                        new FollowPath(DriveToShootFive)
+                ),
+                Intake5
+        ), new ParallelGroup(
+                new SequentialGroup(
+                        new InstantCommand(() -> {
+                            PedroComponent.follower().setMaxPower(1.0);
+                        }),
+                        new FollowPath(DriveToShootFive),
+                        new Delay(0.25)
+                ),
+                new LambdaCommand().setStart(() -> {
+                    RunLaunch5.schedule();
+                }).setIsDone(() -> true),
+                IntakeCheck
+        ),
+                LaunchWOSort,
+                StopLauncher
+        );
 
         runAuto.schedule();
 
 
-
-
-
-     )
-        runAuto.schedule();
-    });
+    }
 
     @Override public void onStop () {}
 
