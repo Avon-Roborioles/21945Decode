@@ -28,21 +28,21 @@ import dev.nextftc.extensions.pedro.PedroComponent;
 public class Blue18BallAuto extends AutoBase {
     Path ShootPreloads, DriveToCollectOne, DriveToShootOne, DriveToCollectTwo, DriveToShootTwo, DriveToCollectThree, DriveToShootThree, DriveToCollectFour, DriveToShootFour, DriveToCollectFive, DriveToShootFive;
 
-    Pose StartPoint = new Pose(25, 124);
-    Pose DriveDownShoot = new Pose(56, 87);
-    Pose CollectSecondLine = new Pose(15, 60);
-    Pose CollectSecondLineCP = new Pose(45, 56);
-    Pose DriveUpOne = new Pose(56, 87);
-    Pose DriveDownTwo = new Pose(14, 64);
-    Pose DriveUpTwo = new Pose(56, 87);
-    Pose DriveDownThree = new Pose(14, 64);
-    Pose DriveDownThreeCP = new Pose(42, 49);
-    Pose DriveUpThree = new Pose(55, 86);
-    Pose DriveDownFour = new Pose(18, 34);
-    Pose DriveDownFourCP = new Pose(51, 32);
-    Pose DriveUpFour = new Pose(54, 87);
-    Pose DriveDownFive = new Pose(16, 83);
-    Pose DriveUpFive = new Pose(47, 93);
+    Pose StartPoint = new Pose(25, 124, Math.toRadians(141)).mirror();;
+    Pose DriveDownShoot = new Pose(56, 87, Math.toRadians(180)).mirror();;
+    Pose CollectSecondLine = new Pose(15, 60, Math.toRadians(180)).mirror();;
+    Pose CollectSecondLineCP = new Pose(45, 56).mirror();;
+    Pose DriveUpOne = new Pose(56, 87, Math.toRadians(180)).mirror();;
+    Pose DriveDownTwo = new Pose(14, 64, Math.toRadians(180)).mirror();
+    Pose DriveUpTwo = new Pose(56, 87, Math.toRadians(180)).mirror();;
+    Pose DriveDownThree = new Pose(14, 64, Math.toRadians(180)).mirror();;
+    Pose DriveDownThreeCP = new Pose(42, 49).mirror();;
+    Pose DriveUpThree = new Pose(55, 86, Math.toRadians(180)).mirror();;
+    Pose DriveDownFour = new Pose(18, 34, Math.toRadians(180)).mirror();;
+    Pose DriveDownFourCP = new Pose(51, 32).mirror();;
+    Pose DriveUpFour = new Pose(54, 87, Math.toRadians(180)).mirror();;
+    Pose DriveDownFive = new Pose(16, 83, Math.toRadians(180)).mirror();;
+    Pose DriveUpFive = new Pose(47, 93, Math.toRadians(180)).mirror();;
     Command runAuto;
 
 
