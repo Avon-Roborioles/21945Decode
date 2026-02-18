@@ -22,6 +22,12 @@ public class PTOSubsystem implements Subsystem {
     double rUp = 0;
     double rDown = 0.7;
     boolean engaged = false;
+    private static final double DEGREES_PER_US = (360 / 1024.0);
+    private double angleOffsetL = 87;
+    private double angleOffsetR = 340;
+    public double ptoLeftPos = 0;
+    public double ptoRightPos = 0;
+
     // put hardware, commands, etc here
     public ServoEx ptoL = new ServoEx("PTO L");
     public ServoEx ptoR = new ServoEx("PTO R");
@@ -50,17 +56,27 @@ public class PTOSubsystem implements Subsystem {
 
         // initialization logic (runs on init)
     }
+    public double getPtoLPosition(){
+        ptoLeftPos =((TurretSubsystem.INSTANCE.data.positions[1] * DEGREES_PER_US)- angleOffsetL);
+        return ptoLeftPos;
+    }
+    public double getPtoRPosition(){
+        ptoRightPos =((TurretSubsystem.INSTANCE.data.positions[2] * DEGREES_PER_US)- angleOffsetR);
+        return ptoRightPos;
+    }
+
 
     @Override
     public void periodic() {
         // periodic logic (runs every loop)
-//        getPTOTelemetryAdv();
+        getPTOTelemetryAdv();
     }
     public void getPTOTelemetryAdv(){
         ActiveOpMode.telemetry().addLine("-------------- PTO Telemetry Adv: --------------");
         ActiveOpMode.telemetry().addData("Engaged", engaged);
-        ActiveOpMode.telemetry().addData("PTO L Position", ptoL.getPosition());
-        ActiveOpMode.telemetry().addData("PTO R Position", ptoR.getPosition());
+        ActiveOpMode.telemetry().addData("PTO L Pos", getPtoLPosition());
+        ActiveOpMode.telemetry().addData("PTO R Pos", getPtoRPosition());
+
 
 
     }

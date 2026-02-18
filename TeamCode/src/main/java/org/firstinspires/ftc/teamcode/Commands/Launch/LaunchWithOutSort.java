@@ -64,7 +64,7 @@ public class LaunchWithOutSort extends Command {
                 St = Step.WaitForReady;
                 break;
             case WaitForReady:
-                if(ready.done()){
+                if(ready.done() && TurretSubsystem.INSTANCE.turretFine()){
                     St = Step.Ready;
                 }
                 break;
@@ -74,9 +74,7 @@ public class LaunchWithOutSort extends Command {
                 break;
             case LaunchCenter:
                 if(!(SorterSubsystem.INSTANCE.centerSlot() == SorterSubsystem.SlotDetection.EMPTY)){
-
-                    if(TurretSubsystem.INSTANCE.turretFine()) {
-                        firstShot = true;
+                    if(TurretSubsystem.INSTANCE.turretNotInFlip()) {
                         SorterSubsystem.INSTANCE.sendCenter();
                         wait.start();
                         St = Step.WaitCenter;
@@ -99,16 +97,10 @@ public class LaunchWithOutSort extends Command {
                 break;
             case LaunchLeft:
                 if(!(SorterSubsystem.INSTANCE.leftSlot() == SorterSubsystem.SlotDetection.EMPTY)){
-                    if (!firstShot){
+                    if(TurretSubsystem.INSTANCE.turretNotInFlip()) {
                         SorterSubsystem.INSTANCE.sendLeft();
                         wait.start();
                         St = Step.WaitLeft;
-                    }else {
-                        if (TurretSubsystem.INSTANCE.turretFine()) {
-                            SorterSubsystem.INSTANCE.sendLeft();
-                            wait.start();
-                            St = Step.WaitLeft;
-                        }
                     }
                 } else {
                     St = Step.LaunchRight;
@@ -129,16 +121,10 @@ public class LaunchWithOutSort extends Command {
                 break;
             case LaunchRight:
                 if(!(SorterSubsystem.INSTANCE.rightSlot() == SorterSubsystem.SlotDetection.EMPTY)){
-                    if (!firstShot){
+                    if(TurretSubsystem.INSTANCE.turretNotInFlip()) {
                         SorterSubsystem.INSTANCE.sendRight();
                         wait.start();
                         St = Step.WaitRight;
-                    }else {
-                        if (TurretSubsystem.INSTANCE.turretFine()) {
-                            SorterSubsystem.INSTANCE.sendRight();
-                            wait.start();
-                            St = Step.WaitRight;
-                        }
                     }
                 } else {
                     St = Step.Pause;

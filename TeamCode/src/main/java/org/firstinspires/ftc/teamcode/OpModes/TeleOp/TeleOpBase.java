@@ -36,6 +36,8 @@ import java.util.function.Supplier;
 
 import dev.nextftc.bindings.Button;
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.groups.ParallelGroup;
+import dev.nextftc.core.commands.groups.ParallelRaceGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.components.BindingsComponent;
@@ -133,7 +135,7 @@ public abstract class TeleOpBase extends Storage {
         Gamepads.gamepad1().circle().whenBecomesTrue(launchWithoutSort).whenBecomesFalse(new LambdaCommand().setStart(launchWithoutSort::cancel).setIsDone(() -> true));
         Gamepads.gamepad1().square().whenBecomesTrue(new HumanPlayerReset(RedAlliance()));
 
-        Gamepads.gamepad1().cross().whenBecomesTrue(runTurretAndLauncherFromHeading).whenBecomesFalse(new LambdaCommand().setStart(() -> {runTurretAndLauncherFromHeading.cancel();runTurretFromJoystick.schedule();}).setIsDone(() -> true));;
+        Gamepads.gamepad1().cross().whenBecomesTrue(new ParallelGroup(runTurretAndLauncherFromHeading,new LambdaCommand().setStart(()->{intakeToSorter.cancel();}).setIsDone(()->true))).whenBecomesFalse(new LambdaCommand().setStart(() -> {runTurretAndLauncherFromHeading.cancel();runTurretFromJoystick.schedule();}).setIsDone(() -> true));;
         Gamepads.gamepad1().dpadUp();
         Gamepads.gamepad1().dpadDown();
         Gamepads.gamepad1().dpadLeft();

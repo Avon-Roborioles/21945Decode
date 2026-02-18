@@ -27,21 +27,21 @@ public class BlueGoal12BallNew extends AutoBase {
     PathChain FirstCycle, SecondCycle, ThirdCycle;
     Pose startingPos = new Pose(26.75, 130, Math.toRadians(141));
     Pose scorePreload = new Pose(54, 114, Math.toRadians(270));
-    Pose toPickUp1 = new Pose(46, 84, Math.toRadians(180));
+    Pose toPickUp1 = new Pose(60, 84, Math.toRadians(180));
     Pose pickUp1 = new Pose(20, 79, Math.toRadians(180));
     Pose dumpGate = new Pose(18, 79, Math.toRadians(180));
     Pose toScore1 = new Pose(56, 79, Math.toRadians(270));
     Pose toPickUp2 = new Pose( 44, 62, Math.toRadians(180));
     Pose toPickUp2CP = new Pose(57, 58);
-    Pose pickUp2 = new Pose(10, 60, Math.toRadians(180));
+    Pose pickUp2 = new Pose(12, 60, Math.toRadians(180));
     Pose toScore2 = new Pose(56, 78, Math.toRadians(270));
     Pose toScore2CP = new Pose(51, 61);
     Pose toPickUp3 = new Pose(44,35.5 , Math.toRadians(180));
     Pose toPickUp3CP = new Pose(50, 33);
-    Pose pickUp3 = new Pose(10, 35.5, Math.toRadians(180));
+    Pose pickUp3 = new Pose(12, 35.5, Math.toRadians(180));
     Pose toScore3 = new Pose(56,110 , Math.toRadians(270));
     Pose toScore3CP = new Pose(50, 38);
-    double maxPower = 1;
+    double maxPower = 0.9;
 
 
 
@@ -145,6 +145,7 @@ public class BlueGoal12BallNew extends AutoBase {
                 LaunchWOSort,
                 new ParallelGroup(
                         new SequentialGroup(
+
                                 new FollowPathNew(FirstCycle),
                                 new Delay(1),
                                 new FollowPathNew(DriveToScore1),

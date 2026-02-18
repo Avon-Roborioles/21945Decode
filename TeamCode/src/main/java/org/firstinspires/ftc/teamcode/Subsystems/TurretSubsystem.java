@@ -36,8 +36,8 @@ public class TurretSubsystem implements Subsystem {
     private double botHeadingRad = 0;
     double turretZeroHeadingRad = 0;
     double turretError = 0;
-    public static double turretHappyThresh = 10;
-    private final OctoQuadFWv3.EncoderDataBlock data = new OctoQuadFWv3.EncoderDataBlock();
+    public static double turretHappyThresh = 12.5;
+    public final OctoQuadFWv3.EncoderDataBlock data = new OctoQuadFWv3.EncoderDataBlock();
     double maxPower = 1;
     double power = 0;
     boolean turretFineBo = false;
@@ -239,6 +239,10 @@ public class TurretSubsystem implements Subsystem {
         return turretFineBo;
     }
 
+    public boolean turretNotInFlip(){
+        return turretError<30;
+    }
+
     public void turnTurretOn(){
         turretOn = true;
     }
@@ -269,8 +273,16 @@ public class TurretSubsystem implements Subsystem {
         Octo.setSingleEncoderDirection(0, OctoQuadFWv3.EncoderDirection.FORWARD);
         Octo.setSingleChannelPulseWidthParams(0, new OctoQuadFWv3.ChannelPulseWidthParams(0,1024));
         Octo.setSingleChannelPulseWidthTracksWrap(0, true);
+        Octo.setSingleEncoderDirection(1, OctoQuadFWv3.EncoderDirection.FORWARD);
+        Octo.setSingleChannelPulseWidthParams(1, new OctoQuadFWv3.ChannelPulseWidthParams(0,1024));
+        Octo.setSingleChannelPulseWidthTracksWrap(1, true);
+        Octo.setSingleEncoderDirection(2, OctoQuadFWv3.EncoderDirection.REVERSE);
+        Octo.setSingleChannelPulseWidthParams(2, new OctoQuadFWv3.ChannelPulseWidthParams(0,1024));
+        Octo.setSingleChannelPulseWidthTracksWrap(2, true);
         Octo.saveParametersToFlash();
         Octo.resetSinglePosition(0);
+        Octo.resetSinglePosition(1);
+        Octo.resetSinglePosition(2);
         turretMotorEx.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretTargetPosDeg =0;
         turretControlSystem.reset();
