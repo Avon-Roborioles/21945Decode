@@ -14,6 +14,7 @@ public class TiltCommand extends Command {
     double power;
     Range input;
     double finalTarget = 100;
+    double onGround = 70;
     double currTarget = 0;
     public static double KS = 0.05;
 
@@ -43,6 +44,10 @@ public class TiltCommand extends Command {
 
         leftPower = (PTOSubsystem.INSTANCE.getPtoLPosition()-currTarget)*KS;
         rightPower = (PTOSubsystem.INSTANCE.getPtoRPosition()-currTarget)*KS;
+        if(currTarget>onGround){
+            leftPower=1;
+            rightPower=1;
+        }
 
         if(currTarget> finalTarget){
             currTarget = finalTarget;
