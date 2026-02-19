@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchWithOutSort;
 import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchWithSort;
 import org.firstinspires.ftc.teamcode.Commands.PTOJoystickCommand;
 import org.firstinspires.ftc.teamcode.Commands.ReLocalizeWithLLCommand;
+import org.firstinspires.ftc.teamcode.Commands.TiltCommand;
 import org.firstinspires.ftc.teamcode.Commands.Turret.TurretJoystickCommand;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.LauncherSubsystem;
@@ -52,6 +53,7 @@ public abstract class TeleOpBase extends Storage {
     Pose Botpose;
     TeleOpDriveCommand driverControlled;
     PTOJoystickCommand joyCommand;
+    TiltCommand tiltCommand;
     Boolean inLift = false;
 
     Timing.Timer waitTimer = new Timing.Timer(100, TimeUnit.MILLISECONDS);
@@ -126,6 +128,7 @@ public abstract class TeleOpBase extends Storage {
         PedroComponent.follower().setHeading( PosStorage.memory.lastPose.getHeading());
 
         joyCommand = new PTOJoystickCommand(Gamepads.gamepad2().leftStickY(), Gamepads.gamepad2().rightStickY());
+        tiltCommand = new TiltCommand(Gamepads.gamepad2().leftStickY());
 
         driverControlled = driveCommand();
 
@@ -194,13 +197,15 @@ public abstract class TeleOpBase extends Storage {
             if(!inLift){
                 if(Gamepads.gamepad2().ps().get() && Gamepads.gamepad1().options().get()){
                     inLift = true;
-                    joyCommand.schedule();
+//                    joyCommand.schedule();
+                    tiltCommand.schedule();
                     deBounce.start();
                 }
             }else{
                 if((Gamepads.gamepad2().ps().get() || Gamepads.gamepad1().options().get()) && deBounce.done()){
                     inLift = false;
-                    joyCommand.cancel();
+                    tiltCommand.cancel();
+//                    joyCommand.cancel();
                 }
             }
             telemetry.addData("last Pos",  PosStorage.memory.lastPose);
