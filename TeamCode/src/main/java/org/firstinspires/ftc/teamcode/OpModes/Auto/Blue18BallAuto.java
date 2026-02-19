@@ -6,6 +6,7 @@ import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
+import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromPoseAuto;
@@ -26,71 +27,94 @@ import dev.nextftc.extensions.pedro.PedroComponent;
 
 @Autonomous
 public class Blue18BallAuto extends AutoBase {
-    Path ShootPreloads, DriveToCollectOne, DriveToShootOne, DriveToCollectTwo, DriveToShootTwo, DriveToCollectThree, DriveToShootThree, DriveToCollectFour, DriveToShootFour, DriveToCollectFive, DriveToShootFive;
+    PathChain MidCycle;
+    Path ToScorePreloads, ToGrabMid, ToScoreMid, ToRampCycle, ToScoreRampCycle, ToGrabClose, GrabClose, ToScoreClose, ToGrabFar, ToScoreFar;
 
-    Pose StartPoint = new Pose(25, 124, Math.toRadians(141)).mirror();;
-    Pose DriveDownShoot = new Pose(56, 87, Math.toRadians(180)).mirror();;
-    Pose CollectSecondLine = new Pose(15, 60, Math.toRadians(180)).mirror();;
-    Pose CollectSecondLineCP = new Pose(45, 56).mirror();;
-    Pose DriveUpOne = new Pose(56, 87, Math.toRadians(180)).mirror();;
-    Pose DriveDownTwo = new Pose(14, 64, Math.toRadians(180)).mirror();
-    Pose DriveUpTwo = new Pose(56, 87, Math.toRadians(180)).mirror();;
-    Pose DriveDownThree = new Pose(14, 64, Math.toRadians(180)).mirror();;
-    Pose DriveDownThreeCP = new Pose(42, 49).mirror();;
-    Pose DriveUpThree = new Pose(55, 86, Math.toRadians(180)).mirror();;
-    Pose DriveDownFour = new Pose(18, 34, Math.toRadians(180)).mirror();;
-    Pose DriveDownFourCP = new Pose(51, 32).mirror();;
-    Pose DriveUpFour = new Pose(54, 87, Math.toRadians(180)).mirror();;
-    Pose DriveDownFive = new Pose(16, 83, Math.toRadians(180)).mirror();;
-    Pose DriveUpFive = new Pose(47, 93, Math.toRadians(180)).mirror();;
+    Pose startingPos = new Pose(26.75, 130, Math.toRadians(329));
+    Pose scorePreload = new Pose(45.2, 119, Math.toRadians(329));
+    Pose grabMid = new Pose(13.5, 58.5);
+    Pose grabMidCP1 = new Pose(69, 104.5);
+    Pose grabMidCP2  = new Pose(59, 66.5);
+    Pose grabMidCP3  = new Pose(64, 60);
+    Pose scoreMid = new Pose(56.5, 73, Math.toRadians(-110));
+    Pose scoreMidCp = new Pose(51, 59.5);
+    Pose grabRampCycle = new Pose(12.6,60.3 , Math.toRadians(160));
+    Pose grabRampCycleCP = new Pose(38, 57);
+    Pose scoreRampCycle = new Pose(56.5, 73, Math.toRadians(-110));
+    Pose scoreRampCycleCP = new Pose(51,60);
+    Pose toGrabClose = new Pose(37, 85, Math.toRadians(180));
+    Pose toGrabCloseCP1 = new Pose(60, 83.6);
+    Pose toGrabCloseCP2 = new Pose(47.5, 86.5);
+    Pose grabClose = new Pose(16.5, 85, Math.toRadians(180));
+    Pose scoreClose = new Pose(58, 89, Math.toRadians(270));
+    Pose scoreCloseCP = new Pose(44.5, 82.5);
+    Pose grabFar = new Pose(18, 34.5, Math.toRadians(182));
+    Pose grabFarCP1 = new Pose(61, 38.5);
+    Pose grabFarCP2 = new Pose(57, 37.5);
+    Pose grabFarCP3 = new Pose(35, 35);
+    Pose scoreFar = new Pose(59, 101.5, Math.toRadians(270));
+    Pose scoreFarCP = new Pose(57, 36);
+
+
+
     Command runAuto;
 
 
     public void buildPaths() {
+        ToScorePreloads = new Path(new BezierLine(startingPos, scorePreload));
+        ToScorePreloads.setConstantHeadingInterpolation(scoreCloseCP.getHeading());
+        ToScorePreloads.setTimeoutConstraint(1000);
+
+        ToGrabMid = new Path(new BezierCurve(scorePreload, grabMidCP1, grabMidCP2, grabMidCP3, grabMid));
+        ToGrabMid.setTangentHeadingInterpolation();
+        ToGrabMid.setTimeoutConstraint(1000);
+
+        ToScoreMid = new Path(new BezierCurve(grabMid, scoreMidCp, scoreMid));
+        ToScoreMid.setTangentHeadingInterpolation();
+        ToScoreMid.reverseHeadingInterpolation();
+        ToScoreMid.setTimeoutConstraint(1000);
+
+        ToRampCycle = new Path(new BezierCurve(scoreMid, grabRampCycleCP, grabRampCycle));
+        ToRampCycle.setLinearHeadingInterpolation(scoreMid.getHeading(), grabRampCycle.getHeading());
+        ToRampCycle.setTimeoutConstraint(1000);
+
+        ToScoreRampCycle = new Path(new BezierCurve(grabRampCycle, scoreRampCycleCP, scoreRampCycle));
+        ToScoreRampCycle.setLinearHeadingInterpolation(grabRampCycle.getHeading(), scoreRampCycle.getHeading());
+        ToScoreRampCycle.setTimeoutConstraint(1000);
+
+        ToGrabClose = new Path(new BezierCurve(scoreRampCycle, toGrabCloseCP1, toGrabCloseCP2, toGrabClose));
+        ToGrabClose.setLinearHeadingInterpolation(scoreRampCycle.getHeading(), toGrabClose.getHeading());
+        ToGrabClose.setTimeoutConstraint(1000);
+
+        GrabClose = new Path(new BezierLine(toGrabClose, grabClose));
+        GrabClose.setConstantHeadingInterpolation(grabClose.getHeading());
+        GrabClose.setTimeoutConstraint(1000);
+
+        ToScoreClose = new Path(new BezierCurve(grabClose, scoreCloseCP, scoreClose));
+        ToScoreClose.setLinearHeadingInterpolation(grabClose.getHeading(), scoreClose.getHeading());
+        ToScoreClose.setTimeoutConstraint(1000);
+
+        ToGrabFar = new Path(new BezierCurve(scoreClose, grabFarCP1, grabFarCP2, grabFarCP3, grabFar));
+        ToGrabFar.setTangentHeadingInterpolation();
+        ToGrabFar.setTimeoutConstraint(1000);
+
+        ToScoreFar = new Path(new BezierCurve(grabFar, scoreFarCP, scoreFar));
+        ToScoreFar.setLinearHeadingInterpolation(grabFar.getHeading(), scoreFar.getHeading());
+        ToScoreFar.setTimeoutConstraint(1000);
 
 
-        ShootPreloads = new Path(new BezierLine(StartPoint, DriveDownShoot));
-        ShootPreloads.setLinearHeadingInterpolation((StartPoint.getHeading()), DriveDownShoot.getHeading());
 
 
-        DriveToCollectOne = new Path(new BezierCurve(DriveDownShoot, CollectSecondLineCP, CollectSecondLine));
-        DriveToCollectOne.setLinearHeadingInterpolation((DriveDownShoot.getHeading()), CollectSecondLine.getHeading());
 
 
-        DriveToShootOne = new Path(new BezierLine(CollectSecondLine, DriveUpOne));
-        DriveToShootOne.setLinearHeadingInterpolation((CollectSecondLine.getHeading()), DriveUpOne.getHeading());
 
 
-        DriveToCollectTwo = new Path(new BezierLine(DriveUpOne, DriveDownTwo));
-        DriveToCollectTwo.setLinearHeadingInterpolation((DriveUpOne.getHeading()), DriveDownTwo.getHeading());
 
 
-        DriveToShootTwo = new Path(new BezierLine(DriveDownTwo, DriveUpTwo));
-        DriveToShootTwo.setLinearHeadingInterpolation((DriveDownTwo.getHeading()), DriveUpTwo.getHeading());
 
 
-        DriveToCollectThree = new Path(new BezierCurve(DriveUpTwo, DriveDownThreeCP, DriveDownThree));
-        DriveToCollectThree.setLinearHeadingInterpolation((DriveUpTwo.getHeading()), DriveDownThree.getHeading());
 
 
-        DriveToShootThree = new Path(new BezierLine(DriveDownThree, DriveUpThree));
-        DriveToShootThree.setLinearHeadingInterpolation((DriveDownThree.getHeading()), DriveUpThree.getHeading());
-
-
-        DriveToCollectFour = new Path(new BezierCurve(DriveUpThree, DriveDownFourCP, DriveDownFour));
-        DriveToCollectFour.setLinearHeadingInterpolation((DriveUpThree.getHeading()), DriveDownFour.getHeading());
-
-
-        DriveToShootFour = new Path(new BezierLine(DriveDownFour, DriveUpFour));
-        DriveToShootFour.setLinearHeadingInterpolation((DriveDownFour.getHeading()), DriveUpFour.getHeading());
-
-
-        DriveToCollectFive = new Path(new BezierLine(DriveUpFour, DriveDownFive));
-        DriveToCollectFive.setLinearHeadingInterpolation((DriveUpFour.getHeading()), DriveDownFive.getHeading());
-
-
-        DriveToShootFive = new Path(new BezierLine(DriveDownFive, DriveUpFive));
-        DriveToShootFive.setLinearHeadingInterpolation((DriveDownFive.getHeading()), DriveUpFive.getHeading());
 
     }
 
@@ -102,12 +126,12 @@ public class Blue18BallAuto extends AutoBase {
 
     }
     @Override public void onStartButtonPressed () {
-        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(true, new Pose(DriveDownShoot.getX() - 4, DriveDownShoot.getY() - 4, Math.toRadians(250)));
-        Command RunLaunch1 = new RunTurretAndLauncherFromPoseAuto(true, DriveUpOne);
-        Command RunLaunch2 = new RunTurretAndLauncherFromPoseAuto(true, DriveUpTwo);
-        Command RunLaunch3 = new RunTurretAndLauncherFromPoseAuto(true, DriveUpThree);
-        Command RunLaunch4 = new RunTurretAndLauncherFromPoseAuto(true, DriveUpFour);
-        Command RunLaunch5 = new RunTurretAndLauncherFromPoseAuto(true, DriveUpFive);
+        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(false, new Pose(scorePreload.getX(), scorePreload.getY(), scorePreload.getHeading()));
+        Command RunLaunchMid = new RunTurretAndLauncherFromPoseAuto(false, scoreMid);
+        Command RunLaunchRamp = new RunTurretAndLauncherFromPoseAuto(false, scoreRampCycle);
+        Command RunLaunchClose = new RunTurretAndLauncherFromPoseAuto(false, scoreClose);
+        Command RunLaunchFar = new RunTurretAndLauncherFromPoseAuto(false, scoreFar);
+
 
         Command Intake1 = new AutoIntake(5000);
         Command Intake2 = new AutoIntake(3500);
@@ -117,11 +141,10 @@ public class Blue18BallAuto extends AutoBase {
         Command IntakeCheck = new AutoIntakeCheck();
         Command StopLauncher = new LambdaCommand().setStart(() -> {
             RunLaunchPre.cancel();
-            RunLaunch1.cancel();
-            RunLaunch2.cancel();
-            RunLaunch3.cancel();
-            RunLaunch4.cancel();
-            RunLaunch5.cancel();
+            RunLaunchMid.cancel();
+            RunLaunchRamp.cancel();
+            RunLaunchClose.cancel();
+            RunLaunchFar.cancel();
         });
 
         Command LaunchWOSort = new SequentialGroup(new ForceLaunchAuto(), StopLauncher);
