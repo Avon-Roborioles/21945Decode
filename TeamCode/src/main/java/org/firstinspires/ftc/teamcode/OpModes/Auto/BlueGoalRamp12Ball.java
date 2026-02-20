@@ -5,7 +5,6 @@ package org.firstinspires.ftc.teamcode.OpModes.Auto;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.HeadingInterpolator;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -29,7 +28,7 @@ import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 
 @Autonomous (group = "Blue Goal", preselectTeleOp = "BlueTeleOp")
-public class BlueGoal15Ball extends AutoBase {
+public class BlueGoalRamp12Ball extends AutoBase {
 
     /*TODO: Look into Piecewise heading
       TODO: Shoot While Move?
@@ -50,14 +49,8 @@ public class BlueGoal15Ball extends AutoBase {
 
     Pose toGrabClose = new Pose(42, 85, Math.toRadians(180));
     Pose grabClose = new Pose(30, 85, Math.toRadians(180));
-    Pose scoreClose = new Pose(60, 89, Math.toRadians(270));
+    Pose scoreClose = new Pose(60, 112, Math.toRadians(270));
     Pose scoreCloseCP = new Pose(44.5, 82.5);
-    Pose grabFar = new Pose(30, 34.5, Math.toRadians(182));
-    Pose grabFarCP1 = new Pose(61, 38.5);
-    Pose grabFarCP2 = new Pose(57, 37.5);
-    Pose grabFarCP3 = new Pose(35, 35);
-    Pose scoreFar = new Pose(59, 112, Math.toRadians(270));
-    Pose scoreFarCP = new Pose(57, 36);
 
 
 
@@ -113,31 +106,10 @@ public class BlueGoal15Ball extends AutoBase {
 
         ToScoreClose = new Path(new BezierCurve(grabClose, scoreCloseCP, scoreClose));
         ToScoreClose.setLinearHeadingInterpolation(grabClose.getHeading(), scoreClose.getHeading());
-        ToScoreClose.setTimeoutConstraint(1000);
+        ToScoreClose.setTimeoutConstraint(2000);
 
         CloseCycle = new PathChain(ToGrabClose, GrabClose, ToScoreClose);
 
-
-        ToGrabFar = new Path(new BezierCurve(scoreClose, grabFarCP1, grabFarCP2, grabFarCP3, grabFar));
-        ToGrabFar.setHeadingInterpolation(
-                HeadingInterpolator.piecewise(
-                        new HeadingInterpolator.PiecewiseNode(
-                                0,
-                                .3,
-                                HeadingInterpolator.linear(scorePreload.getHeading(), Math.toRadians(180))
-                        ),
-                        new HeadingInterpolator.PiecewiseNode(
-                                .3,
-                                1,
-                                HeadingInterpolator.constant(Math.toRadians(180))
-                        )
-                ));
-        ToGrabFar.setTimeoutConstraint(1000);
-
-        ToScoreFar = new Path(new BezierCurve(grabFar, scoreFarCP, scoreFar));
-        ToScoreFar.setLinearHeadingInterpolation(grabFar.getHeading(), scoreFar.getHeading());
-        ToScoreFar.setTimeoutConstraint(1000);
-        FarCycle = new PathChain(ToGrabFar, ToScoreFar);
 
         ToRampCycle = new Path(new BezierCurve(scoreMid, grabRampCycleCP1, grabRampCycleCP2, grabRampCycleCP3, grabRampCycle));
 //        ToGrabMid.setHeadingInterpolation(
@@ -174,7 +146,6 @@ public class BlueGoal15Ball extends AutoBase {
         Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(false, new Pose(scorePreload.getX(), scorePreload.getY(), scorePreload.getHeading()));
         Command RunLaunchMid = new RunTurretAndLauncherFromPoseAuto(false, scoreMid);
         Command RunLaunchClose = new RunTurretAndLauncherFromPoseAuto(false, scoreClose);
-        Command RunLaunchFar = new RunTurretAndLauncherFromPoseAuto(false, scoreFar);
         Command RunLaunchRamp = new RunTurretAndLauncherFromPoseAuto(false, scoreRampCycle);
 
 
@@ -184,7 +155,6 @@ public class BlueGoal15Ball extends AutoBase {
             RunLaunchPre.cancel();
             RunLaunchMid.cancel();
             RunLaunchClose.cancel();
-            RunLaunchFar.cancel();
         });
 
         Command LaunchWOSort = new SequentialGroup(new ForceLaunchAuto(), StopLauncher);
@@ -203,12 +173,13 @@ public class BlueGoal15Ball extends AutoBase {
                 new LambdaCommand().setStart(() -> {RunLaunchPre.schedule();}).setIsDone(() -> {return true;}),
                 new Delay(0.125),
                 new FollowPath(ToScorePreloads),
+                new Delay(0.125),
                 LaunchWOSort,
                 new LambdaCommand().setStart(() -> {Intake.schedule();}).setIsDone(() -> {return true;}),
                 new ParallelGroup(
                         new FollowPathNew(MidCycle),
                         new SequentialGroup(
-                                new Delay(2),
+                                new Delay(4),
                                 new LambdaCommand().setStart(()->{RunLaunchMid.schedule();}).setIsDone(()->{ return true;}),
                                 new InstantCommand(()->{ Intake.cancel();}),
                                 IntakeCheck
@@ -230,45 +201,31 @@ public class BlueGoal15Ball extends AutoBase {
                                 new Delay(4),
                                 new LambdaCommand().setStart(()->{RunLaunchRamp.schedule();}).setIsDone(()->{ return true;}),
                                 new InstantCommand(()->{ Intake.cancel();}),
-                                new LambdaCommand().setStart(()->{PedroComponent.follower().setMaxPower(1);}).setIsDone(()->{ return true;})//,
-//                                IntakeCheck
+                                new LambdaCommand().setStart(()->{PedroComponent.follower().setMaxPower(1);}).setIsDone(()->{ return true;}),
+                                IntakeCheck
                         )
 
-                )//,
-//                new Delay(0.5),
-//                LaunchWOSort//,
+                ),
+                new Delay(0.5),
+                LaunchWOSort,
+                new LambdaCommand().setStart(() -> {Intake.schedule();}).setIsDone(() -> {return true;}),
+                new ParallelGroup(
+                        new FollowPathNew(CloseCycle),
+                        new SequentialGroup(
+                                new Delay(3),
+                                new LambdaCommand().setStart(()->{RunLaunchClose.schedule();}).setIsDone(()->{ return true;}),
+                                new InstantCommand(()->{ Intake.cancel();}),
+                                IntakeCheck
+                        )
+                ),
+                new Delay(0.0001),
+                LaunchWOSort,
+                StopLauncher
 
-//                new LambdaCommand().setStart(() -> {Intake.schedule();}).setIsDone(() -> {return true;}),
-//                new ParallelGroup(
-//                        new FollowPathNew(CloseCycle),
-//                        new SequentialGroup(
-//                                new Delay(3),
-//                                new LambdaCommand().setStart(()->{RunLaunchClose.schedule();}).setIsDone(()->{ return true;}),
-//                                new InstantCommand(()->{ Intake.cancel();}),
-//                                IntakeCheck
-//                        )
-//                ),
-//                new Delay(0.0001),
-//                LaunchWOSort,
-//                new LambdaCommand().setStart(() -> {Intake.schedule();}).setIsDone(() -> {return true;}),
-//                new ParallelGroup(
-//                        new FollowPathNew(FarCycle),
-//                        new SequentialGroup(
-//                                new Delay(4),
-//                                new LambdaCommand().setStart(()->{RunLaunchFar.schedule();}).setIsDone(()->{ return true;}),
-//                                new InstantCommand(()->{ Intake.cancel();}),
-//                                IntakeCheck
-//                        )
-//                ),
-//                new Delay(0.0001),
-//                LaunchWOSort,
-//                new Delay(0.0001),
-//                StopLauncher
-//
-//
-//
-//
-//
+
+
+
+
         );
 
         runAuto.schedule();
