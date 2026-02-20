@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Commands.Automatic;
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.geometry.Pose;
 
+import org.firstinspires.ftc.teamcode.Subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.LauncherSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.StatusSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.TurretSubsystem;
@@ -60,8 +61,9 @@ public class RunTurretAndLauncherFromHeading extends Command {
 
         TurretSubsystem.INSTANCE.turnTurretToFieldAngle(turretFieldAngleRad);
         LauncherSubsystem.INSTANCE.RunLauncherFromDistance(distanceToGoal);
-
-        if(TurretSubsystem.INSTANCE.turretFine()){
+        if (IntakeSubsystem.INSTANCE.intakeBBTripped() || IntakeSubsystem.INSTANCE.intakeBB2Tripped()){
+            StatusSubsystem.INSTANCE.setPrismToPWM(1951);
+        }else if(TurretSubsystem.INSTANCE.turretFine()){
                 StatusSubsystem.INSTANCE.setPrismGreen();
         }else {
                 StatusSubsystem.INSTANCE.setPrismOrange();

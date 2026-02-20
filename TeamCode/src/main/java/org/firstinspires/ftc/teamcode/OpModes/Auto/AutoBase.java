@@ -33,7 +33,10 @@ public abstract class AutoBase extends Storage {
                 BindingsComponent.INSTANCE
         );
     }
+
+
     @Override public void onUpdate () {
+        StatusSubsystem.INSTANCE.setPrismToPWM(965);
         if(ActiveOpMode.isStarted() && !ActiveOpMode.isStopRequested()){
             if(PedroComponent.follower().getPose() != null){
                 PosStorage.memory.lastPose = PedroComponent.follower().getPose();

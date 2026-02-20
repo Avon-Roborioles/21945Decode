@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Commands.FollowPathNew;
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntake;
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntakeCheck;
 import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunchAuto;
-
+import org.firstinspires.ftc.teamcode.Subsystems.StatusSubsystem;
 
 
 import dev.nextftc.core.commands.Command;
@@ -123,6 +123,7 @@ public class Blue18BallAuto extends AutoBase {
 
     @Override
     public void onInit() {
+
 
     }
     @Override public void onWaitForStart () {

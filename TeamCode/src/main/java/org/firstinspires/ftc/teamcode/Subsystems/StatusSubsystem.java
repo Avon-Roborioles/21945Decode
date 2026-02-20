@@ -564,7 +564,8 @@ public class StatusSubsystem implements Subsystem {
 
     }
     public void setPrismOrange(){
-        setPrismToPWM(1115);
+//        setPrismToPWM(1115);
+        setPrismToPWM(1039);
 
     }
     public void setPrismGreen(){
@@ -597,7 +598,8 @@ public class StatusSubsystem implements Subsystem {
         setPrismToPWM(565);
     }
     public void setPrismLeftAndRightAndCenterOn(){
-        setPrismToPWM(515);
+//        setPrismToPWM(515);
+        setPrismToPWM(999);
     }
 
     public void setLeftPurple(){

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Commands.Intake;
 
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.StatusSubsystem;
 import org.firstinspires.ftc.teamcode.Utility.Timing;
 
 import java.util.concurrent.TimeUnit;
@@ -114,6 +115,9 @@ public class IntakeToSorterCommand extends Command {
     public void stop(boolean interrupted) {
         if (!interrupted) {
             SorterSubsystem.INSTANCE.sortHug();
+        }
+        if(IntakeSubsystem.INSTANCE.intakeBB2Tripped()|| IntakeSubsystem.INSTANCE.intakeBBTripped()){
+            StatusSubsystem.INSTANCE.setPrismToPWM(1951);
         }
 
 
