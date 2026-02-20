@@ -16,7 +16,7 @@ public class TiltCommand extends Command {
     double finalTarget = 100;
     double onGround = 70;
     double currTarget = 0;
-    public static double KS = 0.05;
+    public static double KS = 0.0;
 
 
 

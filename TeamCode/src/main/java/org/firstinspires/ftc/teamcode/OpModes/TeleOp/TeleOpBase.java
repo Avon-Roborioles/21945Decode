@@ -57,7 +57,7 @@ public abstract class TeleOpBase extends Storage {
     Boolean inLift = false;
 
     Timing.Timer waitTimer = new Timing.Timer(100, TimeUnit.MILLISECONDS);
-    Timing.Timer deBounce = new Timing.Timer(500, TimeUnit.MILLISECONDS);
+    Timing.Timer deBounce = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
 
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
@@ -127,8 +127,8 @@ public abstract class TeleOpBase extends Storage {
         PedroComponent.follower().setPose( PosStorage.memory.lastPose);
         PedroComponent.follower().setHeading( PosStorage.memory.lastPose.getHeading());
 
-        joyCommand = new PTOJoystickCommand(Gamepads.gamepad2().leftStickY(), Gamepads.gamepad2().rightStickY());
-        tiltCommand = new TiltCommand(Gamepads.gamepad2().leftStickY());
+        joyCommand = new PTOJoystickCommand(Gamepads.gamepad2().leftStickY(), Gamepads.gamepad2().rightStickY(), Gamepads.gamepad2().dpadUp(), Gamepads.gamepad2().dpadDown());
+//        tiltCommand = new TiltCommand(Gamepads.gamepad2().leftStickY());
 
         driverControlled = driveCommand();
 
@@ -197,15 +197,15 @@ public abstract class TeleOpBase extends Storage {
             if(!inLift){
                 if(Gamepads.gamepad2().ps().get() && Gamepads.gamepad1().options().get()){
                     inLift = true;
-//                    joyCommand.schedule();
-                    tiltCommand.schedule();
+                    joyCommand.schedule();
+//                    tiltCommand.schedule();
                     deBounce.start();
                 }
             }else{
                 if((Gamepads.gamepad2().ps().get() || Gamepads.gamepad1().options().get()) && deBounce.done()){
                     inLift = false;
-                    tiltCommand.cancel();
-//                    joyCommand.cancel();
+//                    tiltCommand.cancel();
+                    joyCommand.cancel();
                 }
             }
             telemetry.addData("last Pos",  PosStorage.memory.lastPose);

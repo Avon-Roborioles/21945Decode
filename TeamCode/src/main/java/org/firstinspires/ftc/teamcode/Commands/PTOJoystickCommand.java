@@ -1,19 +1,34 @@
 package org.firstinspires.ftc.teamcode.Commands;
 
+import com.bylazar.configurables.annotations.Configurable;
+
 import org.firstinspires.ftc.teamcode.Subsystems.PTOSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.StatusSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.TurretSubsystem;
 
+import java.util.function.BooleanSupplier;
+
+import dev.nextftc.bindings.Button;
 import dev.nextftc.bindings.Range;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.ActiveOpMode;
-
+@Configurable
 public class PTOJoystickCommand extends Command {
     Range inputL, inputR;
+    Button dpadUp, dpadDown;
+    public static double power = 0.85;
+    double pwmTarget = 2495;
+    double maxPwm = 2495;
+    double minPwm = 505;
+    double lastPwmTarget = 2495;
 
-    public PTOJoystickCommand(Range inputL, Range inputR) {
+    public PTOJoystickCommand(Range inputL, Range inputR, Button dpadUp, Button dpadDown) {
         this.inputL = inputL;
         this.inputR = inputR;
+        this.dpadUp = dpadUp;
+        this.dpadDown = dpadDown;
+
     }
     @Override
     public boolean isDone() {
@@ -24,6 +39,9 @@ public class PTOJoystickCommand extends Command {
     public void start() {
         PTOSubsystem.INSTANCE.Engage();
         PedroComponent.follower().breakFollowing();
+        ActiveOpMode.gamepad1().rumble(1000);
+        ActiveOpMode.gamepad2().rumble(1000);
+        StatusSubsystem.INSTANCE.setPrismToPWM(2495);
 
 
 
@@ -32,10 +50,24 @@ public class PTOJoystickCommand extends Command {
 
     @Override
     public void update() {
+        PedroComponent.follower().getDrivetrain().runDrive(new double[]{inputL.get()*power, inputL.get()*power, inputL.get()*power, inputL.get()*power});
 
-        PedroComponent.follower().getDrivetrain().runDrive(new double[]{inputL.get(), inputL.get(), inputR.get(), inputR.get()});
+        dpadUp.whenBecomesTrue(()->{pwmTarget+=10;});
+        dpadDown.whenBecomesTrue(()->{pwmTarget-=10;});
+        if(pwmTarget>maxPwm){
+            pwmTarget = maxPwm;
+        }else if(pwmTarget<minPwm){
+            pwmTarget = minPwm;
+        }
+
+        if(pwmTarget != lastPwmTarget){
+            StatusSubsystem.INSTANCE.setPrismToPWM((long) pwmTarget);
+        }
+        lastPwmTarget = pwmTarget;
+
 
         ActiveOpMode.telemetry().addLine("-------------- PTO Joystick Command: --------------");
+        ActiveOpMode.telemetry().addData("pwm", pwmTarget);
         // executed on every update of the command
     }
 
