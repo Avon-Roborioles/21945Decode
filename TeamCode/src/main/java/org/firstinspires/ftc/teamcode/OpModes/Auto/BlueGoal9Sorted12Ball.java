@@ -10,13 +10,12 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Commands.AutoIntakeNoTime;
-import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromHeading;
 import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromPoseAuto;
 import org.firstinspires.ftc.teamcode.Commands.FollowPathNew;
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntakeCheck;
 import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunchAuto;
-import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchWithSort;
 import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchWithSortAuto;
+import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.VisionSubsystem;
 
 import dev.nextftc.core.commands.Command;
@@ -29,7 +28,7 @@ import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 
 @Autonomous (group = "Blue Goal", preselectTeleOp = "BlueTeleOp")
-public class BlueSortAuto extends AutoBase {
+public class BlueGoal9Sorted12Ball extends AutoBase {
 
     /*TODO: Look into Piecewise heading
       TODO: Shoot While Move?
@@ -167,6 +166,9 @@ public class BlueSortAuto extends AutoBase {
         buildPaths();
 
         runAuto = new SequentialGroup(
+                new LambdaCommand().setStart(() -> {
+                    SorterSubsystem.INSTANCE.sortHug();
+                }).setIsDone(() -> {return true;}),
                 new LambdaCommand().setStart(() -> {RunLaunchPre.schedule();}).setIsDone(() -> {return true;}),
                 new Delay(0.125),
                 new FollowPath(ToScorePreloads),

@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFro
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntake;
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntakeCheck;
 import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunchAuto;
+import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
@@ -86,6 +87,9 @@ public class BlueGoal6Ball extends AutoBase {
         PedroComponent.follower().update();
         buildPaths();
         runAuto = new SequentialGroup(
+                new LambdaCommand().setStart(() -> {
+                    SorterSubsystem.INSTANCE.sortHug();
+                }).setIsDone(() -> {return true;}),
                 new LambdaCommand().setStart(()->{RunLaunchPre.schedule();}).setIsDone(()->{ return true;}),
                 new Delay(0.125),
                  new ParallelGroup(

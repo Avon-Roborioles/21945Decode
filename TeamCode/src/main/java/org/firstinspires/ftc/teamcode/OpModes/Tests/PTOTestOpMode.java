@@ -9,7 +9,7 @@ import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.impl.ServoEx;
 
 @TeleOp(name="PTO Test", group="Tests")
-//@Disabled
+@Disabled
 @Configurable
 public class PTOTestOpMode extends LinearOpMode {
     MotorEx fl, fr, bl,br;

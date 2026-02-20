@@ -54,7 +54,7 @@ public class AutoIntakeNoTime extends Command {
                 step = intakeSeq.CheckForFull;
                 break;
             case CheckForFull:
-                if (SorterSubsystem.INSTANCE.sorterFull()) {
+                if (SorterSubsystem.INSTANCE.sorterFullAuto()) {
                     step = intakeSeq.Hug;
                 }
                 break;
@@ -92,7 +92,7 @@ public class AutoIntakeNoTime extends Command {
                 }
                 break;
             case CheckForFullAgain:
-                if (SorterSubsystem.INSTANCE.sorterFull()) {
+                if (SorterSubsystem.INSTANCE.sorterFullAuto()) {
                     step = intakeSeq.HugAgain;
                     IntakeSubsystem.INSTANCE.outtake();
                 }else{
