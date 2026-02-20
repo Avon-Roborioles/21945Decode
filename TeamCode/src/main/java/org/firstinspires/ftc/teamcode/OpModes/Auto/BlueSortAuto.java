@@ -84,7 +84,7 @@ public class BlueSortAuto extends AutoBase {
 //                        )
 //                ));
         ToGrabMid.setLinearHeadingInterpolation(scorePreload.getHeading(), grabMid.getHeading());
-        ToGrabMid.setTimeoutConstraint(2000);
+        ToGrabMid.setTimeoutConstraint(4000);
 
         ToScoreMid = new Path(new BezierCurve(grabMid, scoreMidCp, scoreMid));
         ToScoreMid.setLinearHeadingInterpolation(grabMid.getHeading(), scoreMid.getHeading());
@@ -186,7 +186,7 @@ public class BlueSortAuto extends AutoBase {
                             IntakeCheck
                     )
                 ),
-                new Delay(0.0001),
+                new Delay(0.5),
                 LaunchWithSort,
                 new LambdaCommand().setStart(() -> {Intake.schedule();}).setIsDone(() -> {return true;}),
                 new ParallelGroup(

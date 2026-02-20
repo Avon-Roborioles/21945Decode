@@ -31,6 +31,7 @@ public class AutoIntakeCheck extends Command {
     }
 
     Timing.Timer end = new Timing.Timer(1500, TimeUnit.MILLISECONDS);
+    Timing.Timer out = new Timing.Timer(500, TimeUnit.MILLISECONDS);
 
     @Override
     public boolean isDone() {return step == intakeSeq.Done|| end.done();// whether or not the command is done
@@ -40,6 +41,8 @@ public class AutoIntakeCheck extends Command {
     public void start() {
         end.start();
         step = intakeSeq.Intake;
+        out.start();
+        IntakeSubsystem.INSTANCE.outtake();
 
         SorterSubsystem.INSTANCE.resetSorter();
 
@@ -50,8 +53,11 @@ public class AutoIntakeCheck extends Command {
     public void update() {
         switch (step) {
             case Intake:
-                IntakeSubsystem.INSTANCE.intake();
-                step = intakeSeq.CheckForFull;
+                if(out.done()) {
+                    IntakeSubsystem.INSTANCE.stopIntake();
+                    IntakeSubsystem.INSTANCE.intake();
+                    step = intakeSeq.CheckForFull;
+                }
                 break;
             case CheckForFull:
                 if (SorterSubsystem.INSTANCE.sorterFullDumb()) {
