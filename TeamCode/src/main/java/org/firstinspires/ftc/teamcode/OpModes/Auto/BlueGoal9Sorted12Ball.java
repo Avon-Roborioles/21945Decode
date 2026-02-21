@@ -69,21 +69,8 @@ public class BlueGoal9Sorted12Ball extends AutoBase {
         ToScorePreloads.setTimeoutConstraint(1000);
 
         ToGrabMid = new Path(new BezierCurve(scorePreload, grabMidCP1, grabMidCP2, grabMidCP3, grabMid));
-//        ToGrabMid.setHeadingInterpolation(
-//                HeadingInterpolator.piecewise(
-//                        new HeadingInterpolator.PiecewiseNode(
-//                                0,
-//                                .9,
-//                                HeadingInterpolator.linear(scorePreload.getHeading(), Math.toRadians(180))
-//                        ),
-//                        new HeadingInterpolator.PiecewiseNode(
-//                                .9,
-//                                1,
-//                                HeadingInterpolator.tangent
-//                        )
-//                ));
         ToGrabMid.setLinearHeadingInterpolation(scorePreload.getHeading(), grabMid.getHeading());
-        ToGrabMid.setTimeoutConstraint(4000);
+        ToGrabMid.setTimeoutConstraint(6000);
 
         ToScoreMid = new Path(new BezierCurve(grabMid, scoreMidCp, scoreMid));
         ToScoreMid.setLinearHeadingInterpolation(grabMid.getHeading(), scoreMid.getHeading());
@@ -179,10 +166,16 @@ public class BlueGoal9Sorted12Ball extends AutoBase {
                 new Delay(0.0001),
                 LaunchWOSort,
                 new LambdaCommand().setStart(() -> {Intake.schedule();}).setIsDone(() -> {return true;}),
+                new LambdaCommand().setStart(()->{PedroComponent.follower().setMaxPower(0.75);}).setIsDone(()->{ return true;}),
                 new ParallelGroup(
-                    new FollowPathNew(MidCycle),
                     new SequentialGroup(
-                            new Delay(3),
+                            new FollowPathNew(ToGrabMid),
+                            new Delay(1.5),
+                            new FollowPath(ToScoreMid)
+                    ),
+                    new SequentialGroup(
+                            new Delay(4),
+                            new LambdaCommand().setStart(()->{PedroComponent.follower().setMaxPower(1);}).setIsDone(()->{ return true;}),
                             new LambdaCommand().setStart(()->{RunLaunchMid.schedule();}).setIsDone(()->{ return true;}),
                             new InstantCommand(()->{ Intake.cancel();}),
                             IntakeCheck
@@ -194,7 +187,7 @@ public class BlueGoal9Sorted12Ball extends AutoBase {
                 new ParallelGroup(
                         new FollowPathNew(CloseCycle),
                         new SequentialGroup(
-                                new Delay(2),
+                                new Delay(3),
                                 new LambdaCommand().setStart(()->{RunLaunchClose.schedule();}).setIsDone(()->{ return true;}),
                                 new InstantCommand(()->{ Intake.cancel();}),
                                 IntakeCheck
@@ -212,7 +205,7 @@ public class BlueGoal9Sorted12Ball extends AutoBase {
                                 IntakeCheck
                         )
                 ),
-                new Delay(0.0001),
+                new Delay(0.25),
                 LaunchWithSort,
                 new Delay(0.0001),
                 StopLauncher

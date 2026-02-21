@@ -69,8 +69,8 @@ public class AutoIntake extends Command {
                 step = intakeSeq.CheckBB;
                 break;
             case CheckBB:
-                IntakeSubsystem.INSTANCE.outtake();
                 if (IntakeSubsystem.INSTANCE.intakeBBTripped()) {
+                    IntakeSubsystem.INSTANCE.outtake();
                     step = intakeSeq.Outake;
                 }else{
                     step = intakeSeq.ReleaseHug;

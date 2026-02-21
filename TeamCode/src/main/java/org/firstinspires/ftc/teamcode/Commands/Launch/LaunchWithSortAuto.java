@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Commands.Launch;
 
 import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.StatusSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.TurretSubsystem;
 import org.firstinspires.ftc.teamcode.Utility.Timing;
 
 import java.util.concurrent.TimeUnit;
@@ -29,7 +30,8 @@ public class LaunchWithSortAuto extends Command {
     }
     private enum Color {
         PURPLE,
-        GREEN
+        GREEN,
+        Empty
     }
     private enum Slot {
         Left,
@@ -116,7 +118,7 @@ public class LaunchWithSortAuto extends Command {
                 St = Step.WaitForReady;
                 break;
             case WaitForReady:
-                if(ready.done()){
+                if(ready.done() && TurretSubsystem.INSTANCE.turretFine()){
                     St = Step.Ready;
                 }
                 break;
@@ -149,15 +151,17 @@ public class LaunchWithSortAuto extends Command {
                     launchGreenFirst();
                     St = Step.WaitFirst;
                 }
+                wait.start();
                 break;
             case WaitFirst:
                 if(wait.done()){
+                    SorterSubsystem.INSTANCE.resetSorter();
                     St = Step.ResetFirst;
                     reset.start();
                 }
                 break;
             case ResetFirst:
-                SorterSubsystem.INSTANCE.resetSorter();
+
                 if(reset.done()){
                     St = Step.LaunchMiddle;
                 }
@@ -170,15 +174,16 @@ public class LaunchWithSortAuto extends Command {
                     launchGreenMiddle();
                     St = Step.WaitMiddle;
                 }
+                wait.start();
                 break;
             case WaitMiddle:
                 if(wait.done()){
+                    SorterSubsystem.INSTANCE.resetSorter();
                     St = Step.ResetMiddle;
                     reset.start();
                 }
                 break;
             case ResetMiddle:
-                SorterSubsystem.INSTANCE.resetSorter();
                 if(reset.done()){
                     St = Step.LaunchLast;
                 }
@@ -187,16 +192,16 @@ public class LaunchWithSortAuto extends Command {
             case LaunchLast:
                 launchLast();
                 St = Step.WaitLast;
-
+                wait.start();
                 break;
             case WaitLast:
                 if(wait.done()){
+                    SorterSubsystem.INSTANCE.resetSorter();
                     St = Step.ResetLast;
                     reset.start();
                 }
                 break;
             case ResetLast:
-                SorterSubsystem.INSTANCE.resetSorter();
                 if(reset.done()){
                     St = Step.CheckForMissLast;
                 }
@@ -239,70 +244,81 @@ public class LaunchWithSortAuto extends Command {
     private void launchPurpleFirst(){
         if(centerSlotSet == Color.PURPLE){
             SorterSubsystem.INSTANCE.sendCenter();
+            centerSlotSet = Color.Empty;
             firstLaunch = Slot.Center;
-            wait.start();
+
         }else if (leftSlotSet == Color.PURPLE){
             SorterSubsystem.INSTANCE.sendLeft();
+            leftSlotSet = Color.Empty;
             firstLaunch = Slot.Left;
-            wait.start();
+
         }else if (rightSlotSet == Color.PURPLE){
             SorterSubsystem.INSTANCE.sendRight();
+            rightSlotSet = Color.Empty;
             firstLaunch = Slot.Right;
-            wait.start();
+
         }
     }
     private void launchGreenFirst(){
         if(centerSlotSet == Color.GREEN){
             SorterSubsystem.INSTANCE.sendCenter();
+            centerSlotSet = Color.Empty;
             firstLaunch = Slot.Center;
-            wait.start();
+
         }else if (leftSlotSet == Color.GREEN){
             SorterSubsystem.INSTANCE.sendLeft();
+            leftSlotSet = Color.Empty;
             firstLaunch = Slot.Left;
-            wait.start();
+
         }else if (rightSlotSet == Color.GREEN){
             SorterSubsystem.INSTANCE.sendRight();
+            rightSlotSet = Color.Empty;
             firstLaunch = Slot.Right;
-            wait.start();
         }
     }
     private void launchPurpleMiddle(){
         if(centerSlotSet == Color.PURPLE){
             SorterSubsystem.INSTANCE.sendCenter();
+            centerSlotSet = Color.Empty;
             middleLaunch = Slot.Center;
-            wait.start();
+
         }else if (leftSlotSet == Color.PURPLE){
             SorterSubsystem.INSTANCE.sendLeft();
+            leftSlotSet = Color.Empty;
             middleLaunch = Slot.Left;
-            wait.start();
         }else if (rightSlotSet == Color.PURPLE){
             SorterSubsystem.INSTANCE.sendRight();
+            rightSlotSet = Color.Empty;
             middleLaunch = Slot.Right;
-            wait.start();
+
         }
 
     }
     private void launchGreenMiddle(){
         if(centerSlotSet == Color.GREEN){
             SorterSubsystem.INSTANCE.sendCenter();
+            centerSlotSet = Color.Empty;
             middleLaunch = Slot.Center;
-            wait.start();
         }else if (leftSlotSet == Color.GREEN){
             SorterSubsystem.INSTANCE.sendLeft();
+            leftSlotSet = Color.Empty;
             middleLaunch = Slot.Left;
-            wait.start();
         }else if (rightSlotSet == Color.GREEN){
             SorterSubsystem.INSTANCE.sendRight();
+            rightSlotSet = Color.Empty;
             middleLaunch = Slot.Right;
-            wait.start();
         }
     }
     private void launchLast(){
        if (firstLaunch != Slot.Center && middleLaunch != Slot.Center){
+           centerSlotSet = Color.Empty;
            SorterSubsystem.INSTANCE.sendCenter();
        }else if(firstLaunch != Slot.Right && firstLaunch != Slot.Right){
+
+           rightSlotSet = Color.Empty;
            SorterSubsystem.INSTANCE.sendRight();
        }else{
+           leftSlotSet = Color.Empty;
            SorterSubsystem.INSTANCE.sendLeft();
        }
 
