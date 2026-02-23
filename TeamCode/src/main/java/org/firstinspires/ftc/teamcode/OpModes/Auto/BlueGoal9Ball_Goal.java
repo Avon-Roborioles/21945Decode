@@ -21,7 +21,7 @@ import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 
 @Autonomous (group = "Blue Goal", preselectTeleOp = "BlueTeleOp")
-public class BlueGoal9Ball extends AutoBase {
+public class BlueGoal9Ball_Goal extends AutoBase {
     Path DriveToScorePreload, DriveToPickUp1, DrivePickUp1, DriveToScore1, DriveToPickUp2, DrivePickUp2, DriveToScore2, DriveToPickUp3, DrivePickUp3, DriveToScore3, DriveEndDrive;
     Pose startingPos = new Pose(26.75, 130, Math.toRadians(141));
     Pose scorePreload = new Pose(54, 114, Math.toRadians(270));

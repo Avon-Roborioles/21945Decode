@@ -94,7 +94,7 @@ public class AutoIntake extends Command {
                 }
                 break;
             case CheckForFullAgain:
-                if (SorterSubsystem.INSTANCE.sorterFullAuto()) {
+                if (SorterSubsystem.INSTANCE.sorterFullDumb()) {
                     step = intakeSeq.HugAgain;
                     IntakeSubsystem.INSTANCE.outtake();
                 }else{

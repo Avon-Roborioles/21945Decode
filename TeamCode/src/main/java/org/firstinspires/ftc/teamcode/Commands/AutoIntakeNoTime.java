@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Commands;
 
+import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntake;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
 import org.firstinspires.ftc.teamcode.Utility.Timing;
@@ -51,49 +52,49 @@ public class AutoIntakeNoTime extends Command {
         switch (step) {
             case Intake:
                 IntakeSubsystem.INSTANCE.intake();
-                step = intakeSeq.CheckForFull;
+                step =  intakeSeq.CheckForFull;
                 break;
             case CheckForFull:
                 if (SorterSubsystem.INSTANCE.sorterFullAuto()) {
-                    step = intakeSeq.Hug;
+                    step =  intakeSeq.Hug;
                 }
                 break;
             case Hug:
                 SorterSubsystem.INSTANCE.sortHug();
-                step = intakeSeq.StopIntake;
+                step =  intakeSeq.StopIntake;
                 break;
             case StopIntake:
                 IntakeSubsystem.INSTANCE.stopIntake();
-                step = intakeSeq.CheckBB;
+                step =  intakeSeq.CheckBB;
                 break;
             case CheckBB:
-                IntakeSubsystem.INSTANCE.outtake();
                 if (IntakeSubsystem.INSTANCE.intakeBBTripped()) {
-                    step = intakeSeq.Outake;
+                    IntakeSubsystem.INSTANCE.outtake();
+                    step =  intakeSeq.Outake;
                 }else{
-                    step = intakeSeq.ReleaseHug;
+                    step =  intakeSeq.ReleaseHug;
                     IntakeSubsystem.INSTANCE.stopIntake();
                 }
                 break;
             case Outake:
                 IntakeSubsystem.INSTANCE.outtake();
                 if(!IntakeSubsystem.INSTANCE.intakeBBTripped()){
-                    step = intakeSeq.ReleaseHug;
+                    step =  intakeSeq.ReleaseHug;
                 }
                 break;
             case ReleaseHug:
                 SorterSubsystem.INSTANCE.resetSorter();
-                step = intakeSeq.Wait;
+                step =  intakeSeq.Wait;
                 wait.start();
                 break;
             case Wait:
                 if (wait.done()) {
-                    step = intakeSeq.CheckForFullAgain;
+                    step =  intakeSeq.CheckForFullAgain;
                 }
                 break;
             case CheckForFullAgain:
-                if (SorterSubsystem.INSTANCE.sorterFullAuto()) {
-                    step = intakeSeq.HugAgain;
+                if (SorterSubsystem.INSTANCE.sorterFullDumb()) {
+                    step =  intakeSeq.HugAgain;
                     IntakeSubsystem.INSTANCE.outtake();
                 }else{
                     IntakeSubsystem.INSTANCE.intake();
@@ -102,10 +103,9 @@ public class AutoIntakeNoTime extends Command {
             case HugAgain:
                 SorterSubsystem.INSTANCE.sortHug();
                 IntakeSubsystem.INSTANCE.outtake();
-                step = intakeSeq.Done;
+                step =  intakeSeq.Done;
                 break;
         }
-
         // executed on every update of the command
     }
 

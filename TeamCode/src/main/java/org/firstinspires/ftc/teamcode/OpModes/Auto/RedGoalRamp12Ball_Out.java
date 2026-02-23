@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.OpModes.Auto;
 
 
-
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -17,7 +16,6 @@ import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunchAuto;
 import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.VisionSubsystem;
 
-
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.groups.ParallelGroup;
@@ -27,8 +25,8 @@ import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 
-@Autonomous (group = "Blue Goal", preselectTeleOp = "BlueTeleOp")
-public class BlueGoalRamp12Ball extends AutoBase {
+@Autonomous (group = "Red Goal", preselectTeleOp = "RedTeleOp")
+public class RedGoalRamp12Ball_Out extends AutoBase {
 
     /*TODO: Look into Piecewise heading
       TODO: Shoot While Move?
@@ -38,28 +36,28 @@ public class BlueGoalRamp12Ball extends AutoBase {
     PathChain MidCycle, CloseCycle, FarCycle, RampCycle;
     Path ToScorePreloads, ToGrabMid, ToScoreMid, ToGrabClose, GrabClose, ToScoreClose, ToGrabFar, ToScoreFar, ToRampCycle, ToScoreRampCycle;
 
-    Pose startingPos = new Pose(26.75, 130, Math.toRadians(329));
-    Pose scorePreload = new Pose(58.5, 108.5, Math.toRadians(270));
-    Pose grabMid = new Pose(31, 58, Math.toRadians(180));
-    Pose grabMidCP1 = new Pose(58.5, 88);
-    Pose grabMidCP2  = new Pose(59, 66.5);
-    Pose grabMidCP3  = new Pose(64, 60);
-    Pose scoreMid = new Pose(56.5, 85, Math.toRadians(-110));
-    Pose scoreMidCp = new Pose(51, 59.5);
+    Pose startingPos = new Pose(26.75, 130, Math.toRadians(329)).mirror();
+    Pose scorePreload = new Pose(58.5, 108.5, Math.toRadians(270)).mirror();
+    Pose grabMid = new Pose(31, 58, Math.toRadians(180)).mirror();
+    Pose grabMidCP1 = new Pose(58.5, 88).mirror();
+    Pose grabMidCP2  = new Pose(59, 66.5).mirror();
+    Pose grabMidCP3  = new Pose(64, 60).mirror();
+    Pose scoreMid = new Pose(56.5, 85, Math.toRadians(-110)).mirror();
+    Pose scoreMidCp = new Pose(51, 59.5).mirror();
 
-    Pose toGrabClose = new Pose(42, 85, Math.toRadians(180));
-    Pose grabClose = new Pose(30, 85, Math.toRadians(180));
-    Pose scoreClose = new Pose(60, 112, Math.toRadians(270));
-    Pose scoreCloseCP = new Pose(44.5, 82.5);
+    Pose toGrabClose = new Pose(42, 85, Math.toRadians(180)).mirror();
+    Pose grabClose = new Pose(30, 85, Math.toRadians(180)).mirror();
+    Pose scoreClose = new Pose(60, 112, Math.toRadians(270)).mirror();
+    Pose scoreCloseCP = new Pose(44.5, 82.5).mirror();
 
 
 
-    Pose grabRampCycle = new Pose(22, 59, Math.toRadians(155));
-    Pose grabRampCycleCP1 = new Pose(58.5, 88);
-    Pose grabRampCycleCP2  = new Pose(59, 66.5);
-    Pose grabRampCycleCP3  = new Pose(64, 60);
-    Pose scoreRampCycle = new Pose(56.5, 100, Math.toRadians(-110));
-    Pose scoreRampCycleCp = new Pose(51, 59.5);
+    Pose grabRampCycle = new Pose(22, 59, Math.toRadians(155)).mirror();
+    Pose grabRampCycleCP1 = new Pose(58.5, 88).mirror();
+    Pose grabRampCycleCP2  = new Pose(59, 66.5).mirror();
+    Pose grabRampCycleCP3  = new Pose(64, 60).mirror();
+    Pose scoreRampCycle = new Pose(56.5, 100, Math.toRadians(-110)).mirror();
+    Pose scoreRampCycleCp = new Pose(51, 59.5).mirror();
 
 
     Command runAuto;
@@ -143,10 +141,10 @@ public class BlueGoalRamp12Ball extends AutoBase {
 
     }
     @Override public void onStartButtonPressed () {
-        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(false, new Pose(scorePreload.getX(), scorePreload.getY(), scorePreload.getHeading()));
-        Command RunLaunchMid = new RunTurretAndLauncherFromPoseAuto(false, scoreMid);
-        Command RunLaunchClose = new RunTurretAndLauncherFromPoseAuto(false, scoreClose);
-        Command RunLaunchRamp = new RunTurretAndLauncherFromPoseAuto(false, scoreRampCycle);
+        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(true, new Pose(scorePreload.getX(), scorePreload.getY(), scorePreload.getHeading()));
+        Command RunLaunchMid = new RunTurretAndLauncherFromPoseAuto(true, scoreMid);
+        Command RunLaunchClose = new RunTurretAndLauncherFromPoseAuto(true, scoreClose);
+        Command RunLaunchRamp = new RunTurretAndLauncherFromPoseAuto(true, scoreRampCycle);
 
 
         Command Intake = new AutoIntakeNoTime();

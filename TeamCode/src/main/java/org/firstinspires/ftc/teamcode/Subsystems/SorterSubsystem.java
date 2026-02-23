@@ -200,7 +200,7 @@ public class SorterSubsystem implements Subsystem {
             .setInterruptible(false);
     // put hardware, commands, etc here
     public boolean leftDetected(){
-        leftDetect = sortCSL.getDistance(DistanceUnit.MM)<60;
+        leftDetect = sortCSL.getDistance(DistanceUnit.MM)<70;
         return leftDetect;
     }
     public boolean leftDetectedDumb(){
@@ -216,7 +216,7 @@ public class SorterSubsystem implements Subsystem {
         return (sortCSC.getNormalizedColors().alpha > 0.113);
     }
     public boolean rightDetected(){
-        rightDetect = sortCSR.getDistance(DistanceUnit.MM)<37.5;
+        rightDetect = sortCSR.getDistance(DistanceUnit.MM)<41;
         return rightDetect;
     }
     public boolean rightDetectedDumb(){
@@ -226,8 +226,8 @@ public class SorterSubsystem implements Subsystem {
 
     public SlotDetection leftSlot(){
         updateColor();
-        if(sortCSL.getDistance(DistanceUnit.MM)<62){
-            if(leftColor.red<0.5) {
+        if(sortCSL.getDistance(DistanceUnit.MM)<70){
+            if(leftColor.red<0.35) {
 //                CompStatusSubsystem.INSTANCE.setLeftGreen();
                 return SlotDetection.GREEN;
             }else {
@@ -256,8 +256,8 @@ public class SorterSubsystem implements Subsystem {
     }
     public SlotDetection rightSlot(){
         updateColor();
-        if(sortCSR.getDistance(DistanceUnit.MM)<37.5){
-            if(rightColor.green- rightColor.blue>0.3) {
+        if(sortCSR.getDistance(DistanceUnit.MM)<41){
+            if(rightColor.green- rightColor.blue>0.25) {
 //                CompStatusSubsystem.INSTANCE.setRightGreen();
                 return SlotDetection.GREEN;
             }else{
@@ -345,7 +345,7 @@ public class SorterSubsystem implements Subsystem {
         return (leftDetect) && (rightDetect) && (centerDetect);
     }
     public boolean sorterFullDumb(){
-        return (leftDetectedDumb() && centerDetectedDumb() && rightDetectedDumb());
+        return (leftDetectedDumb()|| leftDetected()) && (centerDetectedDumb() || centerDetected()) && (rightDetectedDumb()|| rightDetected());
     }
     public boolean sorterEmpty(){
         return !leftDetected() && !centerDetected() && !rightDetected();
@@ -376,7 +376,7 @@ public class SorterSubsystem implements Subsystem {
     public void periodic() {
         // periodic logic (runs every loop)
 //        getSorterTelemetryAdv();
-//        ActiveOpMode.telemetry().addData("Left Slot:", leftSlot());
+//        ActiveOpMod2e.telemetry().addData("Left Slot:", leftSlot());
 //        ActiveOpMode.telemetry().addData("Center Slot:", centerSlot());
 //        ActiveOpMode.telemetry().addData("Right Slot:", rightSlot());
 

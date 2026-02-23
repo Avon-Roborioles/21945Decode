@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromPoseAuto;
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntake;
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntakeCheck;
-import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunchAuto;
+import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunchAutoSlow;
 import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
 
 import dev.nextftc.core.commands.Command;
@@ -20,19 +20,23 @@ import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 
-@Autonomous (group = "Red Goal", preselectTeleOp = "RedTeleOp")
-public class RedGoal9Ball extends AutoBase {
-    Path DriveToScorePreload, DriveToPickUp1, DrivePickUp1, DriveToScore1, DriveToPickUp2, DrivePickUp2, DriveToScore2, DriveToPickUp3, DrivePickUp3, DriveToScore3, DriveEndDrive;
-    Pose startingPos = new Pose(26.75, 130, Math.toRadians(141)).mirror();
-    Pose scorePreload = new Pose(54, 114, Math.toRadians(270)).mirror();
-    Pose toPickUp1 = new Pose(46, 84, Math.toRadians(180)).mirror();
-    Pose pickUp1 = new Pose(21, 78, Math.toRadians(170)).mirror();
-    Pose toScore1 = new Pose(56, 79, Math.toRadians(270)).mirror();
+@Autonomous (group = "Red Back", preselectTeleOp = "RedTeleOp")
+public class RedBack9Ball_Wall extends AutoBase {
+    Path DriveToScorePreload, DriveToPickUp1, DrivePickUp1, DriveToScore1, DriveToPickUp2, DrivePickUp2, DriveToScore2, EndDrive;
+
+    Pose startingPos = new Pose(56.65, 10.25, Math.toRadians(270)).mirror();
+    Pose scorePreload = new Pose(58, 26, Math.toRadians(270)).mirror();
+    Pose toPickUp1 = new Pose(44, 35.5, Math.toRadians(180)).mirror();
+    Pose toPickUp1Cp = new Pose(64, 37).mirror();
+    Pose pickUp1 = new Pose(18, 35.4, Math.toRadians(180)).mirror();
+    Pose toScore1 = new Pose(58, 26, Math.toRadians(270)).mirror();
+    Pose toScore1Cp = new Pose(59, 40).mirror();
     Pose toPickUp2 = new Pose( 44, 60, Math.toRadians(180)).mirror();
     Pose toPickUp2CP = new Pose(57, 58).mirror();
-    Pose pickUp2 = new Pose(22, 60, Math.toRadians(180)).mirror();
-    Pose toScore2 = new Pose(56, 110, Math.toRadians(270)).mirror();
-    Pose toScore2CP = new Pose(51, 61).mirror();
+    Pose pickUp2 = new Pose(18, 60, Math.toRadians(180)).mirror();
+    Pose toScore2 = new Pose(58, 26, Math.toRadians(270)).mirror();
+    Pose toScore2CP = new Pose(59, 66).mirror();
+    Pose endPos = new Pose(60, 38, Math.toRadians(270)).mirror();
     double maxPower = 1;
 
 
@@ -47,36 +51,49 @@ public class RedGoal9Ball extends AutoBase {
     public void buildPaths () {
         DriveToScorePreload = new Path(new BezierLine(startingPos, scorePreload));
         DriveToScorePreload.setLinearHeadingInterpolation(startingPos.getHeading(), scorePreload.getHeading());
-        DriveToScorePreload.setTimeoutConstraint(2000);
 
-        DriveToPickUp1 = new Path(new BezierLine(scorePreload, toPickUp1));
+
+        DriveToPickUp1 = new Path(new BezierCurve(scorePreload, toPickUp1Cp, toPickUp1));
         DriveToPickUp1.setLinearHeadingInterpolation(scorePreload.getHeading(), toPickUp1.getHeading());
-        DriveToPickUp1.setTimeoutConstraint(2000);
-
 
 
         DrivePickUp1 = new Path(new BezierLine(toPickUp1, pickUp1));
         DrivePickUp1.setLinearHeadingInterpolation(toPickUp1.getHeading(), pickUp1.getHeading());
-        DrivePickUp1.setTimeoutConstraint(3000);
+        DrivePickUp1.setTimeoutConstraint(2000);
 
-        DriveToScore1 = new Path(new BezierLine(pickUp1, toScore1));
+        DriveToScore1 = new Path(new BezierCurve(pickUp1, toScore1Cp, toScore1));
         DriveToScore1.setLinearHeadingInterpolation(pickUp1.getHeading(), toScore1.getHeading());
-        DriveToScore1.setTimeoutConstraint(1750);
-
+        DriveToScore1.setTimeoutConstraint(1000);
 
         DriveToPickUp2 = new Path(new BezierCurve(toScore1, toPickUp2CP, toPickUp2));
         DriveToPickUp2.setLinearHeadingInterpolation(toScore1.getHeading(), toPickUp2.getHeading());
         DriveToPickUp2.setTimeoutConstraint(2000);
 
-
         DrivePickUp2 = new Path(new BezierLine(toPickUp2, pickUp2));
         DrivePickUp2.setLinearHeadingInterpolation(toPickUp2.getHeading(), pickUp2.getHeading());
         DrivePickUp2.setTimeoutConstraint(2000);
 
-
         DriveToScore2 = new Path(new BezierCurve(pickUp2, toScore2CP, toScore2));
         DriveToScore2.setLinearHeadingInterpolation(pickUp2.getHeading(), toScore2.getHeading());
-        DriveToScore2.setTimeoutConstraint(1500);
+        DriveToScore2.setTimeoutConstraint(1000);
+
+
+        EndDrive = new Path(new BezierLine(toScore2, endPos));
+        EndDrive.setLinearHeadingInterpolation(toScore2.getHeading(), endPos.getHeading());
+        EndDrive.setTimeoutConstraint(2000);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     }
@@ -90,17 +107,18 @@ public class RedGoal9Ball extends AutoBase {
     @Override public void onStartButtonPressed (){
 
 //
-        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(true, new Pose(scorePreload.getX()-4, scorePreload.getY()-4, Math.toRadians(250)));
-        Command RunLaunch1 = new RunTurretAndLauncherFromPoseAuto(true, toScore1);
-        Command RunLaunch2 = new RunTurretAndLauncherFromPoseAuto(true, toScore2);
+        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(true, new Pose(scorePreload.getX(), scorePreload.getY(), scorePreload.getHeading()));
+        Command RunLaunch1 = new RunTurretAndLauncherFromPoseAuto(true,new Pose(toScore1.getX(), toScore1.getY(), toScore1.getHeading()));
+        Command RunLaunch2 = new RunTurretAndLauncherFromPoseAuto(true, new Pose(toScore2.getX(), toScore2.getY(), toScore2.getHeading()));
 
-        Command Intake1 = new AutoIntake(6000);
-        Command Intake2 = new AutoIntake(5000);
+        Command Intake1 = new AutoIntake(4000);
+        Command Intake2 = new AutoIntake(4000);
+
 
         Command IntakeCheck = new AutoIntakeCheck();
         Command StopLauncher = new LambdaCommand().setStart(()->{RunLaunchPre.cancel();RunLaunch1.cancel();RunLaunch2.cancel();
         }).setIsDone(()->{ return true;});
-        Command LaunchWOSort = new SequentialGroup(new ForceLaunchAuto(), StopLauncher);
+        Command LaunchWOSort = new SequentialGroup(new ForceLaunchAutoSlow(), StopLauncher);
         PedroComponent.follower().setPose(startingPos);
         PedroComponent.follower().setMaxPower(maxPower);
         PedroComponent.follower().update();
@@ -110,29 +128,21 @@ public class RedGoal9Ball extends AutoBase {
                     SorterSubsystem.INSTANCE.sortHug();
                 }).setIsDone(() -> {return true;}),
                 new LambdaCommand().setStart(()->{RunLaunchPre.schedule();}).setIsDone(()->{ return true;}),
-                new Delay(0.125),
-                 new ParallelGroup(
-                            new SequentialGroup(
-                                    new FollowPath(DriveToScorePreload, false),
-                                    new Delay(0.025)
-
-                            )
-
-                 ),
+                new Delay(1.75),
+                new FollowPath(DriveToScorePreload),
                 LaunchWOSort,
                  new ParallelGroup(
                          new SequentialGroup(
                                  new FollowPath(DriveToPickUp1),
-                                 new InstantCommand(()->{ PedroComponent.follower().setMaxPower(0.35);}),
+                                 new InstantCommand(()->{ PedroComponent.follower().setMaxPower(0.5);}),
                                  new FollowPath(DrivePickUp1)),
                          Intake1
                  ),
                  new ParallelGroup(
                          new SequentialGroup(
-                                 new Delay(2),
                                  new InstantCommand(()->{ PedroComponent.follower().setMaxPower(1);}),
                                  new FollowPath(DriveToScore1),
-                                 new Delay(0.25)
+                                 new Delay(1.5)
 
                          ),
                          new LambdaCommand().setStart(()->{RunLaunch1.schedule();}).setIsDone(()->{ return true;}),
@@ -150,13 +160,14 @@ public class RedGoal9Ball extends AutoBase {
                          new SequentialGroup(
                                  new InstantCommand(()->{ PedroComponent.follower().setMaxPower(maxPower);}),
                                  new FollowPath(DriveToScore2),
-                                 new Delay(0.25)
+                                 new Delay(1.5)
                          ),
                          new LambdaCommand().setStart(()->{RunLaunch2.schedule();}).setIsDone(()->{ return true;}),
                          IntakeCheck
                  ),
                 LaunchWOSort,
-                StopLauncher
+                StopLauncher,
+                new FollowPath(EndDrive)
 
         );
        runAuto.schedule();

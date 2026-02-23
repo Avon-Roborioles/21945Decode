@@ -27,8 +27,8 @@ import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 
-@Autonomous (group = "Blue Goal", preselectTeleOp = "BlueTeleOp")
-public class BlueGoal9Sorted12Ball extends AutoBase {
+@Autonomous (group = "Red Goal", preselectTeleOp = "RedTeleOp")
+public class RedGoal9Sorted12Ball_Out extends AutoBase {
 
     /*TODO: Look into Piecewise heading
       TODO: Shoot While Move?
@@ -38,25 +38,25 @@ public class BlueGoal9Sorted12Ball extends AutoBase {
     PathChain MidCycle, CloseCycle, FarCycle;
     Path ToScorePreloads, ToGrabMid, ToScoreMid, ToGrabClose, GrabClose, ToScoreClose, ToGrabFar, ToScoreFar;
 
-    Pose startingPos = new Pose(26.75, 130, Math.toRadians(329));
-    Pose scorePreload = new Pose(58.5, 108.5, Math.toRadians(270));
-    Pose grabMid = new Pose(23, 65, Math.toRadians(180));
-    Pose grabMidCP1 = new Pose(58.5, 88);
-    Pose grabMidCP2  = new Pose(59, 66.5);
-    Pose grabMidCP3  = new Pose(64, 60);
-    Pose scoreMid = new Pose(56.5, 100, Math.toRadians(-110));
-    Pose scoreMidCp = new Pose(51, 59.5);
+    Pose startingPos = new Pose(26.75, 130, Math.toRadians(329)).mirror();
+    Pose scorePreload = new Pose(58.5, 108.5, Math.toRadians(270)).mirror();
+    Pose grabMid = new Pose(23, 65, Math.toRadians(185)).mirror();
+    Pose grabMidCP1 = new Pose(58.5, 88).mirror();
+    Pose grabMidCP2  = new Pose(59, 66.5).mirror();
+    Pose grabMidCP3  = new Pose(64, 60).mirror();
+    Pose scoreMid = new Pose(56.5, 100, Math.toRadians(-110)).mirror();
+    Pose scoreMidCp = new Pose(51, 59.5).mirror();
 
-    Pose toGrabClose = new Pose(42, 85, Math.toRadians(180));
-    Pose grabClose = new Pose(30, 85, Math.toRadians(180));
-    Pose scoreClose = new Pose(60, 89, Math.toRadians(270));
-    Pose scoreCloseCP = new Pose(44.5, 82.5);
-    Pose grabFar = new Pose(30, 34.5, Math.toRadians(182));
-    Pose grabFarCP1 = new Pose(61, 38.5);
-    Pose grabFarCP2 = new Pose(57, 37.5);
-    Pose grabFarCP3 = new Pose(35, 35);
-    Pose scoreFar = new Pose(59, 112, Math.toRadians(270));
-    Pose scoreFarCP = new Pose(57, 36);
+    Pose toGrabClose = new Pose(42, 85, Math.toRadians(180)).mirror();
+    Pose grabClose = new Pose(30, 85, Math.toRadians(180)).mirror();
+    Pose scoreClose = new Pose(60, 89, Math.toRadians(270)).mirror();
+    Pose scoreCloseCP = new Pose(44.5, 82.5).mirror();
+    Pose grabFar = new Pose(30, 34.5, Math.toRadians(182)).mirror();
+    Pose grabFarCP1 = new Pose(61, 38.5).mirror();
+    Pose grabFarCP2 = new Pose(57, 37.5).mirror();
+    Pose grabFarCP3 = new Pose(45, 30).mirror();
+    Pose scoreFar = new Pose(59, 116, Math.toRadians(270)).mirror();
+    Pose scoreFarCP = new Pose(57, 36).mirror();
 
 
 
@@ -102,12 +102,12 @@ public class BlueGoal9Sorted12Ball extends AutoBase {
                         new HeadingInterpolator.PiecewiseNode(
                                 0,
                                 .3,
-                                HeadingInterpolator.linear(scorePreload.getHeading(), Math.toRadians(180))
+                                HeadingInterpolator.linear(scorePreload.getHeading(), Math.toRadians(0))
                         ),
                         new HeadingInterpolator.PiecewiseNode(
                                 .3,
                                 1,
-                                HeadingInterpolator.constant(Math.toRadians(180))
+                                HeadingInterpolator.constant(Math.toRadians(0))
                         )
                 ));
         ToGrabFar.setTimeoutConstraint(1000);
@@ -127,10 +127,10 @@ public class BlueGoal9Sorted12Ball extends AutoBase {
 
     }
     @Override public void onStartButtonPressed () {
-        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(false, new Pose(scorePreload.getX(), scorePreload.getY(), scorePreload.getHeading()));
-        Command RunLaunchMid = new RunTurretAndLauncherFromPoseAuto(false, scoreMid);
-        Command RunLaunchClose = new RunTurretAndLauncherFromPoseAuto(false, scoreClose);
-        Command RunLaunchFar = new RunTurretAndLauncherFromPoseAuto(false, scoreFar);
+        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(true, new Pose(scorePreload.getX(), scorePreload.getY(), scorePreload.getHeading()));
+        Command RunLaunchMid = new RunTurretAndLauncherFromPoseAuto(true, scoreMid);
+        Command RunLaunchClose = new RunTurretAndLauncherFromPoseAuto(true, scoreClose);
+        Command RunLaunchFar = new RunTurretAndLauncherFromPoseAuto(true, scoreFar);
 
 
         Command Intake = new AutoIntakeNoTime();
@@ -187,7 +187,7 @@ public class BlueGoal9Sorted12Ball extends AutoBase {
                 new ParallelGroup(
                         new FollowPathNew(CloseCycle),
                         new SequentialGroup(
-                                new Delay(3),
+                                new Delay(4),
                                 new LambdaCommand().setStart(()->{RunLaunchClose.schedule();}).setIsDone(()->{ return true;}),
                                 new InstantCommand(()->{ Intake.cancel();}),
                                 IntakeCheck
@@ -199,7 +199,7 @@ public class BlueGoal9Sorted12Ball extends AutoBase {
                 new ParallelGroup(
                         new FollowPathNew(FarCycle),
                         new SequentialGroup(
-                                new Delay(4),
+                                new Delay(4.5),
                                 new LambdaCommand().setStart(()->{RunLaunchFar.schedule();}).setIsDone(()->{ return true;}),
                                 new InstantCommand(()->{ Intake.cancel();}),
                                 IntakeCheck

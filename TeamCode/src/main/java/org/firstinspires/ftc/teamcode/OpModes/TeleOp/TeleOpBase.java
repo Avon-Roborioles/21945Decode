@@ -195,7 +195,7 @@ public abstract class TeleOpBase extends Storage {
                 PosStorage.memory.lastPose = PedroComponent.follower().getPose();
             }
             if(!inLift){
-                if(Gamepads.gamepad2().ps().get() && Gamepads.gamepad1().options().get()){
+                if(Gamepads.gamepad2().ps().get()){
                     inLift = true;
                     joyCommand.schedule();
 //                    tiltCommand.schedule();

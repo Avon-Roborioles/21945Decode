@@ -3,7 +3,6 @@ import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
-import com.pedropathing.paths.callbacks.TemporalCallback;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromPoseAuto;
@@ -21,25 +20,25 @@ import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 
-@Autonomous (group = "Blue Goal", preselectTeleOp = "BlueTeleOp")
-public class BlueGoal12Ball extends AutoBase {
+@Autonomous (group = "Red Goal", preselectTeleOp = "RedTeleOp")
+public class RedGoal12Ball_Goal extends AutoBase {
     Path DriveToScorePreload, DriveToPickUp1, DrivePickUp1, DriveToScore1, DriveToPickUp2, DrivePickUp2, DriveToScore2, DriveToPickUp3, DrivePickUp3, DriveToScore3, DriveDumpGate;
-    Pose startingPos = new Pose(26.75, 130, Math.toRadians(141));
-    Pose scorePreload = new Pose(54, 114, Math.toRadians(270));
-    Pose toPickUp1 = new Pose(46, 84, Math.toRadians(180));
-    Pose pickUp1 = new Pose(20, 79, Math.toRadians(180));
-    Pose dumpGate = new Pose(18, 79, Math.toRadians(180));
-    Pose toScore1 = new Pose(56, 79, Math.toRadians(270));
-    Pose toPickUp2 = new Pose( 44, 62, Math.toRadians(180));
-    Pose toPickUp2CP = new Pose(57, 58);
-    Pose pickUp2 = new Pose(18, 60, Math.toRadians(180));
-    Pose toScore2 = new Pose(56, 78, Math.toRadians(270));
-    Pose toScore2CP = new Pose(51, 61);
-    Pose toPickUp3 = new Pose(44,35.5 , Math.toRadians(180));
-    Pose toPickUp3CP = new Pose(50, 33);
-    Pose pickUp3 = new Pose(18, 35.5, Math.toRadians(180));
-    Pose toScore3 = new Pose(56,110 , Math.toRadians(270));
-    Pose toScore3CP = new Pose(50, 38);
+    Pose startingPos = new Pose(26.75, 130, Math.toRadians(141)).mirror();
+    Pose scorePreload = new Pose(54, 114, Math.toRadians(270)).mirror();
+    Pose toPickUp1 = new Pose(46, 84, Math.toRadians(180)).mirror();
+    Pose pickUp1 = new Pose(20, 79, Math.toRadians(180)).mirror();
+    Pose dumpGate = new Pose(19, 79, Math.toRadians(180)).mirror();
+    Pose toScore1 = new Pose(56, 79, Math.toRadians(270)).mirror();
+    Pose toPickUp2 = new Pose( 44, 62, Math.toRadians(180)).mirror();
+    Pose toPickUp2CP = new Pose(57, 58).mirror();
+    Pose pickUp2 = new Pose(18, 60, Math.toRadians(180)).mirror();
+    Pose toScore2 = new Pose(56, 78, Math.toRadians(270)).mirror();
+    Pose toScore2CP = new Pose(51, 61).mirror();
+    Pose toPickUp3 = new Pose(44,35.5 , Math.toRadians(180)).mirror();
+    Pose toPickUp3CP = new Pose(50, 33).mirror();
+    Pose pickUp3 = new Pose(18, 35.5, Math.toRadians(180)).mirror();
+    Pose toScore3 = new Pose(56,120 , Math.toRadians(270)).mirror();
+    Pose toScore3CP = new Pose(50, 38).mirror();
     double maxPower = 1;
 
 
@@ -68,10 +67,9 @@ public class BlueGoal12Ball extends AutoBase {
         DriveDumpGate = new Path(new BezierLine(pickUp1, dumpGate));
         DriveDumpGate.setLinearHeadingInterpolation(pickUp1.getHeading(), dumpGate.getHeading());
 
-        DriveToScore1 = new Path(new BezierLine(dumpGate, toScore1));
-        DriveToScore1.setLinearHeadingInterpolation(dumpGate.getHeading(), toScore1.getHeading());
+        DriveToScore1 = new Path(new BezierLine(pickUp1, toScore1));
+        DriveToScore1.setLinearHeadingInterpolation(pickUp1.getHeading(), toScore1.getHeading());
         DriveToScore1.setTimeoutConstraint(750);
-
 
 
         DriveToPickUp2 = new Path(new BezierCurve(toScore1, toPickUp2CP, toPickUp2));
@@ -109,15 +107,14 @@ public class BlueGoal12Ball extends AutoBase {
     @Override public void onStartButtonPressed (){
 
 //
-        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(false, new Pose(scorePreload.getX(), scorePreload.getY(), scorePreload.getHeading()+ Math.toRadians(25)));
-        Command RunLaunch1 = new RunTurretAndLauncherFromPoseAuto(false, toScore1);
-        Command RunLaunch2 = new RunTurretAndLauncherFromPoseAuto(false, toScore2);
-        Command RunLaunch3 = new RunTurretAndLauncherFromPoseAuto(false, toScore3);
+        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(true, new Pose(scorePreload.getX(), scorePreload.getY(), scorePreload.getHeading()- Math.toRadians(25)));
+        Command RunLaunch1 = new RunTurretAndLauncherFromPoseAuto(true, toScore1);
+        Command RunLaunch2 = new RunTurretAndLauncherFromPoseAuto(true, toScore2);
+        Command RunLaunch3 = new RunTurretAndLauncherFromPoseAuto(true, toScore3);
 
         Command Intake1 = new AutoIntake(5000);
         Command Intake2 = new AutoIntake(3500);
         Command Intake3 = new AutoIntake(3000);
-
         Command IntakeCheck = new AutoIntakeCheck();
         Command StopLauncher = new LambdaCommand().setStart(()->{RunLaunchPre.cancel();RunLaunch1.cancel();RunLaunch2.cancel();RunLaunch3.cancel();
         }).setIsDone(()->{ return true;});
@@ -148,8 +145,6 @@ public class BlueGoal12Ball extends AutoBase {
                                  new FollowPath(DrivePickUp1)),
                          Intake1
                  ),
-                 new FollowPath(DriveDumpGate),
-                 new Delay(1),
                  new ParallelGroup(
                          new SequentialGroup(
                                  new InstantCommand(()->{ PedroComponent.follower().setMaxPower(1);}),
