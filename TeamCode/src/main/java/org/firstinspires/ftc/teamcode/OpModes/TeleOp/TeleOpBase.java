@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.Commands.Automatic.TeleOpDriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.HumanPlayerReset;
 import org.firstinspires.ftc.teamcode.Commands.Intake.IntakeToSorterCommand;
 import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunch;
+import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchGreen;
+import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchPurple;
 import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchWithOutSort;
 import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchWithSort;
 import org.firstinspires.ftc.teamcode.Commands.PTOJoystickCommand;
@@ -155,10 +157,10 @@ public abstract class TeleOpBase extends Storage {
         Gamepads.gamepad1().touchpad().whenBecomesTrue(eStop);
 
 
-        Gamepads.gamepad2().circle().whenBecomesTrue(launchWithSort).whenBecomesFalse(new LambdaCommand().setStart(launchWithSort::cancel).setIsDone(() -> true));;
+        Gamepads.gamepad2().circle().whenBecomesTrue(new LaunchGreen());;
         Gamepads.gamepad2().square().whenBecomesTrue(LauncherSubsystem.INSTANCE.SpinUpToSpeed(800));
         Gamepads.gamepad2().triangle().whenBecomesTrue(forceLaunch).whenBecomesFalse(new LambdaCommand().setStart(forceLaunch::cancel).setIsDone(() -> true));
-        Gamepads.gamepad2().cross().toggleOnBecomesTrue().whenBecomesTrue(runTurretAndLauncherFromHeading).whenBecomesFalse(new LambdaCommand().setStart(() -> {runTurretAndLauncherFromHeading.cancel();runTurretFromJoystick.schedule();}).setIsDone(() -> true));;
+        Gamepads.gamepad2().cross().whenBecomesTrue(new LaunchPurple());;
         Gamepads.gamepad2().dpadUp().whenBecomesTrue(LauncherSubsystem.INSTANCE.SpeedUp);
         Gamepads.gamepad2().dpadDown().whenBecomesTrue(LauncherSubsystem.INSTANCE.SpeedDown);
         Gamepads.gamepad2().dpadLeft();
@@ -175,13 +177,13 @@ public abstract class TeleOpBase extends Storage {
         Gamepads.gamepad2().rightTrigger().atLeast(0.75);
         Gamepads.gamepad2().leftBumper().whenBecomesTrue(intakeToSorter);
         Gamepads.gamepad2().rightBumper().whenTrue(IntakeSubsystem.INSTANCE.Outtake).whenBecomesFalse(IntakeSubsystem.INSTANCE.StopIntake);
-        Gamepads.gamepad2().options().whenBecomesTrue(StatusSubsystem.INSTANCE.cycleOBPatternCommand);
+        Gamepads.gamepad2().options();
         Gamepads.gamepad2().share();
 
 
 
         Gamepads.gamepad2().touchpad().whenBecomesTrue(eStop);
-        Command start = new SequentialGroup(SorterSubsystem.INSTANCE.wake, SorterSubsystem.INSTANCE.resetSorter, PTOSubsystem.INSTANCE.disengage, VisionSubsystem.INSTANCE.down);
+        Command start = new SequentialGroup(SorterSubsystem.INSTANCE.wake, SorterSubsystem.INSTANCE.resetSorter, PTOSubsystem.INSTANCE.wake, VisionSubsystem.INSTANCE.down);
         start.schedule();
 
     }

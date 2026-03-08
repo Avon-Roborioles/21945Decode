@@ -5,6 +5,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import dev.nextftc.bindings.Range;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.ParallelGroup;
+import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.extensions.pedro.PedroComponent;
@@ -34,7 +35,7 @@ public class PTOSubsystem implements Subsystem {
     MotorEx fl, fr, bl,br;
     public Command disengage = new ParallelGroup(new SetPosition(ptoL, lUp).setIsDone(()->true), new SetPosition(ptoR, rUp).setIsDone(()->true), new LambdaCommand().setStart(() -> engaged = false).setIsDone(()->true));
     public Command engage = new ParallelGroup(new SetPosition(ptoL, lDown), new SetPosition(ptoR, rDown), new LambdaCommand().setStart(() -> engaged = true).setIsDone(()->true));
-
+    public Command wake = new SequentialGroup(new ParallelGroup(new SetPosition(ptoL, lDown), new SetPosition(ptoR, rDown), new LambdaCommand().setStart(() -> engaged = true).setIsDone(()->true)), new ParallelGroup(new SetPosition(ptoL, lUp).setIsDone(()->true), new SetPosition(ptoR, rUp).setIsDone(()->true), new LambdaCommand().setStart(() -> engaged = false).setIsDone(()->true)));
     public void Engage(){
         ptoL.setPosition(lDown);
         ptoR.setPosition(rDown);
@@ -69,6 +70,13 @@ public class PTOSubsystem implements Subsystem {
     @Override
     public void periodic() {
         // periodic logic (runs every loop)
+        if(engaged){
+            ptoL.setPosition(lDown);
+            ptoR.setPosition(rDown);
+        }else {
+            ptoL.setPosition(lUp);
+            ptoR.setPosition(rUp);
+        }
 //        getPTOTelemetryAdv();
     }
     public void getPTOTelemetryAdv(){

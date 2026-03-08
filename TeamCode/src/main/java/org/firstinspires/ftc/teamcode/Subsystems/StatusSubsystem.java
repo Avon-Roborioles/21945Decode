@@ -515,6 +515,7 @@ public class StatusSubsystem implements Subsystem {
         ActiveOpMode.telemetry().addData("Voltage", controlHubVoltageSensor.getVoltage());
         ActiveOpMode.telemetry().addData("Current OB Pattern", currentOBPattern);
         ActiveOpMode.telemetry().addData("Loop Hz", 1e3/statistics.getMean());
+        ActiveOpMode.telemetry().addData("Pto Engaged", PTOSubsystem.INSTANCE.engaged);
     }
     // ---------- Beacon Methods ----------
     public void setBeacon(double position){
