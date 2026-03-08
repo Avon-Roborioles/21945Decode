@@ -18,11 +18,14 @@ public class SorterSubsystem implements Subsystem {
     public static final SorterSubsystem INSTANCE = new SorterSubsystem();
     private SorterSubsystem() {}
 
-    private double hugPos = 0.025;
+    private double hugPos = 0.03;
 
-    private double lDown = 0.0525;
-    private double rDown = 0.05;
-    private double cDown = 0.045;
+    private double lDown = 0.0475;
+    private double rDown = 0.045;
+    private double cDown = 0.04;
+    private double lInt = 0.02;
+    private double rInt =0.02;
+    private double cInt = 0.02;
 //    private double lDown =0;
 //    private double rDown =0;
 //    private double cDown = 0;
@@ -141,6 +144,11 @@ public class SorterSubsystem implements Subsystem {
         sortC.setPosition(cDown);
         sortR.setPosition(rDown);
     }
+    public void sortInt(){
+        sortL.setPosition(lInt);
+        sortC.setPosition(cInt);
+        sortR.setPosition(rInt);
+    }
 
     public Command ejectC =
 
@@ -203,7 +211,7 @@ public class SorterSubsystem implements Subsystem {
             .setInterruptible(false);
     // put hardware, commands, etc here
     public boolean leftDetected(){
-        leftDetect = sortCSL.getDistance(DistanceUnit.MM)<49;
+        leftDetect = sortCSL.getDistance(DistanceUnit.MM)<48;
         return leftDetect;
     }
     public boolean centerDetected(){
@@ -218,7 +226,7 @@ public class SorterSubsystem implements Subsystem {
 
     public SlotDetection leftSlot(){
         updateColor();
-        if(sortCSL.getDistance(DistanceUnit.MM)<49){
+        if(sortCSL.getDistance(DistanceUnit.MM)<48){
             if(leftColor.green - leftColor.red>0.15) {
 //                CompStatusSubsystem.INSTANCE.setLeftGreen();
                 return SlotDetection.GREEN;

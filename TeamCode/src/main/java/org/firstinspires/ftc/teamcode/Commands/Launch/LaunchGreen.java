@@ -34,8 +34,8 @@ public class LaunchGreen extends Command {
     SorterSubsystem.SlotDetection left, right, center;
 
 
-    Timing.Timer wait = new Timing.Timer(165, TimeUnit.MILLISECONDS);
-    Timing.Timer reset = new Timing.Timer(140, TimeUnit.MILLISECONDS);
+    Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
+    Timing.Timer reset = new Timing.Timer(250, TimeUnit.MILLISECONDS);
     Timing.Timer ready = new Timing.Timer(250, TimeUnit.MILLISECONDS);
 
     public LaunchGreen() {

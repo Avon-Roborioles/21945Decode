@@ -42,7 +42,7 @@ public class AutoIntakeCheck extends Command {
         end.start();
         step = intakeSeq.Intake;
 
-        SorterSubsystem.INSTANCE.resetSorter();
+        SorterSubsystem.INSTANCE.sortInt();
 
         // executed when the command begins
     }

@@ -43,7 +43,7 @@ public class IntakeToSorterCommand extends Command {
     public void start() {
         step = intakeSeq.Intake;
 
-        SorterSubsystem.INSTANCE.resetSorter();
+        SorterSubsystem.INSTANCE.sortInt();
 
 
 
