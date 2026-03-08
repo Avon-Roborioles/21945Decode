@@ -60,7 +60,8 @@ public class IntakeSubsystem implements Subsystem {
     }
     public void getIntakeTelemetryAdv(){
         ActiveOpMode.telemetry().addLine("-------------- Intake Telemetry Adv: --------------");
-        ActiveOpMode.telemetry().addData("Intake Beam Break", intakeBBTripped());
+        ActiveOpMode.telemetry().addData("Intake Beam Break Bottom", intakeBBTripped());
+        ActiveOpMode.telemetry().addData("Intake Beam Break Top", intakeBB2Tripped());
 
 
     }

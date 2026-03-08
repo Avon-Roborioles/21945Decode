@@ -201,11 +201,7 @@ public class VisionSubsystem implements Subsystem {
         if (latestResult != null) {
             ActiveOpMode.telemetry().addData("Target Visible", latestResult.isValid());
             if (latestResult.isValid()) {
-                ActiveOpMode.telemetry().addData("BotPose", latestResult.getBotpose());
-
-
-                ActiveOpMode.telemetry().addData("Yaw to Goal", latestResult.getTx());
-                ActiveOpMode.telemetry().addData("Pitch to Goal", latestResult.getTy());
+                ActiveOpMode.telemetry().addData("tag Id", latestResult.getFiducialResults().get(0).getFiducialId());
             }
         }
     }

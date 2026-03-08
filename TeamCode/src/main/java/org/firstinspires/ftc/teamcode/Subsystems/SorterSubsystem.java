@@ -203,34 +203,23 @@ public class SorterSubsystem implements Subsystem {
             .setInterruptible(false);
     // put hardware, commands, etc here
     public boolean leftDetected(){
-        leftDetect = sortCSL.getDistance(DistanceUnit.MM)<46;
+        leftDetect = sortCSL.getDistance(DistanceUnit.MM)<49;
         return leftDetect;
     }
-    public boolean leftDetectedDumb(){
-
-        return (sortCSL.getNormalizedColors().alpha > 0.64);
-    }
-
     public boolean centerDetected(){
-        centerDetect = sortCSC.getDistance(DistanceUnit.MM)<90;
+        centerDetect = sortCSC.getDistance(DistanceUnit.MM)<100;
         return centerDetect;
     }
-    public boolean centerDetectedDumb(){
-        return (sortCSC.getNormalizedColors().alpha > 0.113);
-    }
+
     public boolean rightDetected(){
-        rightDetect = sortCSR.getDistance(DistanceUnit.MM)<55;
+        rightDetect = sortCSR.getDistance(DistanceUnit.MM)<69;
         return rightDetect;
     }
-    public boolean rightDetectedDumb(){
-        return (sortCSR.getNormalizedColors().alpha > 0.20);
-    }
-
 
     public SlotDetection leftSlot(){
         updateColor();
-        if(sortCSL.getDistance(DistanceUnit.MM)<70){
-            if(leftColor.red<0.35) {
+        if(sortCSL.getDistance(DistanceUnit.MM)<49){
+            if(leftColor.green - leftColor.red>0.15) {
 //                CompStatusSubsystem.INSTANCE.setLeftGreen();
                 return SlotDetection.GREEN;
             }else {
@@ -244,7 +233,7 @@ public class SorterSubsystem implements Subsystem {
     }
     public SlotDetection centerSlot(){
         updateColor();
-        if(sortCSC.getDistance(DistanceUnit.MM)<80){
+        if(sortCSC.getDistance(DistanceUnit.MM)<100){
             if(centerColor.green>centerColor.blue) {
 //                CompStatusSubsystem.INSTANCE.setCenterGreen();
                 return SlotDetection.GREEN;
@@ -259,8 +248,8 @@ public class SorterSubsystem implements Subsystem {
     }
     public SlotDetection rightSlot(){
         updateColor();
-        if(sortCSR.getDistance(DistanceUnit.MM)<55){
-            if(rightColor.green- rightColor.blue>0.25) {
+        if(sortCSR.getDistance(DistanceUnit.MM)<69){
+            if(rightColor.green- rightColor.red>0.35) {
 //                CompStatusSubsystem.INSTANCE.setRightGreen();
                 return SlotDetection.GREEN;
             }else{
@@ -347,9 +336,7 @@ public class SorterSubsystem implements Subsystem {
 
         return (leftDetect) && (rightDetect) && (centerDetect);
     }
-    public boolean sorterFullDumb(){
-        return (leftDetectedDumb()|| leftDetected()) && (centerDetectedDumb() || centerDetected()) && (rightDetectedDumb()|| rightDetected());
-    }
+
     public boolean sorterEmpty(){
         return !leftDetected() && !centerDetected() && !rightDetected();
     }
@@ -368,8 +355,8 @@ public class SorterSubsystem implements Subsystem {
         sortCSL = ActiveOpMode.hardwareMap().get(RevColorSensorV3.class, "Sort CS L");
         sortCSC = ActiveOpMode.hardwareMap().get(RevColorSensorV3.class, "Sort CS C");
         sortCSR = ActiveOpMode.hardwareMap().get(RevColorSensorV3.class, "Sort CS R");
-        sortCSL.setGain(400);
-        sortCSR.setGain(800);
+        sortCSL.setGain(600);
+        sortCSR.setGain(400);
         sortCSC.setGain(400);
 
         busy= false;
@@ -378,7 +365,7 @@ public class SorterSubsystem implements Subsystem {
     @Override
     public void periodic() {
         // periodic logic (runs every loop)
-//        getSorterTelemetryAdv();
+        getSorterTelemetryAdv();
 //        ActiveOpMod2e.telemetry().addData("Left Slot:", leftSlot());
 //        ActiveOpMode.telemetry().addData("Center Slot:", centerSlot());
 //        ActiveOpMode.telemetry().addData("Right Slot:", rightSlot());

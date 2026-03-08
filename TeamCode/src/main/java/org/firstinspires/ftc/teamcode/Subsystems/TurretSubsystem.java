@@ -317,6 +317,9 @@ public class TurretSubsystem implements Subsystem {
                 }else{
                     StatusSubsystem.INSTANCE.setPrismOrange();
                 }
+                PanelsTelemetry.INSTANCE.getTelemetry().addData("Turret Position", turretPos);
+                PanelsTelemetry.INSTANCE.getTelemetry().addData("Turret Target", turretTargetPosDeg);
+                PanelsTelemetry.INSTANCE.getTelemetry().addData("Turret Error", turretError);
             }
 
 
@@ -440,20 +443,15 @@ public class TurretSubsystem implements Subsystem {
         }else{
             turretTargetPosDeg = calculatePos();
         }
-//        getTurretTelemetryAdv();
+        getTurretTelemetryAdv();
         lastSetPoint = turretTargetPosDeg;
 
         // periodic logic (runs every loop)
     }
     public void getTurretTelemetryAdv(){
-        PanelsTelemetry.INSTANCE.getTelemetry().addData("Turret Position", turretPos);
-        PanelsTelemetry.INSTANCE.getTelemetry().addData("Turret Target", turretTargetPosDeg);
-        PanelsTelemetry.INSTANCE.getTelemetry().addData("Turret Error", turretError);
+
         ActiveOpMode.telemetry().addLine("-------------- Turret Telemetry Adv: --------------");
-        ActiveOpMode.telemetry().addData("Turret Position", turretPos);
-        ActiveOpMode.telemetry().addData("Turret Velo", data.velocities[0]);
         ActiveOpMode.telemetry().addData("Turret Power", turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)));
-        ActiveOpMode.telemetry().addData("Turret Error", turretError);
         ActiveOpMode.telemetry().addData("Turret Target", turretTargetPosDeg);
         ActiveOpMode.telemetry().addData("Turret Field Angle Goal", turretFieldAngleGoalDeg);
         ActiveOpMode.telemetry().addData("Turret Happy", TurretHappy());

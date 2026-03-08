@@ -58,7 +58,7 @@ public class IntakeToSorterCommand extends Command {
                 step = intakeSeq.CheckForFull;
                 break;
             case CheckForFull:
-                if (SorterSubsystem.INSTANCE.sorterFull() || SorterSubsystem.INSTANCE.sorterFullDumb()) {
+                if (SorterSubsystem.INSTANCE.sorterFull() || SorterSubsystem.INSTANCE.sorterFull()) {
                     step = intakeSeq.Hug;
                     ActiveOpMode.gamepad1().rumble(250);
 

@@ -208,10 +208,10 @@ public abstract class TeleOpBase extends Storage {
                     joyCommand.cancel();
                 }
             }
-            telemetry.addData("last Pos",  PosStorage.memory.lastPose);
+//            telemetry.addData("last Pos",  PosStorage.memory.lastPose);
         }
-        telemetry.addData("inLift", inLift);
-        telemetry.addData("BotPose", Botpose);
+//        telemetry.addData("inLift", inLift);
+//        telemetry.addData("BotPose", Botpose);
         panelsTelemetry.update(telemetry);
     }
 
