@@ -443,7 +443,7 @@ public class TurretSubsystem implements Subsystem {
         }else{
             turretTargetPosDeg = calculatePos();
         }
-        getTurretTelemetryAdv();
+//        getTurretTelemetryAdv();
         lastSetPoint = turretTargetPosDeg;
 
         // periodic logic (runs every loop)

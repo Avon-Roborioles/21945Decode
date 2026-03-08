@@ -266,8 +266,8 @@ public class LauncherSubsystem implements Subsystem {
     }
     //Telemetry
     public void getLauncherTelemetryAdv(){
-        PanelsTelemetry.INSTANCE.getTelemetry().addData("Launcher Speed", getMotorSpeed());
-        PanelsTelemetry.INSTANCE.getTelemetry().addData("Launcher Speed Target", getTargetSpeed());
+//        PanelsTelemetry.INSTANCE.getTelemetry().addData("Launcher Speed", getMotorSpeed());
+//        PanelsTelemetry.INSTANCE.getTelemetry().addData("Launcher Speed Target", getTargetSpeed());
 
          ActiveOpMode.telemetry().addLine("-------------- Launcher Telemetry Adv: --------------");
         ActiveOpMode.telemetry().addData("Launcher Speed", getMotorSpeed());
