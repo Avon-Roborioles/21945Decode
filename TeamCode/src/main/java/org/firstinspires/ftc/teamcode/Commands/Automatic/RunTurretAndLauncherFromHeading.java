@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.TurretSubsystem;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.extensions.pedro.PedroComponent;
+import dev.nextftc.ftc.ActiveOpMode;
 
 @Configurable
 public class RunTurretAndLauncherFromHeading extends Command {
@@ -69,12 +70,12 @@ public class RunTurretAndLauncherFromHeading extends Command {
                 StatusSubsystem.INSTANCE.setPrismOrange();
 
         }
-//        ActiveOpMode.telemetry().addLine("-------------- RunTurretAndLauncherFromHeading Telemetry: --------------");
-//        ActiveOpMode.telemetry().addData("redAlliance", redAlliance);
-//        ActiveOpMode.telemetry().addData("BotPose", botPose);
-//        ActiveOpMode.telemetry().addData("distanceToGoal", distanceToGoal);
+        ActiveOpMode.telemetry().addLine("-------------- RunTurretAndLauncherFromHeading Telemetry: --------------");
+        ActiveOpMode.telemetry().addData("redAlliance", redAlliance);
+        ActiveOpMode.telemetry().addData("BotPose", botPose);
+        ActiveOpMode.telemetry().addData("distanceToGoal", distanceToGoal);
 //        ActiveOpMode.telemetry().addData("turretFieldAngleDeg", Math.toDegrees(turretFieldAngleRad));
-//
+
 
         // executed on every update of the command
     }

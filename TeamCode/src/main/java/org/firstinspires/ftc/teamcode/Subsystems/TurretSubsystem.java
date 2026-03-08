@@ -58,12 +58,9 @@ public class TurretSubsystem implements Subsystem {
 
 
 
-    public static double powerAdd_N200_N165 = -0.18;
-    public static double powerAdd_N165_N145 = -0.09;
-    public static double powerAdd_N145_N35 = 0;
-    public static double powerAdd_N35_65 = 0.08;
-    public static double powerAdd_65_190 = 0.11;
-    public static double powerAdd_190_200 = 0.188;
+    public static double powerAdd_N200_N120 = -0.03;
+    public static double powerAdd_N120_N45 = 0;
+    public static double powerAdd_N45_200 = 0.06;
 
 
 
@@ -118,6 +115,7 @@ public class TurretSubsystem implements Subsystem {
 
 
     private PIDCoefficients coefficients = new PIDCoefficients(akp, akI, akD);
+
 
     double lastSetPoint = 0;
     public static double kv = 0.0;
@@ -419,26 +417,20 @@ public class TurretSubsystem implements Subsystem {
             }
 
 
-            if(turretPos <-165){
-                powerAdd = powerAdd_N200_N165;
-            }else if(turretPos <-145){
-                powerAdd = powerAdd_N165_N145;
-            }else if(turretPos <-35){
-                powerAdd = powerAdd_N145_N35;
-            }else if(turretPos < 65){
-                powerAdd = powerAdd_N35_65;
-            }else if(turretPos < 190){
-                powerAdd = powerAdd_65_190;
+            if(turretPos <-120){
+                powerAdd = powerAdd_N200_N120;
+            }else if(turretPos <-45){
+                powerAdd = powerAdd_N120_N45;
             }else{
-                powerAdd = powerAdd_190_200;
+                powerAdd = powerAdd_N45_200;
             }
-
 
             power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)) + ( kv * (turretTargetPosDeg - lastSetPoint));
             power += Math.signum(turretError)* akS;
             power += powerAdd;
             if(powerMode){
                 power = powerSet;
+                turretMotor.setPower(power);
             }
             if (turretOn && Math.abs(power) > 0.01 && Math.abs(turretError)> 0.5){
                 turretMotor.setPower(power*maxPower );
@@ -448,7 +440,7 @@ public class TurretSubsystem implements Subsystem {
         }else{
             turretTargetPosDeg = calculatePos();
         }
-        getTurretTelemetryAdv();
+//        getTurretTelemetryAdv();
         lastSetPoint = turretTargetPosDeg;
 
         // periodic logic (runs every loop)

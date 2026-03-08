@@ -446,7 +446,7 @@ public class StatusSubsystem implements Subsystem {
     @Override
     public void periodic() {
         // periodic logic (runs every loop)
-        getStatusTelemetryAdv();
+//        getStatusTelemetryAdv();
 
         curTime = System.currentTimeMillis();
         if (prevTime != 0)

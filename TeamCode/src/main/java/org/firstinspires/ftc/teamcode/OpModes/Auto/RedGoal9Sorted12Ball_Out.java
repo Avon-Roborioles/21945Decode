@@ -166,15 +166,17 @@ public class RedGoal9Sorted12Ball_Out extends AutoBase {
                 new Delay(0.0001),
                 LaunchWOSort,
                 new LambdaCommand().setStart(() -> {Intake.schedule();}).setIsDone(() -> {return true;}),
-                new LambdaCommand().setStart(()->{PedroComponent.follower().setMaxPower(0.75);}).setIsDone(()->{ return true;}),
+
                 new ParallelGroup(
                     new SequentialGroup(
                             new FollowPathNew(ToGrabMid),
-                            new Delay(1.5),
+                            new Delay(0.5),
                             new FollowPath(ToScoreMid)
                     ),
                     new SequentialGroup(
-                            new Delay(4),
+                            new Delay(0.5),
+                            new LambdaCommand().setStart(()->{PedroComponent.follower().setMaxPower(0.8);}).setIsDone(()->{ return true;}),
+                            new Delay(3.5),
                             new LambdaCommand().setStart(()->{PedroComponent.follower().setMaxPower(1);}).setIsDone(()->{ return true;}),
                             new LambdaCommand().setStart(()->{RunLaunchMid.schedule();}).setIsDone(()->{ return true;}),
                             new InstantCommand(()->{ Intake.cancel();}),
@@ -187,7 +189,7 @@ public class RedGoal9Sorted12Ball_Out extends AutoBase {
                 new ParallelGroup(
                         new FollowPathNew(CloseCycle),
                         new SequentialGroup(
-                                new Delay(4),
+                                new Delay(3.5),
                                 new LambdaCommand().setStart(()->{RunLaunchClose.schedule();}).setIsDone(()->{ return true;}),
                                 new InstantCommand(()->{ Intake.cancel();}),
                                 IntakeCheck

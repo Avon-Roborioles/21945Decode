@@ -46,6 +46,8 @@ public class RedGoal12Ball_Goal extends AutoBase {
 
 
 
+
+
     Command runAuto;
 
 
@@ -56,8 +58,11 @@ public class RedGoal12Ball_Goal extends AutoBase {
         DriveToScorePreload.setTimeoutConstraint(5000);
         DriveToScorePreload.setHeadingConstraint(Math.toRadians(1));
 
+
+
         DriveToPickUp1 = new Path(new BezierLine(scorePreload, toPickUp1));
         DriveToPickUp1.setLinearHeadingInterpolation(scorePreload.getHeading(), toPickUp1.getHeading());
+
 
 
         DrivePickUp1 = new Path(new BezierLine(toPickUp1, pickUp1));

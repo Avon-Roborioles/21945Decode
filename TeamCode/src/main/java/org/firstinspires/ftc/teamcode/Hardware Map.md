@@ -44,6 +44,8 @@ S6: Sort R
 
 ## OctoQuad
 P0: "Turret Pos"
+P1: "PTO Left"
+P2: "PTO Right"
 
 
 ## Expansion Hub
@@ -56,7 +58,6 @@ M3: "Intake Motor"
 
 Servos:
 S3: "PrismPWM"
-S4: "LL Tilt"
 S5: "Beacon"
 
 Uart:

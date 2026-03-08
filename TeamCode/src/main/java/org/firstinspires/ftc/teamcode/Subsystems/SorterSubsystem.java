@@ -18,11 +18,14 @@ public class SorterSubsystem implements Subsystem {
     public static final SorterSubsystem INSTANCE = new SorterSubsystem();
     private SorterSubsystem() {}
 
-    private double hugPos = 0.075;
+    private double hugPos = 0.025;
 
-    private double lDown = 0.025;
-    private double rDown = 0.04;
+    private double lDown = 0.0525;
+    private double rDown = 0.05;
     private double cDown = 0.045;
+//    private double lDown =0;
+//    private double rDown =0;
+//    private double cDown = 0;
     private double lUp = lDown+0.5;
     private double rUp = rDown+ 0.5;
     private double cUp = cDown+ 0.5;
@@ -200,7 +203,7 @@ public class SorterSubsystem implements Subsystem {
             .setInterruptible(false);
     // put hardware, commands, etc here
     public boolean leftDetected(){
-        leftDetect = sortCSL.getDistance(DistanceUnit.MM)<70;
+        leftDetect = sortCSL.getDistance(DistanceUnit.MM)<46;
         return leftDetect;
     }
     public boolean leftDetectedDumb(){
@@ -209,14 +212,14 @@ public class SorterSubsystem implements Subsystem {
     }
 
     public boolean centerDetected(){
-        centerDetect = sortCSC.getDistance(DistanceUnit.MM)<80;
+        centerDetect = sortCSC.getDistance(DistanceUnit.MM)<90;
         return centerDetect;
     }
     public boolean centerDetectedDumb(){
         return (sortCSC.getNormalizedColors().alpha > 0.113);
     }
     public boolean rightDetected(){
-        rightDetect = sortCSR.getDistance(DistanceUnit.MM)<41;
+        rightDetect = sortCSR.getDistance(DistanceUnit.MM)<55;
         return rightDetect;
     }
     public boolean rightDetectedDumb(){
@@ -256,7 +259,7 @@ public class SorterSubsystem implements Subsystem {
     }
     public SlotDetection rightSlot(){
         updateColor();
-        if(sortCSR.getDistance(DistanceUnit.MM)<41){
+        if(sortCSR.getDistance(DistanceUnit.MM)<55){
             if(rightColor.green- rightColor.blue>0.25) {
 //                CompStatusSubsystem.INSTANCE.setRightGreen();
                 return SlotDetection.GREEN;

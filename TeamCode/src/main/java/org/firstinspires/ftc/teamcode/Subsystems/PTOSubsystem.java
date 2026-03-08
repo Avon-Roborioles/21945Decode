@@ -69,7 +69,7 @@ public class PTOSubsystem implements Subsystem {
     @Override
     public void periodic() {
         // periodic logic (runs every loop)
-        getPTOTelemetryAdv();
+//        getPTOTelemetryAdv();
     }
     public void getPTOTelemetryAdv(){
         ActiveOpMode.telemetry().addLine("-------------- PTO Telemetry Adv: --------------");

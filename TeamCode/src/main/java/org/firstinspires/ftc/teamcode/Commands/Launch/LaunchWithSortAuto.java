@@ -57,10 +57,10 @@ public class LaunchWithSortAuto extends Command {
     Slot middleLaunch = Slot.Null;
     Slot lastLaunch = Slot.Null;
 
-    Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
-    Timing.Timer reset = new Timing.Timer(200, TimeUnit.MILLISECONDS);
+    Timing.Timer wait = new Timing.Timer(165, TimeUnit.MILLISECONDS);
+    Timing.Timer reset = new Timing.Timer(140, TimeUnit.MILLISECONDS);
     Timing.Timer delay = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
-    Timing.Timer ready = new Timing.Timer(300, TimeUnit.MILLISECONDS);
+    Timing.Timer ready = new Timing.Timer(250, TimeUnit.MILLISECONDS);
     boolean checkedForMiss =false;
 
     public LaunchWithSortAuto() {

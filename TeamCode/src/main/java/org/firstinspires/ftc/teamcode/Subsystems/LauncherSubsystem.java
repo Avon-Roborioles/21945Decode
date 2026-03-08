@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
+import dev.nextftc.control.feedback.PIDCoefficients;
+import dev.nextftc.control.feedforward.BasicFeedforwardParameters;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
@@ -13,10 +16,17 @@ import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.impl.ServoEx;
 import dev.nextftc.hardware.impl.VoltageCompensatingMotor;
 import dev.nextftc.hardware.positionable.SetPosition;
-
+@Configurable
 public class LauncherSubsystem implements Subsystem {
     public static final LauncherSubsystem INSTANCE = new LauncherSubsystem();
     private LauncherSubsystem() {}
+
+    public static double LauncherKV = 0.000375;
+    public static double LauncherKS = 0.09;
+    public static double LauncherKp = 0.0075;
+    public static double maxSpeed = 1700;
+    private BasicFeedforwardParameters parameters = new BasicFeedforwardParameters(LauncherKV, 0,LauncherKS);
+    private PIDCoefficients coefficients = new PIDCoefficients(LauncherKp, 0, 0);
 
 
     // Hardware
@@ -27,17 +37,13 @@ public class LauncherSubsystem implements Subsystem {
 
     public ServoEx hoodServo = new ServoEx("Hood");
 
-    private ControlSystem launcherControlSystem = ControlSystem.builder()
-            .basicFF(0.00047,0,0)
-            .velPid(0.0025, 0.0000000000,0)
-            .build();
+    private ControlSystem launcherControlSystem;
 
     // Variables
     double speedTarget = 0;
     double hoodAngleTarget = 0;
     double maxHoodAngle = 45;
     double maxHoodPWM = 0.97;
-    double maxSpeed = 1700;
 
 
 
@@ -206,7 +212,6 @@ public class LauncherSubsystem implements Subsystem {
 
 
         speedTarget = distanceToSpeed(distance);
-//        hoodAngleTarget = distanceToHoodAngle(distance);
         hoodAngleTarget = rpmToHoodAngle();
     }
 
@@ -215,9 +220,17 @@ public class LauncherSubsystem implements Subsystem {
     @Override
     public void initialize() {
         // initialization logic (runs on init)
+        launcherControlSystem = ControlSystem.builder()
+                .basicFF(parameters)
+                .velPid(coefficients)
+                .build();
         launcherControlSystem.setGoal(new KineticState(0,0));
         speedTarget = 0;
         hoodAngleTarget = (hoodServo.getPosition()/maxHoodPWM)*maxHoodAngle;
+        parameters.kV = LauncherKV;
+        parameters.kS = LauncherKS;
+        coefficients.kD= LauncherKp;
+
         //launcherControlSystem.isWithinTolerance(new KineticState(0, 10));
     }
 
@@ -246,7 +259,10 @@ public class LauncherSubsystem implements Subsystem {
             hoodServo.setPosition(angleToServo(hoodAngleTarget));
 
         }
-        getLauncherTelemetryAdv();
+//        getLauncherTelemetryAdv();
+        parameters.kV = LauncherKV;
+        parameters.kS = LauncherKS;
+        coefficients.kP= LauncherKp;
     }
     //Telemetry
     public void getLauncherTelemetryAdv(){
