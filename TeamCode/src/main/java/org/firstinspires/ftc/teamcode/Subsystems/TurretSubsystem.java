@@ -435,7 +435,7 @@ public class TurretSubsystem implements Subsystem {
                 power = powerSet;
                 turretMotor.setPower(power);
             }
-            if (turretOn && Math.abs(power) > 0.01 && Math.abs(turretError)> 0.5){
+            if (turretOn && Math.abs(power) > 0.0 && Math.abs(turretError)> 0){
                 turretMotor.setPower(power*maxPower );
             }else{
                 turretMotor.setPower(0);
