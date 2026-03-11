@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.bylazar.configurables.annotations.Configurable;
+import com.bylazar.telemetry.PanelsTelemetry;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
@@ -188,11 +189,14 @@ public class LauncherSubsystem implements Subsystem {
         return (angle/ maxHoodAngleOld)* maxHoodPWMOld;
     }
     private double distanceToSpeed(double distance){
-        return (distance * 4.7653) + 668.39;
+        return (distance * 4.9497) + 649.28;
+    }
+    private double distanceToHoodAngle(double distance){
+        return   (Math.pow(distance, 2) * -0.0027) + (distance * 0.8495) - 21.433;
     }
     public double rpmToHoodAngle(){
         double speed = Math.abs(launcherControlSystem.getLastMeasurement().getVelocity());
-        return -0.000107* Math.pow(speed,2) + 0.304781*speed - 174.282192;
+        return -0.00013* Math.pow(speed,2) + 0.357874*speed - 203.248051;
     }
     public boolean LaunchReady(){
         return Math.abs(launcherControlSystem.getLastMeasurement().getVelocity() - launcherControlSystem.getGoal().getVelocity()) < 100;
