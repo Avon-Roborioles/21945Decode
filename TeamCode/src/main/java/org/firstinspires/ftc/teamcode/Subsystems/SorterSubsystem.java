@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -45,6 +46,11 @@ public class SorterSubsystem implements Subsystem {
     private boolean leftDetect = false;
     private boolean centerDetect = false;
     private boolean rightDetect = false;
+    private boolean centerDetectBB = false;
+    private boolean leftDetectBB = false;
+    private boolean rightDetectBB = false;
+
+    private DigitalChannel LeftBB, RightBB, CenterBB;
 
     Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
     Timing.Timer reset = new Timing.Timer(200, TimeUnit.MILLISECONDS);
@@ -211,7 +217,7 @@ public class SorterSubsystem implements Subsystem {
             .setInterruptible(false);
     // put hardware, commands, etc here
     public boolean leftDetected(){
-        leftDetect = sortCSL.getDistance(DistanceUnit.MM)<48;
+        leftDetect = sortCSL.getDistance(DistanceUnit.MM)<52;
         return leftDetect;
     }
     public boolean centerDetected(){
@@ -220,14 +226,14 @@ public class SorterSubsystem implements Subsystem {
     }
 
     public boolean rightDetected(){
-        rightDetect = sortCSR.getDistance(DistanceUnit.MM)<69;
+        rightDetect = sortCSR.getDistance(DistanceUnit.MM)<56;
         return rightDetect;
     }
 
     public SlotDetection leftSlot(){
         updateColor();
-        if(sortCSL.getDistance(DistanceUnit.MM)<48){
-            if(leftColor.green - leftColor.red>0.15) {
+        if(sortCSL.getDistance(DistanceUnit.MM)<52){
+            if(leftColor.green - leftColor.red>0.32) {
 //                CompStatusSubsystem.INSTANCE.setLeftGreen();
                 return SlotDetection.GREEN;
             }else {
@@ -256,7 +262,7 @@ public class SorterSubsystem implements Subsystem {
     }
     public SlotDetection rightSlot(){
         updateColor();
-        if(sortCSR.getDistance(DistanceUnit.MM)<69){
+        if(sortCSR.getDistance(DistanceUnit.MM)<56){
             if(rightColor.green- rightColor.red>0.35) {
 //                CompStatusSubsystem.INSTANCE.setRightGreen();
                 return SlotDetection.GREEN;
@@ -314,31 +320,7 @@ public class SorterSubsystem implements Subsystem {
         leftDetected();
         rightDetected();
         centerDetected();
-        if (!leftDetect && !centerDetect && !rightDetect){
-            StatusSubsystem.INSTANCE.setPrismOff();
 
-        }else if(leftDetect && !centerDetect && !rightDetect){
-            StatusSubsystem.INSTANCE.setPrismLeftOn();
-
-        }else if(!leftDetect && centerDetect && !rightDetect){
-            StatusSubsystem.INSTANCE.setPrismCenterOn();
-
-        }else if(!leftDetect && !centerDetect && rightDetect){
-            StatusSubsystem.INSTANCE.setPrismRightOn();
-
-        }else if(leftDetect && centerDetect && !rightDetect){
-            StatusSubsystem.INSTANCE.setPrismLeftAndCenterOn();
-
-        }else if(!leftDetect && centerDetect && rightDetect){
-            StatusSubsystem.INSTANCE.setPrismRightAndCenterOn();
-
-        }else if(leftDetect && !centerDetect && rightDetect){
-            StatusSubsystem.INSTANCE.setPrismLeftAndRightOn();
-
-        }else if(leftDetect && centerDetect && rightDetect){
-            StatusSubsystem.INSTANCE.setPrismLeftAndRightAndCenterOn();
-
-        }
 
 
 
@@ -354,6 +336,36 @@ public class SorterSubsystem implements Subsystem {
         centerColor = sortCSC.getNormalizedColors();
         rightColor = sortCSR.getNormalizedColors();
     }
+    public boolean SortFullBB(){
+        leftDetectBB = LeftBB.getState();
+        rightDetectBB = RightBB.getState();
+        centerDetectBB = CenterBB.getState();
+        if (!leftDetectBB && !centerDetectBB && !rightDetectBB){
+            StatusSubsystem.INSTANCE.setPrismOff();
+
+        }else if(leftDetectBB && !centerDetectBB && !rightDetectBB){
+            StatusSubsystem.INSTANCE.setPrismLeftOn();
+
+        }else if(!leftDetectBB && centerDetectBB && !rightDetectBB){
+            StatusSubsystem.INSTANCE.setPrismCenterOn();
+
+        }else if(!leftDetectBB && !centerDetectBB && rightDetectBB){
+            StatusSubsystem.INSTANCE.setPrismRightOn();
+
+        }else if(leftDetectBB && centerDetectBB && !rightDetectBB){
+            StatusSubsystem.INSTANCE.setPrismLeftAndCenterOn();
+
+        }else if(!leftDetectBB && centerDetectBB && rightDetectBB){
+            StatusSubsystem.INSTANCE.setPrismRightAndCenterOn();
+
+        }else if(leftDetectBB && !centerDetectBB && rightDetectBB){
+            StatusSubsystem.INSTANCE.setPrismLeftAndRightOn();
+
+        }else if(leftDetectBB && centerDetectBB && rightDetectBB){
+            StatusSubsystem.INSTANCE.setPrismLeftAndRightAndCenterOn();
+        }
+        return CenterBB.getState() && LeftBB.getState() && RightBB.getState();
+    }
 
 
 
@@ -367,6 +379,14 @@ public class SorterSubsystem implements Subsystem {
         sortCSR.setGain(400);
         sortCSC.setGain(400);
 
+        LeftBB = ActiveOpMode.hardwareMap().get(DigitalChannel.class, "LeftBB");
+        LeftBB.setMode(DigitalChannel.Mode.INPUT);
+        CenterBB = ActiveOpMode.hardwareMap().get(DigitalChannel.class, "CenterBB");
+        CenterBB.setMode(DigitalChannel.Mode.INPUT);
+        RightBB = ActiveOpMode.hardwareMap().get(DigitalChannel.class, "RightBB");
+        RightBB.setMode(DigitalChannel.Mode.INPUT);
+
+
         busy= false;
     }
 
@@ -374,6 +394,9 @@ public class SorterSubsystem implements Subsystem {
     public void periodic() {
         // periodic logic (runs every loop)
 //        getSorterTelemetryAdv();
+//        ActiveOpMode.telemetry().addData("LeftBB", LeftBB.getState());
+//        ActiveOpMode.telemetry().addData("RightBB", RightBB.getState());
+//        ActiveOpMode.telemetry().addData("CenterBB", CenterBB.getState());
 //        ActiveOpMod2e.telemetry().addData("Left Slot:", leftSlot());
 //        ActiveOpMode.telemetry().addData("Center Slot:", centerSlot());
 //        ActiveOpMode.telemetry().addData("Right Slot:", rightSlot());

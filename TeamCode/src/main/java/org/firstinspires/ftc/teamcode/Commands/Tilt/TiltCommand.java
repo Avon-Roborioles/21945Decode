@@ -1,32 +1,33 @@
-package org.firstinspires.ftc.teamcode.Commands;
-
-import com.bylazar.configurables.annotations.Configurable;
+package org.firstinspires.ftc.teamcode.Commands.Tilt;
 
 import org.firstinspires.ftc.teamcode.Subsystems.PTOSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.StatusSubsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.TurretSubsystem;
 
-import java.util.function.BooleanSupplier;
-
-import dev.nextftc.bindings.Button;
-import dev.nextftc.bindings.Range;
+import dev.nextftc.control.ControlSystem;
+import dev.nextftc.control.feedback.PIDCoefficients;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.ActiveOpMode;
-@Configurable
-public class PTOJoystickCommand extends Command {
-    Range inputL, inputR;
-    Button dpadUp, dpadDown;
+
+public class TiltCommand extends Command {
+
     public static double power = 0.85;
     public static double pwmTarget = 1005;
+    public static double kp =0.1;
+    private double lTouch = 100;
+    private double rTouch = 100;
+    private double RTilt = 200;
+    private double LTilt = 200;
+    public static double PTOKp = 0.00;
+    public static double PTOKd = 0.00;
+    public static double PTOKi = 0.00;
+
+    private PIDCoefficients coefficients = new PIDCoefficients(PTOKp,PTOKi, PTOKd);
+    private ControlSystem ptoControlSystem;
 
 
-    public PTOJoystickCommand(Range inputL, Range inputR, Button dpadUp, Button dpadDown) {
-        this.inputL = inputL;
-        this.inputR = inputR;
-        this.dpadUp = dpadUp;
-        this.dpadDown = dpadDown;
 
+    public TiltCommand() {
     }
     @Override
     public boolean isDone() {
@@ -48,7 +49,7 @@ public class PTOJoystickCommand extends Command {
 
     @Override
     public void update() {
-        PedroComponent.follower().getDrivetrain().runDrive(new double[]{inputL.get()*power, inputL.get()*power, inputL.get()*power, inputL.get()*power});
+//        PedroComponent.follower().getDrivetrain().runDrive(new double[]{inputL.get()*power, inputL.get()*power, inputL.get()*power, inputL.get()*power});
 
 
 

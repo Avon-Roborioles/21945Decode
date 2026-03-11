@@ -58,10 +58,11 @@ public class IntakeToSorterCommand extends Command {
                 step = intakeSeq.CheckForFull;
                 break;
             case CheckForFull:
-                if (SorterSubsystem.INSTANCE.sorterFull() || SorterSubsystem.INSTANCE.sorterFull()) {
-                    step = intakeSeq.Hug;
-                    ActiveOpMode.gamepad1().rumble(250);
+                if (SorterSubsystem.INSTANCE.SortFullBB()) {
+                    if(SorterSubsystem.INSTANCE.sorterFull()) {
+                        step = intakeSeq.Hug;
 
+                    }
                 }
                 break;
             case Hug:
@@ -87,6 +88,8 @@ public class IntakeToSorterCommand extends Command {
                 break;
             case ReleaseHug:
                 SorterSubsystem.INSTANCE.resetSorter();
+                StatusSubsystem.INSTANCE.setPrismLeftAndRightAndCenterOn();
+                ActiveOpMode.gamepad1().rumble(500);
                 step = intakeSeq.Wait;
                 wait.start();
                 break;
@@ -116,12 +119,14 @@ public class IntakeToSorterCommand extends Command {
         if (!interrupted) {
             SorterSubsystem.INSTANCE.sortHug();
         }
+        IntakeSubsystem.INSTANCE.stopIntake();
         if(IntakeSubsystem.INSTANCE.intakeBB2Tripped()|| IntakeSubsystem.INSTANCE.intakeBBTripped()){
             StatusSubsystem.INSTANCE.setPrismToPWM(1951);
+            IntakeSubsystem.INSTANCE.outtake();
         }
 
 
-        IntakeSubsystem.INSTANCE.stopIntake();
+
         // executed when the command ends
     }
 }

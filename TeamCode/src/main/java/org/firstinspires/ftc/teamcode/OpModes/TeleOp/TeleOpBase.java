@@ -1,23 +1,22 @@
 package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
-import static dev.nextftc.bindings.Bindings.button;
-
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.Pose;
 
 import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromHeading;
-import org.firstinspires.ftc.teamcode.Commands.Automatic.TeleOpDriveCommand;
-import org.firstinspires.ftc.teamcode.Commands.HumanPlayerReset;
+import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromHeadingNickMode;
+import org.firstinspires.ftc.teamcode.Commands.Drive.TeleOpDriveCommand;
+import org.firstinspires.ftc.teamcode.Commands.Drive.TeleOpRampDriveCommand;
+import org.firstinspires.ftc.teamcode.Commands.Drive.HumanPlayerReset;
 import org.firstinspires.ftc.teamcode.Commands.Intake.IntakeToSorterCommand;
 import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunch;
 import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchGreen;
 import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchPurple;
 import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchWithOutSort;
 import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchWithSort;
-import org.firstinspires.ftc.teamcode.Commands.PTOJoystickCommand;
-import org.firstinspires.ftc.teamcode.Commands.ReLocalizeWithLLCommand;
-import org.firstinspires.ftc.teamcode.Commands.TiltCommand;
+import org.firstinspires.ftc.teamcode.Commands.Tilt.PTOJoystickCommand;
+import org.firstinspires.ftc.teamcode.Commands.Tilt.TiltCommand;
 import org.firstinspires.ftc.teamcode.Commands.Turret.TurretJoystickCommand;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.LauncherSubsystem;
@@ -28,19 +27,15 @@ import org.firstinspires.ftc.teamcode.Subsystems.TurretSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.VisionSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.LauncherSubsystemGroup;
 import org.firstinspires.ftc.teamcode.Utility.PosStorage;
-import org.firstinspires.ftc.teamcode.Utility.Prism.GoBildaPrismDriver;
 import org.firstinspires.ftc.teamcode.Utility.Storage;
 import org.firstinspires.ftc.teamcode.Utility.Timing;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import java.util.concurrent.TimeUnit;
-import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
 
-import dev.nextftc.bindings.Button;
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.groups.ParallelGroup;
-import dev.nextftc.core.commands.groups.ParallelRaceGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.components.BindingsComponent;
@@ -49,11 +44,11 @@ import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.ftc.components.BulkReadComponent;
-import dev.nextftc.hardware.driving.DriverControlledCommand;
 
 public abstract class TeleOpBase extends Storage {
     Pose Botpose;
     TeleOpDriveCommand driverControlled;
+    TeleOpRampDriveCommand rampDriveCommand;
     PTOJoystickCommand joyCommand;
     TiltCommand tiltCommand;
     Boolean inLift = false;
@@ -84,6 +79,7 @@ public abstract class TeleOpBase extends Storage {
 
     }
     public abstract TeleOpDriveCommand driveCommand();
+    public abstract TeleOpRampDriveCommand rampDriveCommand();
     public abstract Boolean RedAlliance();
 
 
@@ -117,6 +113,7 @@ public abstract class TeleOpBase extends Storage {
         Command launchWithSort = new LaunchWithSort();
         Command intakeToSorter = new IntakeToSorterCommand();
         Command runTurretAndLauncherFromHeading = new RunTurretAndLauncherFromHeading(RedAlliance());
+        Command runTurretAndLauncherFromHeadingNickMode = new RunTurretAndLauncherFromHeadingNickMode(RedAlliance());
         Command runTurretFromJoystick = new TurretJoystickCommand(Gamepads.gamepad2().rightStickX(), Gamepads.gamepad2().leftStickX());
         Command forceLaunch = new ForceLaunch();
 
@@ -129,10 +126,11 @@ public abstract class TeleOpBase extends Storage {
         PedroComponent.follower().setPose( PosStorage.memory.lastPose);
         PedroComponent.follower().setHeading( PosStorage.memory.lastPose.getHeading());
 
-        joyCommand = new PTOJoystickCommand(Gamepads.gamepad2().leftStickY(), Gamepads.gamepad2().rightStickY(), Gamepads.gamepad2().dpadUp(), Gamepads.gamepad2().dpadDown());
+        joyCommand = new PTOJoystickCommand(Gamepads.gamepad2().leftStickY());
 //        tiltCommand = new TiltCommand(Gamepads.gamepad2().leftStickY());
 
         driverControlled = driveCommand();
+        rampDriveCommand = rampDriveCommand();
 
 
         driverControlled.schedule();
@@ -146,8 +144,9 @@ public abstract class TeleOpBase extends Storage {
         Gamepads.gamepad1().dpadLeft();
         Gamepads.gamepad1().dpadRight();
         Gamepads.gamepad1().leftStickButton();
-        Gamepads.gamepad1().rightStickButton();
-        Gamepads.gamepad1().leftTrigger().atLeast(0.75).whenBecomesTrue(new LambdaCommand().setStart(intakeToSorter::cancel).setIsDone(() -> true));;
+        Gamepads.gamepad1().rightStickButton().whenBecomesTrue(new SequentialGroup(new Delay(.015),rampDriveCommand))
+                .whenBecomesFalse(new SequentialGroup(new Delay(.015),new LambdaCommand().setStart(() -> {rampDriveCommand.cancel();}),new Delay(0.015),new LambdaCommand().setStart(() -> {driverControlled.schedule(); })));
+        Gamepads.gamepad1().leftTrigger().atLeast(0.75).whenBecomesTrue(new LambdaCommand().setStart(()->{intakeToSorter.cancel(); IntakeSubsystem.INSTANCE.Outtake.cancel(); IntakeSubsystem.INSTANCE.stopIntake();} ).setIsDone(() -> true));;
         Gamepads.gamepad1().rightTrigger().atLeast(0.75).whenBecomesTrue(new LambdaCommand().setStart(()->{PedroComponent.follower().setMaxPower(0.5);}).setIsDone(() -> true)).whenBecomesFalse(new LambdaCommand().setStart(()->{PedroComponent.follower().setMaxPower(1);}));
         Gamepads.gamepad1().leftBumper().whenBecomesTrue(intakeToSorter);
         Gamepads.gamepad1().rightBumper().whenTrue(IntakeSubsystem.INSTANCE.Outtake).whenBecomesFalse(IntakeSubsystem.INSTANCE.StopIntake);
@@ -178,7 +177,7 @@ public abstract class TeleOpBase extends Storage {
         Gamepads.gamepad2().leftBumper().whenBecomesTrue(intakeToSorter);
         Gamepads.gamepad2().rightBumper().whenTrue(IntakeSubsystem.INSTANCE.Outtake).whenBecomesFalse(IntakeSubsystem.INSTANCE.StopIntake);
         Gamepads.gamepad2().options();
-        Gamepads.gamepad2().share();
+        Gamepads.gamepad2().share().toggleOnBecomesTrue().whenBecomesTrue(runTurretAndLauncherFromHeadingNickMode).whenBecomesFalse(new LambdaCommand().setStart(runTurretAndLauncherFromHeadingNickMode::cancel));
 
 
 
@@ -207,7 +206,8 @@ public abstract class TeleOpBase extends Storage {
                 if((Gamepads.gamepad2().ps().get() || Gamepads.gamepad1().options().get()) && deBounce.done()){
                     inLift = false;
 //                    tiltCommand.cancel();
-                    joyCommand.cancel();
+                    joyCommand.stop(false);
+//                    joyCommand.cancel();
                 }
             }
 //            telemetry.addData("last Pos",  PosStorage.memory.lastPose);

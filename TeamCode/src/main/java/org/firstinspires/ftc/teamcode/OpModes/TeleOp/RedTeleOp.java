@@ -3,11 +3,10 @@ package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Commands.Automatic.TeleOpDriveCommand;
+import org.firstinspires.ftc.teamcode.Commands.Drive.TeleOpDriveCommand;
+import org.firstinspires.ftc.teamcode.Commands.Drive.TeleOpRampDriveCommand;
 
-import dev.nextftc.extensions.pedro.PedroDriverControlled;
 import dev.nextftc.ftc.Gamepads;
-import dev.nextftc.hardware.driving.DriverControlledCommand;
 
 @TeleOp
 public class RedTeleOp extends TeleOpBase {
@@ -21,6 +20,13 @@ public class RedTeleOp extends TeleOpBase {
                 Gamepads.gamepad1().rightStickX().negate(),
                 Gamepads.gamepad1().triangle()
 
+        );
+    }
+
+    @Override
+    public TeleOpRampDriveCommand rampDriveCommand() {
+        return new TeleOpRampDriveCommand(
+                true
         );
     }
 

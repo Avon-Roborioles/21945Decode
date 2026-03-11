@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.Utility.Timing;
 import java.util.concurrent.TimeUnit;
 
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.ftc.ActiveOpMode;
 
 public class AutoIntake extends Command {
     enum intakeSeq {
@@ -56,8 +57,10 @@ public class AutoIntake extends Command {
                 step = intakeSeq.CheckForFull;
                 break;
             case CheckForFull:
-                if (SorterSubsystem.INSTANCE.sorterFullAuto()) {
-                    step = intakeSeq.Hug;
+                if (SorterSubsystem.INSTANCE.SortFullBB()) {
+                    if(SorterSubsystem.INSTANCE.sorterFull()) {
+                        step = intakeSeq.Hug;
+                    }
                 }
                 break;
             case Hug:

@@ -1,9 +1,6 @@
-package org.firstinspires.ftc.teamcode.Commands.Automatic;
+package org.firstinspires.ftc.teamcode.Commands.Drive;
 
 import com.pedropathing.geometry.Pose;
-
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
 
 import dev.nextftc.bindings.Button;
 import dev.nextftc.bindings.Range;
@@ -22,7 +19,7 @@ public class TeleOpDriveCommand extends Command {
         this.drivePower = drivePower;
         this.strafePower = strafePower;
         this.turnPower = turnPower;
-        addRequirements();
+        addRequirements(PedroComponent.follower());
         setInterruptible(true);
     }
     @Override

@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.bylazar.configurables.annotations.Configurable;
-import com.bylazar.telemetry.PanelsTelemetry;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
@@ -42,8 +41,9 @@ public class LauncherSubsystem implements Subsystem {
     // Variables
     double speedTarget = 0;
     double hoodAngleTarget = 0;
-    double maxHoodAngle = 45;
-    double maxHoodPWM = 0.97;
+    double maxHoodAngleOld = 45;
+    double maxHoodAngle = 42.5;
+    double maxHoodPWMOld = 0.97;
 
 
 
@@ -86,7 +86,7 @@ public class LauncherSubsystem implements Subsystem {
     }
 
     public double getServoAngle(){
-        return (hoodServo.getPosition()/maxHoodPWM)*maxHoodAngle;
+        return (hoodServo.getPosition()/ maxHoodPWMOld)* maxHoodAngleOld;
     }
 
     public double getMotorSpeed(){
@@ -185,17 +185,14 @@ public class LauncherSubsystem implements Subsystem {
         }else if (angle< 0){
             angle = 0;
         }
-        return (angle/ maxHoodAngle)*maxHoodPWM;
+        return (angle/ maxHoodAngleOld)* maxHoodPWMOld;
     }
     private double distanceToSpeed(double distance){
-        return (distance * 4.8092) + 653.24;
-    }
-    private double distanceToHoodAngle(double distance){
-        return   (Math.pow(distance, 2) * -0.0027) + (distance * 0.8495) - 21.433;
+        return (distance * 4.7653) + 668.39;
     }
     public double rpmToHoodAngle(){
         double speed = Math.abs(launcherControlSystem.getLastMeasurement().getVelocity());
-        return -0.00011* Math.pow(speed,2) + 0.3111097*speed - 175.616183;
+        return -0.000107* Math.pow(speed,2) + 0.304781*speed - 174.282192;
     }
     public boolean LaunchReady(){
         return Math.abs(launcherControlSystem.getLastMeasurement().getVelocity() - launcherControlSystem.getGoal().getVelocity()) < 100;
@@ -214,6 +211,17 @@ public class LauncherSubsystem implements Subsystem {
         speedTarget = distanceToSpeed(distance);
         hoodAngleTarget = rpmToHoodAngle();
     }
+    public void RunLauncherFromDistanceNick(double distance){
+        ActiveOpMode.telemetry().addLine("-------------- For Nick: --------------");
+        ActiveOpMode.telemetry().addData("Recommended Speed", distanceToSpeed(distance));
+        ActiveOpMode.telemetry().addData("Distance", distance);
+        ActiveOpMode.telemetry().addData("Current Angle", hoodAngleTarget);
+        ActiveOpMode.telemetry().addData("Current Speed", getMotorSpeed());
+
+
+//        speedTarget = distanceToSpeed(distance);
+//        hoodAngleTarget = rpmToHoodAngle();
+    }
 
 
 
@@ -226,7 +234,7 @@ public class LauncherSubsystem implements Subsystem {
                 .build();
         launcherControlSystem.setGoal(new KineticState(0,0));
         speedTarget = 0;
-        hoodAngleTarget = (hoodServo.getPosition()/maxHoodPWM)*maxHoodAngle;
+        hoodAngleTarget = (hoodServo.getPosition()/ maxHoodPWMOld)* maxHoodAngleOld;
         parameters.kV = LauncherKV;
         parameters.kS = LauncherKS;
         coefficients.kD= LauncherKp;
@@ -242,8 +250,8 @@ public class LauncherSubsystem implements Subsystem {
         }else if (speedTarget<0){
             speedTarget = 0;
         }
-        if (hoodAngleTarget>maxHoodAngle){
-            hoodAngleTarget = maxHoodAngle;
+        if (hoodAngleTarget> maxHoodAngleOld){
+            hoodAngleTarget = maxHoodAngleOld;
         }else if (hoodAngleTarget<0){
             hoodAngleTarget = 0;
         }

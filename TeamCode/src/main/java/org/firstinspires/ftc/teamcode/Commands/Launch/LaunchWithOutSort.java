@@ -64,7 +64,8 @@ public class LaunchWithOutSort extends Command {
                 St = Step.WaitForReady;
                 break;
             case WaitForReady:
-                if(ready.done() && TurretSubsystem.INSTANCE.turretFine()){
+
+                if(ready.done() && TurretSubsystem.INSTANCE.turretFine() ){
                     St = Step.Ready;
                 }
                 break;

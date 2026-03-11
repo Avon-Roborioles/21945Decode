@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.teamcode.OpModes.Auto;
+package org.firstinspires.ftc.teamcode.OpModes.Auto.RedGoal;
 
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -8,11 +9,12 @@ import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.Commands.AutoIntakeNoTime;
+import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntakeNoTime;
 import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromPoseAuto;
-import org.firstinspires.ftc.teamcode.Commands.FollowPathNew;
+import org.firstinspires.ftc.teamcode.Commands.Drive.FollowPathNew;
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntakeCheck;
 import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunchAuto;
+import org.firstinspires.ftc.teamcode.OpModes.Auto.AutoBase;
 import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.VisionSubsystem;
 
@@ -26,6 +28,7 @@ import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 
 @Autonomous (group = "Red Goal", preselectTeleOp = "RedTeleOp")
+@Configurable
 public class RedGoalRamp12Ball_Out extends AutoBase {
 
     /*TODO: Look into Piecewise heading
@@ -36,28 +39,28 @@ public class RedGoalRamp12Ball_Out extends AutoBase {
     PathChain MidCycle, CloseCycle, FarCycle, RampCycle;
     Path ToScorePreloads, ToGrabMid, ToScoreMid, ToGrabClose, GrabClose, ToScoreClose, ToGrabFar, ToScoreFar, ToRampCycle, ToScoreRampCycle;
 
-    Pose startingPos = new Pose(26.75, 130, Math.toRadians(329)).mirror();
-    Pose scorePreload = new Pose(58.5, 108.5, Math.toRadians(270)).mirror();
-    Pose grabMid = new Pose(31, 58, Math.toRadians(180)).mirror();
-    Pose grabMidCP1 = new Pose(58.5, 88).mirror();
-    Pose grabMidCP2  = new Pose(59, 66.5).mirror();
-    Pose grabMidCP3  = new Pose(64, 60).mirror();
-    Pose scoreMid = new Pose(56.5, 85, Math.toRadians(-110)).mirror();
-    Pose scoreMidCp = new Pose(51, 59.5).mirror();
+    public static Pose startingPos = new Pose(26.75, 130, Math.toRadians(329)).mirror();
+    public static Pose scorePreload = new Pose(58.5, 108.5, Math.toRadians(270)).mirror();
+    public static Pose grabMid = new Pose(31, 58, Math.toRadians(180)).mirror();
+    public static Pose grabMidCP1 = new Pose(58.5, 88).mirror();
+    public static Pose grabMidCP2  = new Pose(59, 66.5).mirror();
+    public static Pose grabMidCP3  = new Pose(64, 60).mirror();
+    public static Pose scoreMid = new Pose(56.5, 85, Math.toRadians(-110)).mirror();
+    public static Pose scoreMidCp = new Pose(51, 59.5).mirror();
 
-    Pose toGrabClose = new Pose(42, 85, Math.toRadians(180)).mirror();
-    Pose grabClose = new Pose(30, 85, Math.toRadians(180)).mirror();
-    Pose scoreClose = new Pose(60, 112, Math.toRadians(270)).mirror();
-    Pose scoreCloseCP = new Pose(44.5, 82.5).mirror();
+    public static Pose toGrabClose = new Pose(42, 85, Math.toRadians(180)).mirror();
+    public static Pose grabClose = new Pose(30, 85, Math.toRadians(180)).mirror();
+    public static Pose scoreClose = new Pose(60, 112, Math.toRadians(270)).mirror();
+    public static Pose scoreCloseCP = new Pose(44.5, 82.5).mirror();
 
 
 
-    Pose grabRampCycle = new Pose(22, 59, Math.toRadians(155)).mirror();
-    Pose grabRampCycleCP1 = new Pose(58.5, 88).mirror();
-    Pose grabRampCycleCP2  = new Pose(59, 66.5).mirror();
-    Pose grabRampCycleCP3  = new Pose(64, 60).mirror();
-    Pose scoreRampCycle = new Pose(56.5, 100, Math.toRadians(-110)).mirror();
-    Pose scoreRampCycleCp = new Pose(51, 59.5).mirror();
+    public static Pose grabRampCycle = new Pose(22, 59, Math.toRadians(155)).mirror();
+    public static Pose grabRampCycleCP1 = new Pose(58.5, 88).mirror();
+    public static Pose grabRampCycleCP2  = new Pose(59, 66.5).mirror();
+    public static Pose grabRampCycleCP3  = new Pose(64, 60).mirror();
+    public static Pose scoreRampCycle = new Pose(56.5, 100, Math.toRadians(-110)).mirror();
+    public static Pose scoreRampCycleCp = new Pose(51, 59.5).mirror();
 
 
     Command runAuto;

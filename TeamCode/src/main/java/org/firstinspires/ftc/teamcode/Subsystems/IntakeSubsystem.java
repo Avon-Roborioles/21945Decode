@@ -45,8 +45,8 @@ public class IntakeSubsystem implements Subsystem {
     public void initialize() {
         // initialization logic (runs on init)
         intakeBeamBreak = ActiveOpMode.hardwareMap().get(DigitalChannel.class, "IntakeBB");
-        intakeBB2 = ActiveOpMode.hardwareMap().get(DigitalChannel.class, "IntakeBB2");
         intakeBeamBreak.setMode(DigitalChannel.Mode.INPUT);
+        intakeBB2 = ActiveOpMode.hardwareMap().get(DigitalChannel.class, "IntakeBB2");
         intakeBB2.setMode(DigitalChannel.Mode.INPUT);
 
         intakeMotor.setPower(0);

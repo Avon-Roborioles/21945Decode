@@ -71,4 +71,7 @@ I3: "Sort CS L"
 Analog:
 
 Digital:
+D6:"LeftBB"
+D4:"CenterBB"
+D2:"RightBB"
 

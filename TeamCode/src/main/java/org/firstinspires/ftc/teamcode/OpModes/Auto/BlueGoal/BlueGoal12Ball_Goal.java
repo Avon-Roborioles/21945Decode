@@ -1,4 +1,5 @@
-package org.firstinspires.ftc.teamcode.OpModes.Auto;
+package org.firstinspires.ftc.teamcode.OpModes.Auto.BlueGoal;
+import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFro
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntake;
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntakeCheck;
 import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunchAuto;
+import org.firstinspires.ftc.teamcode.OpModes.Auto.AutoBase;
 import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
 
 import dev.nextftc.core.commands.Command;
@@ -21,24 +23,25 @@ import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 
 @Autonomous (group = "Blue Goal", preselectTeleOp = "BlueTeleOp")
+@Configurable
 public class BlueGoal12Ball_Goal extends AutoBase {
     Path DriveToScorePreload, DriveToPickUp1, DrivePickUp1, DriveToScore1, DriveToPickUp2, DrivePickUp2, DriveToScore2, DriveToPickUp3, DrivePickUp3, DriveToScore3, DriveDumpGate;
-    Pose startingPos = new Pose(26.75, 130, Math.toRadians(141));
-    Pose scorePreload = new Pose(54, 114, Math.toRadians(270));
-    Pose toPickUp1 = new Pose(46, 84, Math.toRadians(180));
-    Pose pickUp1 = new Pose(20, 79, Math.toRadians(180));
-    Pose dumpGate = new Pose(18, 79, Math.toRadians(180));
-    Pose toScore1 = new Pose(56, 79, Math.toRadians(270));
-    Pose toPickUp2 = new Pose( 44, 62, Math.toRadians(180));
-    Pose toPickUp2CP = new Pose(57, 58);
-    Pose pickUp2 = new Pose(18, 60, Math.toRadians(180));
-    Pose toScore2 = new Pose(56, 78, Math.toRadians(270));
-    Pose toScore2CP = new Pose(51, 61);
-    Pose toPickUp3 = new Pose(44,35.5 , Math.toRadians(180));
-    Pose toPickUp3CP = new Pose(50, 33);
-    Pose pickUp3 = new Pose(18, 35.5, Math.toRadians(180));
-    Pose toScore3 = new Pose(56,110 , Math.toRadians(270));
-    Pose toScore3CP = new Pose(50, 38);
+    public static Pose startingPos = new Pose(26.75, 130, Math.toRadians(141));
+    public static Pose scorePreload = new Pose(54, 114, Math.toRadians(270));
+    public static Pose toPickUp1 = new Pose(46, 84, Math.toRadians(180));
+    public static Pose pickUp1 = new Pose(20, 79, Math.toRadians(180));
+    public static Pose dumpGate = new Pose(18, 79, Math.toRadians(180));
+    public static Pose toScore1 = new Pose(56, 79, Math.toRadians(270));
+    public static Pose toPickUp2 = new Pose( 44, 62, Math.toRadians(180));
+    public static Pose toPickUp2CP = new Pose(57, 58);
+    public static Pose pickUp2 = new Pose(18, 60, Math.toRadians(180));
+    public static Pose toScore2 = new Pose(56, 78, Math.toRadians(270));
+    public static Pose toScore2CP = new Pose(51, 61);
+    public static Pose toPickUp3 = new Pose(44,35.5 , Math.toRadians(180));
+    public static Pose toPickUp3CP = new Pose(50, 33);
+    public static Pose pickUp3 = new Pose(18, 35.5, Math.toRadians(180));
+    public static Pose toScore3 = new Pose(56,110 , Math.toRadians(270));
+    public static Pose toScore3CP = new Pose(50, 38);
     double maxPower = 1;
 
 

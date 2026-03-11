@@ -1,4 +1,5 @@
-package org.firstinspires.ftc.teamcode.OpModes.Auto;
+package org.firstinspires.ftc.teamcode.OpModes.Auto.BlueBack;
+import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
@@ -6,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromPoseAuto;
 import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunchAutoSlow;
+import org.firstinspires.ftc.teamcode.OpModes.Auto.AutoBase;
 import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
 
 import dev.nextftc.core.commands.Command;
@@ -16,10 +18,11 @@ import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 
 @Autonomous (group = "Blue Back", preselectTeleOp = "BlueTeleOp")
+@Configurable
 public class BlueBack3Ball_Wall extends AutoBase {
     Path EndDrive;
-    Pose startingPos = new Pose(56.65, 10.25, Math.toRadians(270));
-    Pose endPos = new Pose(30, 12, Math.toRadians(270));
+    public static Pose startingPos = new Pose(56.65, 10.25, Math.toRadians(270));
+    public static Pose endPos = new Pose(30, 12, Math.toRadians(270));
     double maxPower = 1;
 
 

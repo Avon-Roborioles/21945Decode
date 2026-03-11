@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.teamcode.OpModes.Auto;
+package org.firstinspires.ftc.teamcode.OpModes.Auto.RedGoal;
 
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -9,12 +10,13 @@ import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.Commands.AutoIntakeNoTime;
+import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntakeNoTime;
 import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromPoseAuto;
-import org.firstinspires.ftc.teamcode.Commands.FollowPathNew;
+import org.firstinspires.ftc.teamcode.Commands.Drive.FollowPathNew;
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntakeCheck;
 import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunchAuto;
 import org.firstinspires.ftc.teamcode.Commands.Launch.LaunchWithSortAuto;
+import org.firstinspires.ftc.teamcode.OpModes.Auto.AutoBase;
 import org.firstinspires.ftc.teamcode.Subsystems.SorterSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.VisionSubsystem;
 
@@ -28,6 +30,7 @@ import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 
 @Autonomous (group = "Red Goal", preselectTeleOp = "RedTeleOp")
+@Configurable
 public class RedGoal9Sorted12Ball_Out extends AutoBase {
 
     /*TODO: Look into Piecewise heading
@@ -38,25 +41,25 @@ public class RedGoal9Sorted12Ball_Out extends AutoBase {
     PathChain MidCycle, CloseCycle, FarCycle;
     Path ToScorePreloads, ToGrabMid, ToScoreMid, ToGrabClose, GrabClose, ToScoreClose, ToGrabFar, ToScoreFar;
 
-    Pose startingPos = new Pose(26.75, 130, Math.toRadians(329)).mirror();
-    Pose scorePreload = new Pose(58.5, 108.5, Math.toRadians(270)).mirror();
-    Pose grabMid = new Pose(23, 65, Math.toRadians(185)).mirror();
-    Pose grabMidCP1 = new Pose(58.5, 88).mirror();
-    Pose grabMidCP2  = new Pose(59, 66.5).mirror();
-    Pose grabMidCP3  = new Pose(64, 60).mirror();
-    Pose scoreMid = new Pose(56.5, 100, Math.toRadians(-110)).mirror();
-    Pose scoreMidCp = new Pose(51, 59.5).mirror();
+    public static Pose startingPos = new Pose(26.75, 130, Math.toRadians(329)).mirror();
+    public static Pose scorePreload = new Pose(58.5, 108.5, Math.toRadians(270)).mirror();
+    public static Pose grabMid = new Pose(23, 65, Math.toRadians(185)).mirror();
+    public static Pose grabMidCP1 = new Pose(58.5, 88).mirror();
+    public static Pose grabMidCP2  = new Pose(59, 66.5).mirror();
+    public static Pose grabMidCP3  = new Pose(64, 60).mirror();
+    public static Pose scoreMid = new Pose(56.5, 100, Math.toRadians(-110)).mirror();
+    public static Pose scoreMidCp = new Pose(51, 59.5).mirror();
 
-    Pose toGrabClose = new Pose(42, 85, Math.toRadians(180)).mirror();
-    Pose grabClose = new Pose(30, 85, Math.toRadians(180)).mirror();
-    Pose scoreClose = new Pose(60, 89, Math.toRadians(270)).mirror();
-    Pose scoreCloseCP = new Pose(44.5, 82.5).mirror();
-    Pose grabFar = new Pose(30, 34.5, Math.toRadians(182)).mirror();
-    Pose grabFarCP1 = new Pose(61, 38.5).mirror();
-    Pose grabFarCP2 = new Pose(57, 37.5).mirror();
-    Pose grabFarCP3 = new Pose(45, 30).mirror();
-    Pose scoreFar = new Pose(59, 116, Math.toRadians(270)).mirror();
-    Pose scoreFarCP = new Pose(57, 36).mirror();
+    public static Pose toGrabClose = new Pose(42, 85, Math.toRadians(180)).mirror();
+    public static Pose grabClose = new Pose(30, 85, Math.toRadians(180)).mirror();
+    public static Pose scoreClose = new Pose(60, 89, Math.toRadians(270)).mirror();
+    public static Pose scoreCloseCP = new Pose(44.5, 82.5).mirror();
+    public static Pose grabFar = new Pose(30, 34.5, Math.toRadians(182)).mirror();
+    public static Pose grabFarCP1 = new Pose(61, 38.5).mirror();
+    public static Pose grabFarCP2 = new Pose(57, 37.5).mirror();
+    public static Pose grabFarCP3 = new Pose(45, 30).mirror();
+    public static Pose scoreFar = new Pose(59, 116, Math.toRadians(270)).mirror();
+    public static Pose scoreFarCP = new Pose(57, 36).mirror();
 
 
 

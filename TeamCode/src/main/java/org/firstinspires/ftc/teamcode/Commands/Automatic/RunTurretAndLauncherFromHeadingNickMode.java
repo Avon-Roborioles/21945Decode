@@ -13,7 +13,7 @@ import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.ActiveOpMode;
 
 @Configurable
-public class RunTurretAndLauncherFromHeading extends Command {
+public class RunTurretAndLauncherFromHeadingNickMode extends Command {
 
     Pose botPose;
     double distanceToGoal;
@@ -32,7 +32,7 @@ public class RunTurretAndLauncherFromHeading extends Command {
     Boolean happy = false;
 
 
-    public RunTurretAndLauncherFromHeading(boolean redAlliance) {
+    public RunTurretAndLauncherFromHeadingNickMode(boolean redAlliance) {
         this.redAlliance = redAlliance;
         requires(TurretSubsystem.INSTANCE);
         setInterruptible(true); // this is the default, so you don't need to specify
@@ -61,19 +61,15 @@ public class RunTurretAndLauncherFromHeading extends Command {
         turretFieldAngleRad = Math.atan2((goalAngle.getY()- botPose.getY() - PedroComponent.follower().getVelocity().getYComponent()*shotTime), (goalAngle.getX()- botPose.getX() - PedroComponent.follower().getVelocity().getXComponent()*shotTime) + PedroComponent.follower().getAngularVelocity()* StatusSubsystem.INSTANCE.getLoopTimeSeconds());
 
         TurretSubsystem.INSTANCE.turnTurretToFieldAngle(turretFieldAngleRad);
-        LauncherSubsystem.INSTANCE.RunLauncherFromDistance(distanceToGoal);
-        if (IntakeSubsystem.INSTANCE.intakeBBTripped() || IntakeSubsystem.INSTANCE.intakeBB2Tripped()){
-            StatusSubsystem.INSTANCE.setPrismToPWM(1951);
-        }else if(TurretSubsystem.INSTANCE.turretFine()){
-                StatusSubsystem.INSTANCE.setPrismGreen();
-        }else {
-                StatusSubsystem.INSTANCE.setPrismOrange();
-        }
-        if(distanceToGoal<85){
-            TurretSubsystem.INSTANCE.setTurretHappyThreshOff();
-        }else{
-            TurretSubsystem.INSTANCE.setTurretHappyThreshOn();
-        }
+        LauncherSubsystem.INSTANCE.RunLauncherFromDistanceNick(distanceToGoal);
+//        if (IntakeSubsystem.INSTANCE.intakeBBTripped() || IntakeSubsystem.INSTANCE.intakeBB2Tripped()){
+//            StatusSubsystem.INSTANCE.setPrismToPWM(1951);
+//        }else if(TurretSubsystem.INSTANCE.turretFine()){
+//                StatusSubsystem.INSTANCE.setPrismGreen();
+//        }else {
+//                StatusSubsystem.INSTANCE.setPrismOrange();
+//
+//        }
         ActiveOpMode.telemetry().addLine("-------------- RunTurretAndLauncherFromHeading Telemetry: --------------");
         ActiveOpMode.telemetry().addData("redAlliance", redAlliance);
         ActiveOpMode.telemetry().addData("BotPose", botPose);

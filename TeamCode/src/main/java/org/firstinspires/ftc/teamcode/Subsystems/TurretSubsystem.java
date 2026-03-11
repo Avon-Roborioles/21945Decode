@@ -37,6 +37,7 @@ public class TurretSubsystem implements Subsystem {
     double turretZeroHeadingRad = 0;
     double turretError = 0;
     public static double turretHappyThresh = 12.5;
+    private double turretHTresh = 12.5;
     public final OctoQuadFWv3.EncoderDataBlock data = new OctoQuadFWv3.EncoderDataBlock();
     double maxPower = 1;
     double power = 0;
@@ -46,7 +47,7 @@ public class TurretSubsystem implements Subsystem {
 
     boolean turretOn = false;
 
-    public static double akp =0.0005;
+    public static double akp =0.000105;
     public static double akI =0;
     public static double akD = 0;
     public static double akS = 0;
@@ -58,52 +59,54 @@ public class TurretSubsystem implements Subsystem {
 
 
 
-    public static double powerAdd_N200_N120 = -0.03;
+    public static double powerAdd_N200_N120 = -0.105;
     public static double powerAdd_N120_N45 = 0;
-    public static double powerAdd_N45_200 = 0.06;
+    public static double powerAdd_N45_100 = 0.105;
+    public static double powerAdd_100_170 = 0.13;
+    public static double powerAdd_170_200 = 0.105;
 
 
 
-    public static double kS_N200_N190 = 0.098;//-200 -> -190
-    public static double kS_N190_N180 = 0.094;//-190 -> -180
-    public static double kS_N180_N170 = 0.105;//-180 -> -170
-    public static double kS_N170_N160 = 0.108;//-170 -> -160
-    public static double kS_N160_N150 = 0.106;//-160 -> -150
-    public static double kS_N150_N140 = 0.094;//-150 -> -140
-    public static double kS_N140_N130 = 0.091;//-140 -> -130
-    public static double kS_N130_N120 = 0.086;//-130 -> -120
-    public static double kS_N120_N110 = 0.086;//-120 -> -110
-    public static double kS_N110_N100 = 0.087;//-110 -> -100
-    public static double kS_N100_N90 = 0.087;//-100 -> -90
-    public static double kS_N90_N80 = 0.087;//-90 -> -80
-    public static double kS_N80_N70 = 0.084;//-80 -> -70
-    public static double kS_N70_N60 = 0.084;//-70 -> -60
-    public static double kS_N60_N50 = 0.080;//-60 -> -50
-    public static double kS_N50_N40 = 0.083;//-50 -> -40
-    public static double kS_N40_N30 = 0.086;//-40 -> -30
-    public static double kS_N30_N20 = 0.086;//-30 -> -20
-    public static double kS_N20_N10 = 0.083;//-20 -> -10
-    public static double kS_N10_0 = 0.086;//-10 -> 0
-    public static double kS_0_10 = 0.086;//0 -> 10
-    public static double kS_10_20 = 0.094;//10 -> 20
-    public static double kS_20_30 = 0.109;//20 -> 30
-    public static double kS_30_40 = 0.112;//30 -> 40
-    public static double kS_40_50 = 0.124;//40 -> 50
-    public static double kS_50_60 = 0.136;//50 -> 60
-    public static double kS_60_70 = 0.142;//60 -> 70
-    public static double kS_70_80 = 0.163;//70 -> 80
-    public static double kS_80_90 = 0.165;//80 -> 90
-    public static double kS_90_100 = 0.177;//90 -> 100
-    public static double kS_100_110 = 0.168;//100 -> 110
-    public static double kS_110_120 = 0.148;//110 -> 120
-    public static double kS_120_130 = 0.134;//120 -> 130
-    public static double kS_130_140 = 0.133;//130 -> 140
-    public static double kS_140_150 = 0.125;//140 -> 150
-    public static double kS_150_160 = 0.118;//150 -> 160
-    public static double kS_160_170 = 0.118;//160 -> 170
-    public static double kS_170_180 = 0.118;//170 -> 180
-    public static double kS_180_190 = 0.118;//180 -> 190
-    public static double kS_190_200 = 0.114;//190 -> 200
+    public static double kS_N200_N190 = 0.3;//-200 -> -190
+    public static double kS_N190_N180 = 0.19;//-190 -> -180
+    public static double kS_N180_N170 = 0.15;//-180 -> -170
+    public static double kS_N170_N160 = 0.1;//-170 -> -160
+    public static double kS_N160_N150 = 0.2;//-160 -> -150
+    public static double kS_N150_N140 = 0.14;//-150 -> -140
+    public static double kS_N140_N130 = 0.135;//-140 -> -130
+    public static double kS_N130_N120 = 0.135;//-130 -> -120
+    public static double kS_N120_N110 = 0.05;//-120 -> -110
+    public static double kS_N110_N100 = 0.15;//-110 -> -100
+    public static double kS_N100_N90 = 0.115;//-100 -> -90
+    public static double kS_N90_N80 = 0.085;//-90 -> -80
+    public static double kS_N80_N70 = 0.09;//-80 -> -70
+    public static double kS_N70_N60 = 0.09;//-70 -> -60
+    public static double kS_N60_N50 = 0.095;//-60 -> -50
+    public static double kS_N50_N40 = 0.12;//-50 -> -40
+    public static double kS_N40_N30 = 0.03;//-40 -> -30
+    public static double kS_N30_N20 = 0.05;//-30 -> -20
+    public static double kS_N20_N10 = 0.05;//-20 -> -10
+    public static double kS_N10_0 = 0.05;//-10 -> 0
+    public static double kS_0_10 = 0.1;//0 -> 10
+    public static double kS_10_20 = 0.1;//10 -> 20
+    public static double kS_20_30 = 0.09;//20 -> 30
+    public static double kS_30_40 = 0.09;//30 -> 40
+    public static double kS_40_50 = 0.1;//40 -> 50
+    public static double kS_50_60 = 0.1;//50 -> 60
+    public static double kS_60_70 = 0.09;//60 -> 70
+    public static double kS_70_80 = 0.11;//70 -> 80
+    public static double kS_80_90 = 0.13;//80 -> 90
+    public static double kS_90_100 = 0.155;//90 -> 100
+    public static double kS_100_110 = 0.1;//100 -> 110
+    public static double kS_110_120 = 0.2;//110 -> 120
+    public static double kS_120_130 = 0.145;//120 -> 130
+    public static double kS_130_140 = 0.14;//130 -> 140
+    public static double kS_140_150 = 0.2;//140 -> 150
+    public static double kS_150_160 = 0.35;//150 -> 160
+    public static double kS_160_170 = 0.24;//160 -> 170
+    public static double kS_170_180 = 0.28;//170 -> 180
+    public static double kS_180_190 = 0.3;//180 -> 190
+    public static double kS_190_200 = 0.3;//190 -> 200
 
     
 
@@ -230,7 +233,7 @@ public class TurretSubsystem implements Subsystem {
         return turretControlSystem.isWithinTolerance(new KineticState(5));
     }
     public boolean turretFine(){
-        turretFineBo = turretControlSystem.isWithinTolerance(new KineticState(turretHappyThresh));
+        turretFineBo = turretControlSystem.isWithinTolerance(new KineticState(turretHTresh));
         if(turretFineBo && !ActiveOpMode.gamepad1().isRumbling() && LauncherSubsystem.INSTANCE.LaunchReady()){
             ActiveOpMode.gamepad1().rumble(500);
         }
@@ -246,6 +249,12 @@ public class TurretSubsystem implements Subsystem {
     }
     public void turnTurretOff(){
         turretOn = false;
+    }
+    public void setTurretHappyThreshOn(){
+        turretHTresh = turretHappyThresh;
+    }
+    public void setTurretHappyThreshOff(){
+        turretHTresh = 80;
     }
 
 
@@ -424,8 +433,12 @@ public class TurretSubsystem implements Subsystem {
                 powerAdd = powerAdd_N200_N120;
             }else if(turretPos <-45){
                 powerAdd = powerAdd_N120_N45;
+            }else if(turretPos <110){
+                powerAdd = powerAdd_N45_100;
+            }else if (turretPos < 170){
+                powerAdd = powerAdd_100_170;
             }else{
-                powerAdd = powerAdd_N45_200;
+                powerAdd = powerAdd_170_200;
             }
 
             power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)) + ( kv * (turretTargetPosDeg - lastSetPoint));
