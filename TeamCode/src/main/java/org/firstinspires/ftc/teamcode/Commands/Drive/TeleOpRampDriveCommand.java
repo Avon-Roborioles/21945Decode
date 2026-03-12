@@ -6,14 +6,16 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.HeadingInterpolator;
 import com.pedropathing.paths.Path;
 
+import org.firstinspires.ftc.teamcode.Subsystems.StatusSubsystem;
+
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.ActiveOpMode;
 @Configurable
 public class TeleOpRampDriveCommand extends Command {
     Pose RampPose;
-    public static Pose RedRampPose = new Pose(14, 63, Math.toRadians(167.5)).mirror();
-    public static Pose BlueRampPose = new Pose(14, 63, Math.toRadians(167.5));
+    public static Pose RedRampPose = new Pose(14, 63, Math.toRadians(172)).mirror();
+    public static Pose BlueRampPose = new Pose(14, 63, Math.toRadians(172));
     Pose PreRampPose;
     public static Pose BluePreRampPose = new Pose(30, 63, Math.toRadians(167.5));
     public static Pose RedPreRampPose = new Pose(30, 63, Math.toRadians(167.5)).mirror();
@@ -36,6 +38,7 @@ public class TeleOpRampDriveCommand extends Command {
 
     @Override
     public void start() {
+        StatusSubsystem.INSTANCE.setPrismToPWM(965);
         PedroComponent.follower().breakFollowing();
         RampPath = new Path(new BezierCurve(PedroComponent.follower().getPose(), PreRampPose, RampPose));
         RampPath.setHeadingInterpolation(
@@ -51,7 +54,7 @@ public class TeleOpRampDriveCommand extends Command {
                                 HeadingInterpolator.constant(RampPose.getHeading())
                         )
                 ));
-        PedroComponent.follower().followPath(RampPath);
+        PedroComponent.follower().followPath(RampPath, true);
 
 
 
@@ -71,6 +74,7 @@ public class TeleOpRampDriveCommand extends Command {
     public void stop(boolean interrupted) {
         PedroComponent.follower().breakFollowing();
         PedroComponent.follower().startTeleOpDrive();
+        StatusSubsystem.INSTANCE.setPrismNorm();
 
 
         // executed when the command ends

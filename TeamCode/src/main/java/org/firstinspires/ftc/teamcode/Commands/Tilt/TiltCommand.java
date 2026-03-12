@@ -1,29 +1,37 @@
 package org.firstinspires.ftc.teamcode.Commands.Tilt;
 
+import com.bylazar.configurables.annotations.Configurable;
+
 import org.firstinspires.ftc.teamcode.Subsystems.PTOSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.StatusSubsystem;
 
 import dev.nextftc.control.ControlSystem;
+import dev.nextftc.control.KineticState;
 import dev.nextftc.control.feedback.PIDCoefficients;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.ActiveOpMode;
-
+@Configurable
 public class TiltCommand extends Command {
 
-    public static double power = 0.85;
+    public static double MaxPtoPower = 1;
     public static double pwmTarget = 1005;
-    public static double kp =0.1;
-    private double lTouch = 100;
-    private double rTouch = 100;
-    private double RTilt = 200;
-    private double LTilt = 200;
-    public static double PTOKp = 0.00;
-    public static double PTOKd = 0.00;
-    public static double PTOKi = 0.00;
+    private double lTouch = 60;
+    private double rTouch =50;
+    private double RTilt = 121;
+    private double LTilt = 134;
+    private double leftPower = 0;
+    private double rightPower = 0;
 
-    private PIDCoefficients coefficients = new PIDCoefficients(PTOKp,PTOKi, PTOKd);
-    private ControlSystem ptoControlSystem;
+    public static double PTOKFPre = 0.3;
+    public static double PTOKFTilt = 0.1;
+    private double PTOKF = 0;
+    private double leftGoal;
+    private double rightGoal;
+
+    private boolean pastTouch = false;
+
+
 
 
 
@@ -42,6 +50,9 @@ public class TiltCommand extends Command {
         ActiveOpMode.gamepad2().rumble(1000);
         StatusSubsystem.INSTANCE.setPrismToPWM((long) pwmTarget);
 
+        pastTouch = false;
+
+
 
 
         // executed when the command begins
@@ -49,7 +60,31 @@ public class TiltCommand extends Command {
 
     @Override
     public void update() {
-//        PedroComponent.follower().getDrivetrain().runDrive(new double[]{inputL.get()*power, inputL.get()*power, inputL.get()*power, inputL.get()*power});
+
+            if(PTOSubsystem.INSTANCE.getPtoLPosition() < lTouch || PTOSubsystem.INSTANCE.getPtoRPosition()< rTouch){
+                PTOKF = PTOKFPre;
+
+            }else{
+                pastTouch = true;
+                PTOKF = PTOKFTilt;
+            }
+            if(!pastTouch){
+                leftGoal = lTouch+5;
+                rightGoal = rTouch+5;
+            }else{
+                leftGoal = LTilt;
+                rightGoal = RTilt;
+            }
+            if(PTOSubsystem.INSTANCE.getPtoLPosition() - leftGoal<0){
+                leftPower =  Math.signum(PTOSubsystem.INSTANCE.getPtoLPosition() - leftGoal)* PTOKF;
+            }
+            if(PTOSubsystem.INSTANCE.getPtoRPosition() - rightGoal<0){
+                rightPower =  Math.signum(PTOSubsystem.INSTANCE.getPtoRPosition() - rightGoal)* PTOKF;
+            }
+
+
+
+            PedroComponent.follower().getDrivetrain().runDrive(new double[]{leftPower * MaxPtoPower, leftPower * MaxPtoPower, rightPower * MaxPtoPower, rightPower * MaxPtoPower});
 
 
 
@@ -57,6 +92,7 @@ public class TiltCommand extends Command {
 
         ActiveOpMode.telemetry().addLine("-------------- PTO Joystick Command: --------------");
         ActiveOpMode.telemetry().addData("pwm", pwmTarget);
+        ActiveOpMode.telemetry().addData("in Touch", pastTouch);
         // executed on every update of the command
     }
 

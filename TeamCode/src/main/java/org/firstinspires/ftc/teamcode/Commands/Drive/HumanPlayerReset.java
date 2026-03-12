@@ -20,9 +20,9 @@ public class HumanPlayerReset extends Command {
     @Override
     public void start() {
         if(redAlliance){
-            PedroComponent.follower().setPose(new Pose(9.5,10.25,Math.toRadians(270)));
+            PedroComponent.follower().setPose(new Pose(10.5,10.5,Math.toRadians(270)));
         }else{
-            PedroComponent.follower().setPose(new Pose(133.5,10.25,Math.toRadians(270)));
+            PedroComponent.follower().setPose(new Pose(143.5,10.5,Math.toRadians(270)));
         }
 
 

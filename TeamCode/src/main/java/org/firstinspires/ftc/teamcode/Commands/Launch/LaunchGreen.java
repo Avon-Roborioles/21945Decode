@@ -35,7 +35,7 @@ public class LaunchGreen extends Command {
 
 
     Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
-    Timing.Timer reset = new Timing.Timer(250, TimeUnit.MILLISECONDS);
+    Timing.Timer reset = new Timing.Timer(400, TimeUnit.MILLISECONDS);
     Timing.Timer ready = new Timing.Timer(250, TimeUnit.MILLISECONDS);
 
     public LaunchGreen() {

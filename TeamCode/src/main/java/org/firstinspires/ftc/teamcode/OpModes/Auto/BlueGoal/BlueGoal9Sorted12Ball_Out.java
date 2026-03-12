@@ -202,7 +202,7 @@ public class BlueGoal9Sorted12Ball_Out extends AutoBase {
                 new ParallelGroup(
                         new FollowPathNew(FarCycle),
                         new SequentialGroup(
-                                new Delay(4.5),
+                                new Delay(5.5),
                                 new LambdaCommand().setStart(()->{RunLaunchFar.schedule();}).setIsDone(()->{ return true;}),
                                 new InstantCommand(()->{ Intake.cancel();}),
                                 IntakeCheck

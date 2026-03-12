@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Commands.Drive.TeleOpDriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.Drive.TeleOpRampDriveCommand;
+import org.firstinspires.ftc.teamcode.Commands.Drive.TeleOpRampScoreDriveCommand;
 
 import dev.nextftc.ftc.Gamepads;
 
@@ -26,6 +27,12 @@ public class RedTeleOp extends TeleOpBase {
     @Override
     public TeleOpRampDriveCommand rampDriveCommand() {
         return new TeleOpRampDriveCommand(
+                true
+        );
+    }
+    @Override
+    public TeleOpRampScoreDriveCommand rampScoreDriveCommand() {
+        return new TeleOpRampScoreDriveCommand(
                 true
         );
     }

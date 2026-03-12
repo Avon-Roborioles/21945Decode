@@ -24,8 +24,8 @@ public class PTOSubsystem implements Subsystem {
     double rDown = 0.7;
     boolean engaged = false;
     private static final double DEGREES_PER_US = (360 / 1024.0);
-    private double angleOffsetL = 87;
-    private double angleOffsetR = 340;
+    private double angleOffsetL = 50;
+    private double angleOffsetR = 130;
     public double ptoLeftPos = 0;
     public double ptoRightPos = 0;
 
@@ -33,9 +33,9 @@ public class PTOSubsystem implements Subsystem {
     public ServoEx ptoL = new ServoEx("PTO L");
     public ServoEx ptoR = new ServoEx("PTO R");
     MotorEx fl, fr, bl,br;
-    public Command disengage = new ParallelGroup(new SetPosition(ptoL, lUp).setIsDone(()->true), new SetPosition(ptoR, rUp).setIsDone(()->true), new LambdaCommand().setStart(() -> engaged = false).setIsDone(()->true));
-    public Command engage = new ParallelGroup(new SetPosition(ptoL, lDown), new SetPosition(ptoR, rDown), new LambdaCommand().setStart(() -> engaged = true).setIsDone(()->true));
-    public Command wake = new SequentialGroup(new ParallelGroup(new SetPosition(ptoL, lDown), new SetPosition(ptoR, rDown), new LambdaCommand().setStart(() -> engaged = true).setIsDone(()->true)), new ParallelGroup(new SetPosition(ptoL, lUp).setIsDone(()->true), new SetPosition(ptoR, rUp).setIsDone(()->true), new LambdaCommand().setStart(() -> engaged = false).setIsDone(()->true)));
+    public Command disengage = new ParallelGroup(new SetPosition(ptoL, lUp).setIsDone(()->true), new SetPosition(ptoR, rUp).setIsDone(()->true), new LambdaCommand().setStart(() -> {engaged = false;}).setIsDone(()->true));
+    public Command engage = new ParallelGroup(new SetPosition(ptoL, lDown), new SetPosition(ptoR, rDown), new LambdaCommand().setStart(() -> {engaged = true;}).setIsDone(()->true));
+    public Command wake = new SequentialGroup(new ParallelGroup(new SetPosition(ptoL, lDown), new SetPosition(ptoR, rDown), new LambdaCommand().setStart(() -> {engaged = false;}).setIsDone(()->true)), new ParallelGroup(new SetPosition(ptoL, lUp).setIsDone(()->true), new SetPosition(ptoR, rUp).setIsDone(()->true), new LambdaCommand().setStart(() -> {engaged = false;}).setIsDone(()->true)));
     public void Engage(){
         ptoL.setPosition(lDown);
         ptoR.setPosition(rDown);
@@ -77,15 +77,13 @@ public class PTOSubsystem implements Subsystem {
             ptoL.setPosition(lUp);
             ptoR.setPosition(rUp);
         }
-//        getPTOTelemetryAdv();
+        getPTOTelemetryAdv();
     }
     public void getPTOTelemetryAdv(){
         ActiveOpMode.telemetry().addLine("-------------- PTO Telemetry Adv: --------------");
         ActiveOpMode.telemetry().addData("Engaged", engaged);
         ActiveOpMode.telemetry().addData("PTO L Pos", getPtoLPosition());
         ActiveOpMode.telemetry().addData("PTO R Pos", getPtoRPosition());
-
-
 
     }
 
