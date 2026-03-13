@@ -59,45 +59,50 @@ public class TurretSubsystem implements Subsystem {
 
 
 
-    public static double powerAdd_N200_N120 = -0.105;
-    public static double powerAdd_N120_N45 = 0;
-    public static double powerAdd_N45_100 = 0.105;
-    public static double powerAdd_100_170 = 0.13;
-    public static double powerAdd_170_200 = 0.105;
+    public static double powerAdd_N200_N170 = -0.15;
+    public static double powerAdd_N170_N150 = -0.105;
+    public static double powerAdd_N150_N140 = -0.09;
+    public static double powerAdd_N140_N120 = -0.105;
+    public static double powerAdd_N120_N110 = -0.04;
+    public static double powerAdd_N110_N10 = 0.105;
+    public static double powerAdd_N10_0 = 0;
+    public static double powerAdd_0_40 = 0.12;
+     public static double powerAdd_40_200 = 0.105;
 
 
 
-    public static double kS_N200_N190 = 0.2;//-200 -> -190
-    public static double kS_N190_N180 = 0.135;//-190 -> -180
-    public static double kS_N180_N170 = 0.14;//-180 -> -170
-    public static double kS_N170_N160 = 0.14;//-170 -> -160
-    public static double kS_N160_N150 = 0.125;//-160 -> -150
-    public static double kS_N150_N140 = 0.14;//-150 -> -140
-    public static double kS_N140_N130 = 0.135;//-140 -> -130
-    public static double kS_N130_N120 = 0.12;//-130 -> -120
-    public static double kS_N120_N110 = 0.17;//-120 -> -110
-    public static double kS_N110_N100 = 0.1;//-110 -> -100
-    public static double kS_N100_N90 = 0.25;//-100 -> -90
-    public static double kS_N90_N80 = 0.09;//-90 -> -80
-    public static double kS_N80_N70 = 0.085;//-80 -> -70
-    public static double kS_N70_N60 = 0.075;//-70 -> -60
-    public static double kS_N60_N50 = 0.07;//-60 -> -50
-    public static double kS_N50_N40 = 0.18;//-50 -> -40
-    public static double kS_N40_N30 = 0.16;//-40 -> -30
-    public static double kS_N30_N20 = 0.14;//-30 -> -20
-    public static double kS_N20_N10 = 0.12;//-20 -> -10
-    public static double kS_N10_0 = 0.105;//-10 -> 0
-    public static double kS_0_10 = 0.08;//0 -> 10
-    public static double kS_10_20 = 0.12;//10 -> 20
-    public static double kS_20_30 = 0.1;//20 -> 30
-    public static double kS_30_40 = 0.1;//30 -> 40
-    public static double kS_40_50 = 0.1;//40 -> 50
-    public static double kS_50_60 = 0.08;//50 -> 60
-    public static double kS_60_70 = 0.11;//60 -> 70
-    public static double kS_70_80 = 0.115;//70 -> 80
-    public static double kS_80_90 = 0.14;//80 -> 90
-    public static double kS_90_100 = 0.17;//90 -> 100
-    public static double kS_100_110 = 0.13;//100 -> 110
+
+    public static double kS_N200_N190 = 0.1;//-200 -> -190
+    public static double kS_N190_N180 = 0.12;//-190 -> -180
+    public static double kS_N180_N170 = 0.1;//-180 -> -170
+    public static double kS_N170_N160 = 0.085;//-170 -> -160
+    public static double kS_N160_N150 = 0.08;//-160 -> -150
+    public static double kS_N150_N140 = 0.075;//-150 -> -140
+    public static double kS_N140_N130 = 0.08;//-140 -> -130
+    public static double kS_N130_N120 = 0.08;//-130 -> -120
+    public static double kS_N120_N110 = 0.06;//-120 -> -110
+    public static double kS_N110_N100 = 0.08;//-110 -> -100
+    public static double kS_N100_N90 = 0.055;//-100 -> -90
+    public static double kS_N90_N80 = 0.05;//-90 -> -80
+    public static double kS_N80_N70 = 0.035;//-80 -> -70
+    public static double kS_N70_N60 = 0.04;//-70 -> -60
+    public static double kS_N60_N50 = 0.04;//-60 -> -50
+    public static double kS_N50_N40 = 0.135;//-50 -> -40
+    public static double kS_N40_N30 = 0.14;//-40 -> -30
+    public static double kS_N30_N20 = 0.1;//-30 -> -20
+    public static double kS_N20_N10 = 0.09;//-20 -> -10
+    public static double kS_N10_0 = 0.095;//-10 -> 0
+    public static double kS_0_10 = 0.07;//0 -> 10
+    public static double kS_10_20 = 0.03;//10 -> 20
+    public static double kS_20_30 = 0.04;//20 -> 30
+    public static double kS_30_40 = 0.025;//30 -> 40
+    public static double kS_40_50 = 0.088;//40 -> 50
+    public static double kS_50_60 = 0.096;//50 -> 60
+    public static double kS_60_70 = 0.0885;//60 -> 70
+    public static double kS_70_80 = 0.067;//70 -> 80
+    public static double kS_80_90 = 0.091;//80 -> 90
+    public static double kS_90_100 = 0.075;//90 -> 100
+    public static double kS_100_110 = 0.113;//100 -> 110
     public static double kS_110_120 = 0.155;//110 -> 120
     public static double kS_120_130 = 0.155;//120 -> 130
     public static double kS_130_140 = 0.16;//130 -> 140
@@ -429,16 +434,24 @@ public class TurretSubsystem implements Subsystem {
             }
 
 
-            if(turretPos <-120){
-                powerAdd = powerAdd_N200_N120;
-            }else if(turretPos <-45){
-                powerAdd = powerAdd_N120_N45;
-            }else if(turretPos <110){
-                powerAdd = powerAdd_N45_100;
-            }else if (turretPos < 170){
-                powerAdd = powerAdd_100_170;
-            }else{
-                powerAdd = powerAdd_170_200;
+            if(turretPos <-170){
+                powerAdd = powerAdd_N200_N170;
+            }else if(turretPos <-150){
+                powerAdd = powerAdd_N170_N150;
+            }else if(turretPos <-140){
+                powerAdd = powerAdd_N150_N140;
+            }else if (turretPos < -120){
+                powerAdd = powerAdd_N140_N120;
+            }else if (turretPos <-110){
+                powerAdd = powerAdd_N120_N110;
+            } else if (turretPos <-10) {
+                powerAdd = powerAdd_N110_N10;
+            } else if(turretPos <0) {
+                powerAdd = powerAdd_N10_0;
+            } else if(turretPos < 40) {
+                powerAdd = powerAdd_0_40;
+            } else{
+                powerAdd = powerAdd_40_200;
             }
 
             power = turretControlSystem.calculate(new KineticState(turretPos, (data.velocities[0]) * DEGREES_PER_US)) + ( kv * (turretTargetPosDeg - lastSetPoint));
@@ -448,7 +461,7 @@ public class TurretSubsystem implements Subsystem {
                 power = powerSet;
                 turretMotor.setPower(power);
             }
-            if (turretOn && Math.abs(power) > 0.0 && Math.abs(turretError)> 0){
+            if (turretOn && Math.abs(power) > 0.01 && Math.abs(turretError)> 0.75){
                 turretMotor.setPower(power*maxPower );
             }else{
                 turretMotor.setPower(0);
