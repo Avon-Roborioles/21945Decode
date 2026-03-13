@@ -66,7 +66,7 @@ public class RedBack3Ball_Wall extends AutoBase {
     @Override public void onStartButtonPressed (){
 
 //
-        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(true, new Pose(startingPos.getX()-5, startingPos.getY()-5, startingPos.getHeading()+Math.toRadians(-1)));
+        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(true, new Pose(startingPos.getX()-5, startingPos.getY()-5, startingPos.getHeading()));
 
         Command StopLauncher = new LambdaCommand().setStart(()->{RunLaunchPre.cancel();
         }).setIsDone(()->{ return true;});
