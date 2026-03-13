@@ -16,15 +16,15 @@ public class TiltCommand extends Command {
 
     public static double MaxPtoPower = 1;
     public static double pwmTarget = 1005;
-    private double lTouch = 60;
-    private double rTouch =50;
+    private double lTouch = 50;
+    private double rTouch =30;
     private double RTilt = 121;
     private double LTilt = 134;
     private double leftPower = 0;
     private double rightPower = 0;
 
     public static double PTOKFPre = 0.3;
-    public static double PTOKFTilt = 0.1;
+    public static double PTOKFTilt = 1;
     private double PTOKF = 0;
     private double leftGoal;
     private double rightGoal;

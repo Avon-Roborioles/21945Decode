@@ -77,7 +77,7 @@ public class PTOSubsystem implements Subsystem {
             ptoL.setPosition(lUp);
             ptoR.setPosition(rUp);
         }
-        getPTOTelemetryAdv();
+//        getPTOTelemetryAdv();
     }
     public void getPTOTelemetryAdv(){
         ActiveOpMode.telemetry().addLine("-------------- PTO Telemetry Adv: --------------");

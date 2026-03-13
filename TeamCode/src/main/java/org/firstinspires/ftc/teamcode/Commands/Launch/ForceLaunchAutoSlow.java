@@ -30,7 +30,7 @@ public class ForceLaunchAutoSlow extends Command {
 
     Step St = Step.LaunchCenter;
     Timing.Timer wait = new Timing.Timer(250, TimeUnit.MILLISECONDS);
-    Timing.Timer reset = new Timing.Timer(600, TimeUnit.MILLISECONDS);
+    Timing.Timer reset = new Timing.Timer(200, TimeUnit.MILLISECONDS);
     Timing.Timer delay = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
     Timing.Timer ready = new Timing.Timer(300, TimeUnit.MILLISECONDS);
     boolean Missed1= false;

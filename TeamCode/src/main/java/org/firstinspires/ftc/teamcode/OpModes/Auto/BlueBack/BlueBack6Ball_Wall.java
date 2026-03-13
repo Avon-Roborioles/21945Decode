@@ -119,7 +119,7 @@ public class BlueBack6Ball_Wall extends AutoBase {
         Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(false, new Pose(scorePreload.getX()+8, scorePreload.getY()-8, scorePreload.getHeading()+Math.toRadians(3)));
         Command RunLaunch1 = new RunTurretAndLauncherFromPoseAuto(false,new Pose(scorePreload.getX()+6, scorePreload.getY()+6, scorePreload.getHeading()+Math.toRadians(3)));
         Command RunLaunch2 = new RunTurretAndLauncherFromPoseAuto(false,new Pose(scorePreload.getX()+6, scorePreload.getY()+6, scorePreload.getHeading()+Math.toRadians(3)));
-        Command Intake1 = new AutoIntake(4000);
+        Command Intake1 = new AutoIntake(6000);
         Command Intake2 = new AutoIntake(4000);
 
 

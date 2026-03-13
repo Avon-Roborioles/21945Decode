@@ -221,7 +221,7 @@ public class SorterSubsystem implements Subsystem {
         return leftDetect;
     }
     public boolean centerDetected(){
-        centerDetect = sortCSC.getDistance(DistanceUnit.MM)<100;
+        centerDetect = sortCSC.getDistance(DistanceUnit.MM)<90;
         return centerDetect;
     }
 
@@ -233,7 +233,7 @@ public class SorterSubsystem implements Subsystem {
     public SlotDetection leftSlot(){
         updateColor();
         if(sortCSL.getDistance(DistanceUnit.MM)<52){
-            if(leftColor.green - leftColor.red>0.32) {
+            if(leftColor.green - leftColor.red>0.34) {
 //                CompStatusSubsystem.INSTANCE.setLeftGreen();
                 return SlotDetection.GREEN;
             }else {
@@ -247,7 +247,7 @@ public class SorterSubsystem implements Subsystem {
     }
     public SlotDetection centerSlot(){
         updateColor();
-        if(sortCSC.getDistance(DistanceUnit.MM)<100){
+        if(sortCSC.getDistance(DistanceUnit.MM)<90){
             if(centerColor.green>centerColor.blue) {
 //                CompStatusSubsystem.INSTANCE.setCenterGreen();
                 return SlotDetection.GREEN;
@@ -375,7 +375,7 @@ public class SorterSubsystem implements Subsystem {
         sortCSL = ActiveOpMode.hardwareMap().get(RevColorSensorV3.class, "Sort CS L");
         sortCSC = ActiveOpMode.hardwareMap().get(RevColorSensorV3.class, "Sort CS C");
         sortCSR = ActiveOpMode.hardwareMap().get(RevColorSensorV3.class, "Sort CS R");
-        sortCSL.setGain(600);
+        sortCSL.setGain(400);
         sortCSR.setGain(400);
         sortCSC.setGain(400);
 
