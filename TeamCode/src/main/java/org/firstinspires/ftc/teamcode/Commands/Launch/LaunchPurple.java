@@ -34,7 +34,7 @@ public class LaunchPurple extends Command {
     SorterSubsystem.SlotDetection left, right, center;
 
     Timing.Timer wait = new Timing.Timer(200, TimeUnit.MILLISECONDS);
-    Timing.Timer reset = new Timing.Timer(150, TimeUnit.MILLISECONDS);
+    Timing.Timer reset = new Timing.Timer(300, TimeUnit.MILLISECONDS);
     Timing.Timer delay = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
     Timing.Timer ready = new Timing.Timer(300, TimeUnit.MILLISECONDS);
 

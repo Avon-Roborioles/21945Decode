@@ -67,7 +67,6 @@ public class BlueBack3Ball_Wall extends AutoBase {
                 LaunchWOSort,
                 StopLauncher,
                 new FollowPath(EndDrive)
-
         );
        runAuto.schedule();
     }

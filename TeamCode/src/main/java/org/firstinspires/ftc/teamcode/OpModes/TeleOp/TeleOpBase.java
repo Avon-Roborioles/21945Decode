@@ -107,6 +107,7 @@ public abstract class TeleOpBase extends Storage {
     @Override
     public void onStartButtonPressed() {
         deBounce.start();
+        PedroComponent.follower().setMaxPower(1);
 
 
 
@@ -149,10 +150,10 @@ public abstract class TeleOpBase extends Storage {
         Gamepads.gamepad1().dpadDown().whenBecomesTrue(PTOSubsystem.INSTANCE.engage);
         Gamepads.gamepad1().dpadLeft();
         Gamepads.gamepad1().dpadRight();
-        Gamepads.gamepad1().leftStickButton().whenBecomesTrue(new ParallelGroup(new SequentialGroup(new Delay(.015),rampScoreDriveCommand),intakeToSorter))
-                .whenBecomesFalse(new SequentialGroup(new Delay(.015),new LambdaCommand().setStart(() -> {rampDriveCommand.cancel();}),new Delay(0.015),new LambdaCommand().setStart(() -> {driverControlled.schedule(); })));;
-        Gamepads.gamepad1().rightStickButton().whenBecomesTrue(new ParallelGroup(new SequentialGroup(new Delay(.015),rampDriveCommand),intakeToSorter))
-                .whenBecomesFalse(new SequentialGroup(new Delay(.015),new LambdaCommand().setStart(() -> {rampDriveCommand.cancel();}),new Delay(0.015),new LambdaCommand().setStart(() -> {driverControlled.schedule(); }), intakeToSorter));
+//        Gamepads.gamepad1().leftStickButton().whenBecomesTrue(new ParallelGroup(new SequentialGroup(new Delay(.015),rampScoreDriveCommand),intakeToSorter))
+//                .whenBecomesFalse(new SequentialGroup(new Delay(.015),new LambdaCommand().setStart(() -> {rampDriveCommand.cancel();}),new Delay(0.015),new LambdaCommand().setStart(() -> {driverControlled.schedule(); })));;
+//        Gamepads.gamepad1().rightStickButton().whenBecomesTrue(new ParallelGroup(new SequentialGroup(new Delay(.015),rampDriveCommand),intakeToSorter))
+//                .whenBecomesFalse(new SequentialGroup(new Delay(.015),new LambdaCommand().setStart(() -> {rampDriveCommand.cancel();}),new Delay(0.015),new LambdaCommand().setStart(() -> {driverControlled.schedule(); }), intakeToSorter));
         Gamepads.gamepad1().leftTrigger().atLeast(0.75).whenBecomesTrue(new LambdaCommand().setStart(()->{; IntakeSubsystem.INSTANCE.Outtake.cancel(); IntakeSubsystem.INSTANCE.stopIntake();} ).setIsDone(() -> true));;
         Gamepads.gamepad1().rightTrigger().atLeast(0.75).whenBecomesTrue(new LambdaCommand().setStart(()->{PedroComponent.follower().setMaxPower(0.5);}).setIsDone(() -> true)).whenBecomesFalse(new LambdaCommand().setStart(()->{PedroComponent.follower().setMaxPower(1);}));
         Gamepads.gamepad1().leftBumper().whenBecomesTrue(intakeToSorter);

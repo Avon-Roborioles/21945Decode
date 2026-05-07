@@ -29,7 +29,9 @@ public class TeleOpDriveCommand extends Command {
 
     @Override
     public void start() {
+        PedroComponent.follower().setMaxPower(1);
         PedroComponent.follower().startTeleOpDrive();
+        PedroComponent.follower().setMaxPower(1);
 
 
         // executed when the command begins

@@ -1,4 +1,6 @@
-package org.firstinspires.ftc.teamcode.OpModes.Auto.RedGoal;
+package org.firstinspires.ftc.teamcode.OpModes.Auto.BlueGoal;
+
+
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
@@ -10,7 +12,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Commands.Automatic.RunTurretAndLauncherFromPoseAuto;
 import org.firstinspires.ftc.teamcode.Commands.Drive.FollowPathNew;
-import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntake;
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntakeCheck;
 import org.firstinspires.ftc.teamcode.Commands.Intake.AutoIntakeNoTime;
 import org.firstinspires.ftc.teamcode.Commands.Launch.ForceLaunchAuto;
@@ -28,9 +29,9 @@ import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 
-@Autonomous (group = "Red Goal", preselectTeleOp = "RedTeleOp")
+@Autonomous (group = "Blue Goal", preselectTeleOp = "BlueTeleOp")
 @Configurable
-public class RedGoal12Ball_Goal extends AutoBase {
+public class BlueGoal9Sorted12Ball_OutCrimp extends AutoBase {
 
     /*TODO: Look into Piecewise heading
       TODO: Shoot While Move?
@@ -40,25 +41,25 @@ public class RedGoal12Ball_Goal extends AutoBase {
     PathChain MidCycle, CloseCycle, FarCycle;
     Path ToScorePreloads, ToGrabMid, ToScoreMid, ToGrabClose, GrabClose, ToScoreClose, ToGrabFar, ToScoreFar;
 
-    public static Pose startingPos = new Pose(26.75, 130, Math.toRadians(329)).mirror();
-    public static Pose scorePreload = new Pose(58.5, 108.5, Math.toRadians(270)).mirror();
-    public static Pose grabMid = new Pose(23, 65, Math.toRadians(185)).mirror();
-    public static Pose grabMidCP1 = new Pose(58.5, 88).mirror();
-    public static Pose grabMidCP2  = new Pose(59, 66.5).mirror();
-    public static Pose grabMidCP3  = new Pose(64, 60).mirror();
-    public static Pose scoreMid = new Pose(56.5, 100, Math.toRadians(-110)).mirror();
-    public static Pose scoreMidCp = new Pose(51, 59.5).mirror();
+    public static Pose startingPos = new Pose(26.75, 130, Math.toRadians(329));
+    public static Pose scorePreload = new Pose(58.5, 108.5, Math.toRadians(270));
+    public static Pose grabMid = new Pose(23, 65, Math.toRadians(185));
+    public static Pose grabMidCP1 = new Pose(58.5, 88);
+    public static Pose grabMidCP2  = new Pose(59, 66.5);
+    public static Pose grabMidCP3  = new Pose(64, 60);
+    public static Pose scoreMid = new Pose(56.5, 100, Math.toRadians(-110));
+    public static Pose scoreMidCp = new Pose(51, 59.5);
 
-    public static Pose toGrabClose = new Pose(42, 85, Math.toRadians(180)).mirror();
-    public static Pose grabClose = new Pose(30, 85, Math.toRadians(180)).mirror();
-    public static Pose scoreClose = new Pose(60, 89, Math.toRadians(270)).mirror();
-    public static Pose scoreCloseCP = new Pose(44.5, 82.5).mirror();
-    public static Pose grabFar = new Pose(30, 34.5, Math.toRadians(182)).mirror();
-    public static Pose grabFarCP1 = new Pose(61, 38.5).mirror();
-    public static Pose grabFarCP2 = new Pose(57, 37.5).mirror();
-    public static Pose grabFarCP3 = new Pose(45, 30).mirror();
-    public static Pose scoreFar = new Pose(59, 116, Math.toRadians(270)).mirror();
-    public static Pose scoreFarCP = new Pose(57, 36).mirror();
+    public static Pose toGrabClose = new Pose(42, 85, Math.toRadians(180));
+    public static Pose grabClose = new Pose(30, 85, Math.toRadians(180));
+    public static Pose scoreClose = new Pose(59, 116, Math.toRadians(270));
+    public static Pose scoreCloseCP = new Pose(44.5, 82.5);
+    public static Pose grabFar = new Pose(30, 34.5, Math.toRadians(182));
+    public static Pose grabFarCP1 = new Pose(61, 38.5);
+    public static Pose grabFarCP2 = new Pose(57, 37.5);
+    public static Pose grabFarCP3 = new Pose(45, 30);
+    public static Pose scoreFar = new Pose(59, 116, Math.toRadians(270));
+    public static Pose scoreFarCP = new Pose(57, 36);
 
 
 
@@ -129,10 +130,10 @@ public class RedGoal12Ball_Goal extends AutoBase {
 
     }
     @Override public void onStartButtonPressed () {
-        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(true, new Pose(scorePreload.getX(), scorePreload.getY(), scorePreload.getHeading()));
-        Command RunLaunchMid = new RunTurretAndLauncherFromPoseAuto(true, scoreMid);
-        Command RunLaunchClose = new RunTurretAndLauncherFromPoseAuto(true, scoreClose);
-        Command RunLaunchFar = new RunTurretAndLauncherFromPoseAuto(true, scoreFar);
+        Command RunLaunchPre = new RunTurretAndLauncherFromPoseAuto(false, new Pose(scorePreload.getX(), scorePreload.getY(), scorePreload.getHeading()));
+        Command RunLaunchMid = new RunTurretAndLauncherFromPoseAuto(false, scoreMid);
+        Command RunLaunchClose = new RunTurretAndLauncherFromPoseAuto(false, scoreClose);
+        Command RunLaunchFar = new RunTurretAndLauncherFromPoseAuto(false, scoreFar);
 
 
         Command Intake = new AutoIntakeNoTime();
@@ -170,18 +171,18 @@ public class RedGoal12Ball_Goal extends AutoBase {
                 new LambdaCommand().setStart(() -> {Intake.schedule();}).setIsDone(() -> {return true;}),
                 new LambdaCommand().setStart(()->{PedroComponent.follower().setMaxPower(0.75);}).setIsDone(()->{ return true;}),
                 new ParallelGroup(
-                        new SequentialGroup(
-                                new FollowPathNew(ToGrabMid),
-                                new Delay(1.5),
-                                new FollowPath(ToScoreMid)
-                        ),
-                        new SequentialGroup(
-                                new Delay(4),
-                                new LambdaCommand().setStart(()->{PedroComponent.follower().setMaxPower(1);}).setIsDone(()->{ return true;}),
-                                new LambdaCommand().setStart(()->{RunLaunchMid.schedule();}).setIsDone(()->{ return true;}),
-                                new InstantCommand(()->{ Intake.cancel();}),
-                                IntakeCheck
-                        )
+                    new SequentialGroup(
+                            new FollowPathNew(ToGrabMid),
+                            new Delay(1.5),
+                            new FollowPath(ToScoreMid)
+                    ),
+                    new SequentialGroup(
+                            new Delay(4),
+                            new LambdaCommand().setStart(()->{PedroComponent.follower().setMaxPower(1);}).setIsDone(()->{ return true;}),
+                            new LambdaCommand().setStart(()->{RunLaunchMid.schedule();}).setIsDone(()->{ return true;}),
+                            new InstantCommand(()->{ Intake.cancel();}),
+                            IntakeCheck
+                    )
                 ),
                 new Delay(0.5),
                 LaunchWithSort,
@@ -196,18 +197,6 @@ public class RedGoal12Ball_Goal extends AutoBase {
                         )
                 ),
                 new Delay(0.0001),
-                LaunchWithSort,
-                new LambdaCommand().setStart(() -> {Intake.schedule();}).setIsDone(() -> {return true;}),
-                new ParallelGroup(
-                        new FollowPathNew(FarCycle),
-                        new SequentialGroup(
-                                new Delay(5.5),
-                                new LambdaCommand().setStart(()->{RunLaunchFar.schedule();}).setIsDone(()->{ return true;}),
-                                new InstantCommand(()->{ Intake.cancel();}),
-                                IntakeCheck
-                        )
-                ),
-                new Delay(0.25),
                 LaunchWithSort,
                 new Delay(0.0001),
                 StopLauncher
@@ -225,10 +214,7 @@ public class RedGoal12Ball_Goal extends AutoBase {
 
     @Override public void onStop () {}
 
+
+
+
 }
-
-
-
-
-
-

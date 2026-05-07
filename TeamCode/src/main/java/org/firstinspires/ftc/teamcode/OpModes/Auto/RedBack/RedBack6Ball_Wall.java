@@ -114,7 +114,7 @@ public class RedBack6Ball_Wall extends AutoBase {
                     SorterSubsystem.INSTANCE.sortHug();
                 }).setIsDone(() -> {return true;}),
                 new LambdaCommand().setStart(()->{RunLaunchPre.schedule();}).setIsDone(()->{ return true;}),
-                new Delay(1.75),
+                new Delay(0.25),
                 new FollowPath(DriveToScorePreload),
                 new Delay(1.75),
                 LaunchWOSort,

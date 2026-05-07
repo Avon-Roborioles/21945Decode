@@ -69,7 +69,7 @@ public class RunTurretAndLauncherFromHeading extends Command {
         }else {
                 StatusSubsystem.INSTANCE.setPrismOrange();
         }
-        if(distanceToGoal<85){
+        if(distanceToGoal<100){
             TurretSubsystem.INSTANCE.setTurretHappyThreshOff();
         }else{
             TurretSubsystem.INSTANCE.setTurretHappyThreshOn();
