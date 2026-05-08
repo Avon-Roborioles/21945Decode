@@ -393,7 +393,7 @@ public class SorterSubsystem implements Subsystem {
     @Override
     public void periodic() {
         // periodic logic (runs every loop)
-//        getSorterTelemetryAdv();
+        getSorterTelemetryAdv();
 //        ActiveOpMode.telemetry().addData("LeftBB", LeftBB.getState());
 //        ActiveOpMode.telemetry().addData("RightBB", RightBB.getState());
 //        ActiveOpMode.telemetry().addData("CenterBB", CenterBB.getState());
