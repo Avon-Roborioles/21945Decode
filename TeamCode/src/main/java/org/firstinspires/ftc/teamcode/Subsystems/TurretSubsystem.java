@@ -59,59 +59,59 @@ public class TurretSubsystem implements Subsystem {
 
 
 
-    public static double powerAdd_N200_N170 = -0.15;
-    public static double powerAdd_N170_N150 = -0.105;
-    public static double powerAdd_N150_N140 = -0.09;
-    public static double powerAdd_N140_N120 = -0.105;
-    public static double powerAdd_N120_N110 = -0.04;
-    public static double powerAdd_N110_N10 = 0.105;
+    public static double powerAdd_N200_N170 = -0.051;
+    public static double powerAdd_N170_N150 = -0.02;
+    public static double powerAdd_N150_N140 = -0.02;
+    public static double powerAdd_N140_N120 = -0.004;
+    public static double powerAdd_N120_N110 = -0.027;
+    public static double powerAdd_N110_N10 = 0.057;
     public static double powerAdd_N10_0 = 0;
-    public static double powerAdd_0_40 = 0.12;
-     public static double powerAdd_40_200 = 0.105;
+    public static double powerAdd_0_40 = 0.06;
+     public static double powerAdd_40_200 = 0.0742;
 
 
 
 
-    public static double kS_N200_N190 = -0.075;//-200 -> -190
-    public static double kS_N190_N180 = -0.048;//-190 -> -180
-    public static double kS_N180_N170 = -0.03;//-180 -> -170
-    public static double kS_N170_N160 = -0.03;//-170 -> -160
-    public static double kS_N160_N150 = -0.013;//-160 -> -150
+    public static double kS_N200_N190 = 0.075;//-200 -> -190
+    public static double kS_N190_N180 = 0.048;//-190 -> -180
+    public static double kS_N180_N170 = 0.03;//-180 -> -170
+    public static double kS_N170_N160 = 0.03;//-170 -> -160
+    public static double kS_N160_N150 = 0.027;//-160 -> -150
     public static double kS_N150_N140 = 0.02;//-150 -> -140
-    public static double kS_N140_N130 = 0.02;//-140 -> -130
-    public static double kS_N130_N120 = -0.007;//-130 -> -120
-    public static double kS_N120_N110 = -0.027;//-120 -> -110
-    public static double kS_N110_N100 = -0.03;//-110 -> -100
-    public static double kS_N100_N90 = -0.03;//-100 -> -90
-    public static double kS_N90_N80 = -0.03;//-90 -> -80
-    public static double kS_N80_N70 = -0.03;//-80 -> -70
-    public static double kS_N70_N60 = -0.03;//-70 -> -60
-    public static double kS_N60_N50 = -0.03;//-60 -> -50
-    public static double kS_N50_N40 = -0.03;//-50 -> -40
-    public static double kS_N40_N30 = -0.03;//-40 -> -30
-    public static double kS_N30_N20 = -0.03;//-30 -> -20
-    public static double kS_N20_N10 = 0.037;//-20 -> -10
-    public static double kS_N10_0 = 0.057;//-10 -> 0
-    public static double kS_0_10 = 0.063;//0 -> 10
-    public static double kS_10_20 = 0.07;//10 -> 20
-    public static double kS_20_30 = 0.07;//20 -> 30
-    public static double kS_30_40 = 0.07;//30 -> 40
-    public static double kS_40_50 = 0.07;//40 -> 50
-    public static double kS_50_60 = 0.07;//50 -> 60
-    public static double kS_60_70 = 0.07;//60 -> 70
-    public static double kS_70_80 = 0.07;//70 -> 80
-    public static double kS_80_90 = 0.07;//80 -> 90
-    public static double kS_90_100 = 0.07;//90 -> 100
-    public static double kS_100_110 = 0.07;//100 -> 110
-    public static double kS_110_120 = 0.07;//110 -> 120
-    public static double kS_120_130 = 0.07;//120 -> 130
-    public static double kS_130_140 = 0.07;//130 -> 140
-    public static double kS_140_150 = 0.07;//140 -> 150
-    public static double kS_150_160 = 0.07;//150 -> 160
-    public static double kS_160_170 = 0.07;//160 -> 170
-    public static double kS_170_180 = 0.07;//170 -> 180
-    public static double kS_180_190 = 0.077;//180 -> 190
-    public static double kS_190_200 = 0.087;//190 -> 200
+    public static double kS_N140_N130 = 0.08;//-140 -> -130
+    public static double kS_N130_N120 = 0.08;//-130 -> -120
+    public static double kS_N120_N110 = 0.06;//-120 -> -110
+    public static double kS_N110_N100 = 0.08;//-110 -> -100
+    public static double kS_N100_N90 = 0.055;//-100 -> -90
+    public static double kS_N90_N80 = 0.05;//-90 -> -80
+    public static double kS_N80_N70 = 0.035;//-80 -> -70
+    public static double kS_N70_N60 = 0.04;//-70 -> -60
+    public static double kS_N60_N50 = 0.04;//-60 -> -50
+    public static double kS_N50_N40 = 0.135;//-50 -> -40
+    public static double kS_N40_N30 = 0.14;//-40 -> -30
+    public static double kS_N30_N20 = 0.1;//-30 -> -20
+    public static double kS_N20_N10 = 0.09;//-20 -> -10
+    public static double kS_N10_0 = 0.095;//-10 -> 0
+    public static double kS_0_10 = 0.07;//0 -> 10
+    public static double kS_10_20 = 0.03;//10 -> 20
+    public static double kS_20_30 = 0.04;//20 -> 30
+    public static double kS_30_40 = 0.025;//30 -> 40
+    public static double kS_40_50 = 0.088;//40 -> 50
+    public static double kS_50_60 = 0.096;//50 -> 60
+    public static double kS_60_70 = 0.0885;//60 -> 70
+    public static double kS_70_80 = 0.067;//70 -> 80
+    public static double kS_80_90 = 0.091;//80 -> 90
+    public static double kS_90_100 = 0.075;//90 -> 100
+    public static double kS_100_110 = 0.113;//100 -> 110
+    public static double kS_110_120 = 0.155;//110 -> 120
+    public static double kS_120_130 = 0.155;//120 -> 130
+    public static double kS_130_140 = 0.16;//130 -> 140
+    public static double kS_140_150 = 0.15;//140 -> 150
+    public static double kS_150_160 = 0.36;//150 -> 160
+    public static double kS_160_170 = 0.265;//160 -> 170
+    public static double kS_170_180 = 0.305;//170 -> 180
+    public static double kS_180_190 = 0.305;//180 -> 190
+    public static double kS_190_200 = 0.335;//190 -> 200
 
     
 
